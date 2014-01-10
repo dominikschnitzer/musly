@@ -1,7 +1,7 @@
 *Copied from on 8 Jan 2014, Specification:*
 <http://www.music-ir.org/mirex/wiki/2013:Audio_Music_Similarity_and_Retrieval#Distance_matrix_output_files>
 
-=Distance matrix output files=
+# Distance matrix output files #
 
 Participants should return one of two available output file formats, a full
 distance matrix or a sparse distance matrix. The sparse distance matrix format
