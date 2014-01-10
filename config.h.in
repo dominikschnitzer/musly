@@ -1,0 +1,10 @@
+/* config.h.in */
+
+/* Version number of package */
+#define MUSLY_VERSION "@MUSLY_VERSION@"
+
+/* Major version number as integer */
+#define MUSLY_VERSION_MAJOR @MUSLY_VERSION_MAJOR@
+
+/* Minor version number as integer */
+#define MUSLY_VERSION_MINOR @MUSLY_VERSION_MINOR@

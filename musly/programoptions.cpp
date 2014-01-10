@@ -1,0 +1,192 @@
+/**
+ * Copyright 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
+ *
+ * This file is part of Musly, a program for high performance music
+ * similarity computation: http://www.musly.org/.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla
+ * Public License v. 2.0. If a copy of the MPL was not distributed
+ * with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+#include <unistd.h>
+#include <getopt.h>
+#include <iostream>
+#include <sstream>
+#include <cstdlib>
+#include <cctype>
+
+
+#include "programoptions.h"
+
+programoptions::programoptions(int argc, char *argv[],
+        const std::vector<std::string>& methods) :
+        default_collection("collection.musly"),
+        default_k(5),
+        default_debuglevel(0),
+        action(""),
+        program_name(argv[0])
+{
+    optionstr["c"] = default_collection;
+    optionstr["n"] = "";
+    optionstr["x"] = "";
+    std::stringstream kstr;
+    kstr << default_k;
+    optionstr["k"] = kstr.str();
+    optionstr["e"] = "-1";
+
+    // Build a CSV string with all methods available.
+    all_methods = methods[0];
+    for (int i = 1; i < (int)methods.size(); i++) {
+        all_methods += "," + methods[i];
+    }
+
+    opterr = 0;
+    while (1) {
+
+        int c = getopt(argc, argv, "v:ihc:a:x:Ee:Nn:k:ldm:p:");
+        if (c == -1) {
+            break;
+        }
+
+        switch (c) {
+
+
+        // actions
+        case 'E':
+        case 'N':
+            if (action.length() != 0) {
+                action = "error";
+            } else {
+                action = tolower(c);
+            }
+            break;
+
+        case 'i':
+        case 'h':
+        case 'a':
+        case 'n':
+        case 'e':
+        case 'l':
+        case 'd':
+        case 'm':
+        case 'p':
+            if (action.length() != 0) {
+                action = "error";
+            } else {
+                action = (char)(c);
+                if (optarg) {
+                    optionstr[action] = optarg;
+                }
+            }
+            break;
+
+        // parameters
+        case 'v':
+        case 'x':
+        case 'c':
+        case 'k':
+            if (optarg) {
+                std::string copt;
+                copt = (char)(c);
+                optionstr[copt] = optarg;
+            }
+
+            break;
+
+        // errors
+        case '?':
+            break;
+        default:
+            break;
+        }
+    }
+    if (optind < argc) {
+        action = "error";
+    }
+
+    // show help if no action given
+    if (action.length() == 0) {
+        action = "error";
+    }
+}
+
+programoptions::~programoptions() {
+}
+
+std::string
+programoptions::get_action()
+{
+    return action;
+}
+
+std::string
+programoptions::get_option_str(
+        const std::string& option)
+{
+    if (optionstr.find(option) != optionstr.end()) {
+        return optionstr[option];
+    }
+
+    return "";
+}
+
+int
+programoptions::get_option_int(
+        const std::string& option)
+{
+    if (optionstr.find(option) != optionstr.end()) {
+        return atoi(optionstr[option].c_str());
+    }
+
+    return -1;
+}
+
+
+void
+programoptions::display_help()
+{
+    using namespace std;
+// Helper to format the output max 70 chars wide
+//       ======================================================================
+cout << "Options for " << program_name << endl;
+cout << "  -h           this help screen." << endl;
+cout << "  -v 0-5       set the libmusly debug level: (0: none, 5: trace)." << endl;
+cout << "               DEFAULT: " << default_debuglevel << endl;
+cout << "  -i           information about the music similarity library" << endl;
+cout << "  -c COLL      set the file to write the music similarity features and" << endl
+     << "               to use for computing similarities." << endl
+     << "               DEFAULT: " << default_collection << endl;
+cout << "  -k NUM       set number of similar songs display when computing" << endl
+     << "               playlists ('-p') or evaluating the collection ('-e')." << endl
+     << "               DEFAULT: " << default_k << endl;
+cout << " INITIALIZATION:" << endl;
+cout << "  -n MTH | -N  initialize the collection (set with '-c') using the" << endl
+     << "               music similarity method MTH. Available methods:" << endl
+     << "               " << all_methods << endl
+     << "               '-N' automatically selects the best method." << endl;
+cout << " MUSIC ANALYSIS/PLAYLIST GENERATION:" << endl;
+cout << "  -a DIR/FILE  analyze and add the given audio FILE to the collection" << endl
+     << "               file. If a Directory is given, the directory is scanned" << endl
+     << "               recursively for audio files." << endl;
+cout << "  -x EXT       only analyze files with file extension EXT when adding" << endl
+     << "               audio files with '-a'. DEFAULT: '' (any)" << endl;
+cout << "  -p FILE      print a playlist of the '-k' most similar tracks for" << endl
+     << "               the given FILE. If FILE is not found in the collection" << endl
+     << "               file, it is analyzed and then compared to all other" << endl
+     << "               tracks found in the collection file ('-c')." << endl;
+cout << " LISTING:" << endl;
+cout << "  -l           list all files in the collection file." << endl;
+cout << "  -d           dump the features in the collection file to the console" << endl;
+cout << " EVALUATION:" << endl;
+cout << "  -e NUM | -E  perform a basic k-nn (k-nearest neighbor) music genre" << endl
+     << "               classification experiment using the selected collection" << endl
+     << "               file. The parameter k is set with option '-k'. The" << endl
+     << "               genre is inferred from the path element at position NUM." << endl
+     << "               The genre position within the path is guessed with '-E'." << endl;
+cout << "  -m FILE      compute the full similarity matrix for the specified" << endl
+     << "               collection and write it to FILE. It is written in MIREX" << endl
+     << "               text format (see http://www.music-ir.org/mirex)." << endl;
+cout << endl;
+//       ======================================================================
+}
