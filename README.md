@@ -67,7 +67,9 @@ The main idea behind the library design is to
 To help Musly development and fix bugs the most convenient way is to use
 Eclipse. To generate an Eclipse project use:
 
-# cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_ECLIPSE_EXECUTABLE=/path/to/eclipse/eclipse /path/to/musly-src
+```
+cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_ECLIPSE_EXECUTABLE=/path/to/eclipse/eclipse /path/to/musly-src
+```
 
 from an empty directory. The directory is filled with Eclipse project
 information which can be imported as an Eclipse project.
