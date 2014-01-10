@@ -50,11 +50,11 @@ similarity measures visit <http://www.musly.org>.
 
 The command line interface is able to:
 
-  (1) Generate M3U playlists for music collections.
-  (2) Output full similarity matrices for more in-depth research of the
+* Generate M3U playlists for music collections.
+* Output full similarity matrices for more in-depth research of the
   audio music similarity functions. It uses the music-ir.org MIREX format
   (see <musly/doc/MIREX-DistanceMatrix.md>)
-  (3) Additionally the music similarity features can be ouput in text format
+* Additionally the music similarity features can be ouput in text format
   to ease reuse of the features.
   
 The command line tool is called "musly". Use "musly -h" to read about all
