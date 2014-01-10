@@ -1,4 +1,8 @@
-=====
+# Under development #
+
+Musly is still under development. Please do not report any issues yet.
+Expect Version 0.1 in January 2014.
+
 Musly
 =====
 
@@ -18,19 +22,19 @@ The source code is released under the MPL 2.0 see the file <musly/COPYING>
   website.
 
 
-**Version History**
+## Version History ##
 
-*VERSION 0.1*
+### VERSION 0.1 ###
 
 The first public Musly release. It includes two basic audio music similarity
 measures:
 
-(1) *mandelellis* (as published in "M. Mandel and D. Ellis: Song-level
+-   *mandelellis* (as published in "M. Mandel and D. Ellis: Song-level
     features and support vector machines for music classification. In the
     proceedings of the 6th International Conference on Music Information Retrieval,
     ISMIR, 2005)
     
-(2) *mandelellis_plus* the mandelellis similarity measure tweaked for best
+-   *timbre* the mandelellis similarity measure tweaked for best
     results. We use a 25 MFCCs representation, the Jensen-Shannon divergence
     and normalize the similarities with Mutual Proximity
     (D. Schnitzer et al.: Using mutual proximity to improve
@@ -42,7 +46,7 @@ For benchmarks and qualitative comparisons between other audio music
 similarity measures visit <http://www.musly.org>.
 
 
-**Command Line Tool**
+## Command Line Tool ##
 
 The command line interface is able to:
 
@@ -57,12 +61,11 @@ The command line tool is called "musly". Use "musly -h" to read about all
 available options.
 
 
-**Library**
-
-The main idea behind the library design is to 
+## Library ##
 
 
-**Development**
+
+## Development ##
 
 To help Musly development and fix bugs the most convenient way is to use
 Eclipse. To generate an Eclipse project use:
