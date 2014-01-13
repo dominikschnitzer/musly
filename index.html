@@ -28,37 +28,86 @@
         </ul>
       </header>
       <section>
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+        <h1>
+<a name="under-development" class="anchor" href="#under-development"><span class="octicon octicon-link"></span></a>Under development</h1>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<p>Musly is still under development. Please do not report any issues yet.
+Expect Version 0.1 in January 2014.</p>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
+<h1>
+<a name="musly" class="anchor" href="#musly"><span class="octicon octicon-link"></span></a>Musly</h1>
+
+<p>(c) 2013-2014, Dominik Schnitzer <a href="mailto:dominik@schnitzer.at">dominik@schnitzer.at</a></p>
+
+<p>Musly is a program and library for high performance audio music similarity
+computation. Musly only uses the audio signal when computing similarities!
+No meta data is used in the similarity computation process.</p>
+
+<p>The source code is released under the MPL 2.0 see the file </p>
+
+<ul>
+<li>The main Musly website is located at: <a href="http://www.musly.org">http://www.musly.org</a>
+</li>
+<li>Please fork me at: <a href="https://github.com/dominikschnitzer/musly">https://github.com/dominikschnitzer/musly</a>
+</li>
+<li>Please report any Musly bug at:
+<a href="https://github.com/dominikschnitzer/musly/issues">https://github.com/dominikschnitzer/musly/issues</a>
+</li>
+<li>Documentation is found in the local  directory and on the main
+website.</li>
+</ul><h2>
+<a name="version-history" class="anchor" href="#version-history"><span class="octicon octicon-link"></span></a>Version History</h2>
+
+<h3>
+<a name="version-01" class="anchor" href="#version-01"><span class="octicon octicon-link"></span></a>VERSION 0.1</h3>
+
+<p>The first public Musly release. It includes two basic audio music similarity
+measures:</p>
+
+<ul>
+<li><p><em>mandelellis</em> (as published in "M. Mandel and D. Ellis: Song-level
+features and support vector machines for music classification. In the
+proceedings of the 6th International Conference on Music Information Retrieval,
+ISMIR, 2005)</p></li>
+<li><p><em>timbre</em> the mandelellis similarity measure tweaked for best
+results. We use a 25 MFCCs representation, the Jensen-Shannon divergence
+and normalize the similarities with Mutual Proximity
+(D. Schnitzer et al.: Using mutual proximity to improve
+content-based audio similarity. In the proceedings of the 12th
+International Society for Music Information Retrieval
+Conference, ISMIR, 2011).</p></li>
+</ul><p>For benchmarks and qualitative comparisons between other audio music
+similarity measures visit <a href="http://www.musly.org">http://www.musly.org</a>.</p>
+
+<h2>
+<a name="command-line-tool" class="anchor" href="#command-line-tool"><span class="octicon octicon-link"></span></a>Command Line Tool</h2>
+
+<p>The command line interface is able to:</p>
+
+<ul>
+<li>Generate M3U playlists for music collections.</li>
+<li>Output full similarity matrices for more in-depth research of the
+audio music similarity functions. It uses the music-ir.org MIREX format
+(see )</li>
+<li>Additionally the music similarity features can be ouput in text format
+to ease reuse of the features.</li>
+</ul><p>The command line tool is called "musly". Use "musly -h" to read about all
+available options.</p>
+
+<h2>
+<a name="library" class="anchor" href="#library"><span class="octicon octicon-link"></span></a>Library</h2>
+
+<h2>
+<a name="development" class="anchor" href="#development"><span class="octicon octicon-link"></span></a>Development</h2>
+
+<p>To help Musly development and fix bugs the most convenient way is to use
+Eclipse. To generate an Eclipse project use:</p>
+
+<pre><code>cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_ECLIPSE_EXECUTABLE=/path/to/eclipse/eclipse /path/to/musly-src
 </code></pre>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
-
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<p>from an empty directory. The directory is filled with Eclipse project
+information which can be imported as an Eclipse project.</p>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/dominikschnitzer">dominikschnitzer</a></p>
