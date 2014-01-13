@@ -34,6 +34,7 @@ programoptions::programoptions(int argc, char *argv[],
     kstr << default_k;
     optionstr["k"] = kstr.str();
     optionstr["e"] = "-1";
+    optionstr["f"] = "-1";
 
     // Build a CSV string with all methods available.
     all_methods = methods[0];
@@ -44,7 +45,7 @@ programoptions::programoptions(int argc, char *argv[],
     opterr = 0;
     while (1) {
 
-        int c = getopt(argc, argv, "v:ihc:a:x:Ee:Nn:k:ldm:p:");
+        int c = getopt(argc, argv, "v:ihc:a:x:Ee:f:Nn:k:ldm:p:");
         if (c == -1) {
             break;
         }
@@ -86,6 +87,7 @@ programoptions::programoptions(int argc, char *argv[],
         case 'x':
         case 'c':
         case 'k':
+        case 'f':
             if (optarg) {
                 std::string copt;
                 copt = (char)(c);
@@ -179,11 +181,15 @@ cout << " LISTING:" << endl;
 cout << "  -l           list all files in the collection file." << endl;
 cout << "  -d           dump the features in the collection file to the console" << endl;
 cout << " EVALUATION:" << endl;
-cout << "  -e NUM | -E  perform a basic k-nn (k-nearest neighbor) music genre" << endl
+cout << "  -e NUM | -E  perform a basic kNN (k-nearest neighbor) music genre" << endl
      << "               classification experiment using the selected collection" << endl
      << "               file. The parameter k is set with option '-k'. The" << endl
      << "               genre is inferred from the path element at position NUM." << endl
      << "               The genre position within the path is guessed with '-E'." << endl;
+cout << "  -f NUM       Use an artist filter for the evaluation ('-e'). The " << endl
+     << "               artist name is inferred from the path element at" << endl
+     << "               position NUM." << endl
+     << "               DEFAULT: -1 (No artist filter)" << endl;
 cout << "  -m FILE      compute the full similarity matrix for the specified" << endl
      << "               collection and write it to FILE. It is written in MIREX" << endl
      << "               text format (see http://www.music-ir.org/mirex)." << endl;

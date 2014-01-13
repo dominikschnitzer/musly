@@ -61,19 +61,17 @@ const char*
 timbre::about()
 {
     return
-        "A basic music similarity measure based on the the one proposed by\n"
-        "M. Mandel and D. Ellis in: Song-level features and support vector\n"
-        "machines for music classification. In the proceedings of the 6th\n"
-        "International Conference on Music Information Retrieval,\n"
-        "ISMIR, 2005.\n"
-        "MUSLY computes a single Gaussian representation from the songs\n"
-        "It uses 25 MFCCs. The similarity between two tracks which are\n"
-        "represented as Gaussians, is computed with the Jensen-Shannon\n"
-        "divergence. Similarities are normalized with Mutual Proximity\n"
-        "(D. Schnitzer et al.: Using mutual proximity to improve\n"
+        "A timbre only music similarity measure based 'mandelellis'. It\n"
+        "improves the basic measure in multiple ways to achieve superior\n"
+        "results:\n"
+        "We compute a single Gaussian representation from the songs\n"
+        "using 25 MFCCs. The similarity between two tracks is computed\n"
+        "with the Jensen-Shannon divergence. The Similarities are\n"
+        "normalized with Mutual Proximity:\n"
+        "D. Schnitzer et al.: Using mutual proximity to improve\n"
         "content-based audio similarity. In the proceedings of the 12th\n"
         "International Society for Music Information Retrieval\n"
-        "Conference, ISMIR, 2011).";
+        "Conference, ISMIR, 2011.";
 }
 
 int

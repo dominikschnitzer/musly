@@ -106,11 +106,11 @@ read_collectionfile(
     } else {
         std::cout << "Initialized music similarity method: " << mj->method_name
                 << std::endl;
-        std::cout << "Installed audio decoder: " << mj->decoder_name
-                << std::endl;
         std::cout << "~~~" << std::endl;
         std::cout << musly_jukebox_aboutmethod(mj) << std::endl;
-        std::cout << "~~~" << std::endl << std::endl;
+        std::cout << "~~~" << std::endl;
+        std::cout << "Installed audio decoder: " << mj->decoder_name
+                << std::endl;
     }
 
     // skip files && read files/tracks in database
@@ -303,6 +303,8 @@ evaluate_collection(
         std::vector<musly_trackid>& trackids,
         std::vector<int>& genres,
         int num_genres,
+        const std::vector<std::string> tracks_files,
+        int f,
         int k)
 {
     std::vector<float> similarities(tracks.size());
@@ -339,6 +341,12 @@ evaluate_collection(
             g = num_genres-1;
         }
 
+        // split the filename in components
+        std::vector<std::string> seed_filesplit;
+        if (f >= 0) {
+            seed_filesplit = split(tracks_files[i], '/');
+        }
+
         // predicted genre is decided by a majority vote of its closest k
         // neighbors
         genre_hist.fill(0);
@@ -350,6 +358,27 @@ evaluate_collection(
                 j++;
                 continue;
             }
+
+            std::vector<std::string> query_filesplit;
+            if (f >= 0) {
+
+                query_filesplit = split(tracks_files[track_ids[j]], '/');
+                if (((int)query_filesplit.size() > f) &&
+                        ((int)seed_filesplit.size() > f)) {
+
+                    // Do artist filtering.
+                    if (seed_filesplit[f].compare(query_filesplit[f]) == 0) {
+                        j++;
+                        continue;
+                    }
+
+                    // else proceed with the evaluation of the song.
+                } else {
+                    std::cerr << "Something in the artist filter function " <<
+                            "went wrong... continuing." << std::endl;
+                }
+            }
+
 
             int gj = genres[track_ids[j]];
             if ((gj >= 0) && (gj < num_genres)) {
@@ -369,13 +398,6 @@ evaluate_collection(
         // update the confusion matrix
         genre_confusion(g, g_predicted)++;
     }
-
-    std::cout << "Genre Confusion matrix:" << std::endl;
-    std::cout << genre_confusion << std::endl;
-    std::cout << "Correctly classified: " << genre_confusion.diagonal().sum()
-            << "/" << genre_confusion.sum() << " (" <<
-            ((float)genre_confusion.diagonal().sum()/
-                    (float)genre_confusion.sum())*100.0 << "%)"<< std::endl;
 
     return genre_confusion;
 }
@@ -518,11 +540,11 @@ main(int argc, char *argv[])
 
         std::cout << "Initialized music similarity method: " << mj->method_name
                 << std::endl;
-        std::cout << "Installed audio decoder: " << mj->decoder_name
-                << std::endl;
         std::cout << "~~~" << std::endl;
         std::cout << musly_jukebox_aboutmethod(mj) << std::endl;
-        std::cout << "~~~" << std::endl << std::endl;
+        std::cout << "~~~" << std::endl;
+        std::cout << "Installed audio decoder: " << mj->decoder_name
+                << std::endl;
         std::cout << "Initializing new collection: " <<
                 po.get_option_str("c") << std::endl;
         std::cout << "Initialization result: "<< std::flush;
@@ -551,9 +573,11 @@ main(int argc, char *argv[])
         // initialize all loaded tracks
         std::vector<musly_trackid> trackids = initialize_collection(tracks);
 
+        // do we need an artist filter
+        int f = po.get_option_int("f");
+
         // get the position of the genre in the path
         int e = po.get_option_int("e");
-
         // try to extract the genre from the filename
         std::vector<int> genres;
         std::map<int, std::string> genre_ids;
@@ -562,7 +586,19 @@ main(int argc, char *argv[])
         int k = po.get_option_int("k");
         std::cout << "k-NN Genre classification (k=" << k << "): "
                 << cf.get_file() << std::endl;
-        evaluate_collection(tracks, trackids, genres, genre_ids.size(), k);
+        Eigen::MatrixXi genre_confusion = evaluate_collection(
+                tracks, trackids,
+                genres, genre_ids.size(),
+                tracks_files, f,
+                k);
+
+        std::cout << "Genre Confusion matrix:" << std::endl;
+        std::cout << genre_confusion << std::endl;
+        std::cout << "Correctly classified: " << genre_confusion.diagonal().sum()
+                << "/" << genre_confusion.sum() << " (" <<
+                ((float)genre_confusion.diagonal().sum()/
+                        (float)genre_confusion.sum())*100.0 << "%)"<< std::endl;
+
 
         // free the tracks
         for (int i = 0; i < (int)tracks.size(); i++) {

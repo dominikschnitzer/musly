@@ -66,16 +66,16 @@ mutualproximity::set_normfacts(
         musly_trackid trackid,
         Eigen::VectorXf& sim)
 {
-    float mu = sim.mean();
-    Eigen::VectorXf sim_mu = sim.array() - mu;
-    float std =  (sim_mu.transpose() * sim_mu);
-    std /= (static_cast<float>(sim.size()) - 1.0f);
+    double mu = sim.mean();
+    Eigen::VectorXd sim_mu = sim.cast<double>().array() - mu;
+    double std = (sim_mu.transpose() * sim_mu);
+    std /= (static_cast<double>(sim.size()) - 1.0);
 
     // allocate space
     if (trackid >= (int)norm_facts.size()) {
         norm_facts.resize(trackid+1);
         norm_facts[trackid].mu = mu;
-        norm_facts[trackid].std = std;
+        norm_facts[trackid].std = sqrt(std);
     }
 }
 
@@ -131,13 +131,9 @@ mutualproximity::normalize(
            continue;
         }
 
-        sim[i] = 0.5*((d - seed_mu)/seed_std +
-                (d - norm_facts[tid].mu)/norm_facts[tid].std);
-/*
         double p1 = 1 - normcdf((d - seed_mu)/seed_std);
         double p2 = 1 - normcdf((d - norm_facts[tid].mu)/norm_facts[tid].std);
         sim[i] = 1 - p1*p2;
-        */
     }
     return 0;
 }

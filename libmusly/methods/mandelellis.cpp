@@ -59,12 +59,12 @@ const char*
 mandelellis::about()
 {
     return
-        "A basic music similarity measure implementing \n"
+        "The most basic timbre music similarity measure published by:\n"
         "M. Mandel and D. Ellis in: Song-level features and support vector\n"
         "machines for music classification. In the proceedings of the 6th\n"
         "International Conference on Music Information Retrieval,\n"
         "ISMIR, 2005.\n"
-        "MUSLY computes a single Gaussian representation from the songs\n"
+        "MUSLY computes a single Gaussian representation from the songs.\n"
         "The similarity between two tracks represented as Gaussians\n"
         "is computed with the symmetrized Kullback-Leibler divergence";
 }
