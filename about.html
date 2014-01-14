@@ -45,8 +45,8 @@
             <li><a href="index.html">Home</a></li>
             <li class="active"><a href="#">About</a></li>
             <li><a href="methods.html">Similarity Methods</a></li>
-            <li><a href="https://github.com/dominikschnitzer/musly">Source</a></li>
-            <li><a href="https://github.com/dominikschnitzer/musly/releases">Downloads</a></li>
+            <li><a href="https://github.com/dominikschnitzer/musly" target="_blank">Source</a></li>
+            <li><a href="https://github.com/dominikschnitzer/musly/releases" target="_blank">Downloads</a></li>
             <li><a href="documentation.html">Documentation</a></li>
           </ul>
         </div><!--/.nav-collapse -->
@@ -57,14 +57,109 @@
         <div class="page-header">
             <h1>About</h1>
         </div>
-        <p>Musly 
+        <p>Musly is a fast and high-quality audio music similarity library written in C/C++. It currently implements two music similarity algorithms. A third commercial one can be licensed from <a href="http://www.ofai.at/research/impml/projects/musly.html">OFAI</a>. The implemented similarity routines are described and evaluated in more depth in the <a href="methods.html">Similarity Methods</a> page.</p>
+        
+         Musly is licensed under the terms of the <a href="http://www.mozilla.org/MPL/2.0/FAQ.html">MPL 2.0</a> open source license, a permissive weak copyleft license.</p>
+        
+        <p>Musly can be used as library in your program or through a small command line application. The command line application  </p>
+        
         <p>General information about Audio Music Similarity can be found in my <a href="http://www.schnitzer.at/dominik/phd-thesis/">PhD thesis</a> which is also available as <a href="http://www.amazon.com/dp/1477494154/">book on Amazon</a>.</p>
+        
+        <h3>Requirements</h3>
+        <ul>
+        <li><a href="http://eigen.tuxfamily.org">Eigen (Version 3)</a>
+        <li><a href="http://libav.org/">libav (Version 0.8)</a>
+        </ul>
+        
+
+        <h3>Installation</h3>
+        <ul>
+        <li>Download the latest release from <a href="https://github.com/dominikschnitzer/musly/releases">Github</a>.
+        <li>Extract it to a local directory (SRCDIR)
+        <li>Create an empty directory to compile Musly (BINDIR)
+        <li>Execute <code>cmake SRCDIR</code> while in BINDIR to configure Musly
+        <li>Execute <code>make && make install</code> to compile and install Musly
+        <li>Read the <a href="documentation.html">Documentation</a> to understand how you can use the Musly library in your program.
+        </ul>
+        
+        <h3>Usage of the Command Line Client</h3>
+        <h4>Initialize a new Musly collection</h4>
+        <pre>
+# musly -N</pre>
+        
+        <h4>Analyze all MP3 files in the given path</h4>
+        <pre>
+# musly -x mp3 -a /path/to/music</pre>
+        
+        <h4>Compute a playlist</h4>
+        <pre>
+# musly -p metal.00047.au
+Computing the k=5 most similar tracks to: metal.00047.au
+  metal.00053.au
+  metal.00054.au
+  metal.00056.au
+  metal.00050.au
+  metal.00049.au</pre>
+        
+        <h4>All options</h4>
+<pre>
+Music Similarity Library (Musly) - http://www.musly.org
+Version: 0.1
+(c) 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
+
+Options for musly/musly/musly
+  -h           this help screen.
+  -v 0-5       set the libmusly debug level: (0: none, 5: trace).
+               DEFAULT: 0
+  -i           information about the music similarity library
+  -c COLL      set the file to write the music similarity features and
+               to use for computing similarities.
+               DEFAULT: collection.musly
+  -k NUM       set number of similar songs display when computing
+               playlists ('-p') or evaluating the collection ('-e').
+               DEFAULT: 5
+ INITIALIZATION:
+  -n MTH | -N  initialize the collection (set with '-c') using the
+               music similarity method MTH. Available methods:
+               mandelellis,timbre
+               '-N' automatically selects the best method.
+ MUSIC ANALYSIS/PLAYLIST GENERATION:
+  -a DIR/FILE  analyze and add the given audio FILE to the collection
+               file. If a Directory is given, the directory is scanned
+               recursively for audio files.
+  -x EXT       only analyze files with file extension EXT when adding
+               audio files with '-a'. DEFAULT: '' (any)
+  -p FILE      print a playlist of the '-k' most similar tracks for
+               the given FILE. If FILE is not found in the collection
+               file, it is analyzed and then compared to all other
+               tracks found in the collection file ('-c').
+ LISTING:
+  -l           list all files in the collection file.
+  -d           dump the features in the collection file to the console
+ EVALUATION:
+  -e NUM | -E  perform a basic kNN (k-nearest neighbor) music genre
+               classification experiment using the selected collection
+               file. The parameter k is set with option '-k'. The
+               genre is inferred from the path element at position NUM.
+               The genre position within the path is guessed with '-E'.
+  -f NUM       Use an artist filter for the evaluation ('-e'). The 
+               artist name is inferred from the path element at
+               position NUM.
+               DEFAULT: -1 (No artist filter)
+  -m FILE      compute the full similarity matrix for the specified
+               collection and write it to FILE. It is written in MIREX
+               text format (see http://www.music-ir.org/mirex).
+</pre>
         
         <h3>Authors</h3>
         <ul>
         <li><a href="http://www.schnitzer.at/dominik/">Dominik Schnitzer</a>
         </ul>
-        
+      <hr>
+
+      <footer>
+        <p>© <a href="http://www.schnitzer.at/dominik">Dominik Schnitzer</a>, 2014</p>
+      </footer>
     </div> <!-- /container -->
 
 
