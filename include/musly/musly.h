@@ -1,5 +1,4 @@
-/**
- * Copyright 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
+/* Copyright 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
  *
  * This file is part of Musly, a program for high performance music
  * similarity computation: http://www.musly.org/.
@@ -8,6 +7,25 @@
  * Public License v. 2.0. If a copy of the MPL was not distributed
  * with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
+
+/**
+\mainpage Usage
+
+Using the Musly library interface in your application is straightforward : 0. .
+
+ 1. include the musly.h header in your project
+ 2. initialize musly: musly_jukebox_poweron()
+ 3. analyze some music: musly_track_analyze_audiofile()
+ 4. initialize the similarity component with musly_jukebox_setmusicstyle() and
+    musly_jukebox_addtrack().
+ 5. compute similarities and playlists: musly_jukebox_similarity()
+ 6. deinitialize musly: musly_jukebox_similarity()
+ 
+A more detailed description of the libary calls and parameters can be found
+in musly.h. The source code distribution also includes a sample application
+(musly/main.cpp). The demo app can be used to try and evaluate the Musly
+similarity measures. It is our reference implementation.
+*/
 
 #ifndef MUSLY_H_
 #define MUSLY_H_
@@ -139,7 +157,7 @@ musly_jukebox_poweroff(
  * \param[in] jukebox the Musly jukebox to set the music stlye.
  * \param[in] tracks a random sample array of Musly tracks to use for
  * the initialization.
- * \parma[in] num_tracks the number of Musly tracks.
+ * \param[in] num_tracks the number of Musly tracks.
  *
  * \sa musly_jukebox_poweron(), musly_track_analyze_pcm(),
  * musly_track_analyze_audiofile()
@@ -157,7 +175,7 @@ musly_jukebox_setmusicstyle(
  * musly_jukebox_setmusicstyle().
  *
  * \param[in] jukebox the Musly jukebox to add the track to.
- * \param[in] the musly_track to add to the jukebox.
+ * \param[in] track the musly_track to add to the jukebox.
  * \returns the track identifier for the track added to the jukebox. It is
  * unique within this Musly jukebox object.
  *
@@ -226,7 +244,7 @@ musly_track_alloc(
 
 /** Frees a musly_track previously allocated with musly_track_alloc().
  *
- * \param track[in] The musly track you want to free.
+ * \param[in] track The musly track you want to free.
  *
  * \sa musly_track_alloc()
  */
@@ -274,8 +292,11 @@ musly_track_binsize(
  * to_buffer. To deserialize a buffer use musly_track_frombin().
  *
  * \param[in] jukebox A reference to an initialized musly_jukebox object.
+ * \param[in] from_track The track to serialize
+ * \param[out] to_buffer The buffer receiving the serialized track. The buffer
+ * needs to be preallocated with musly_track_binsize() bytes.
  *
- * \retuns The number of bytes written (musly_track_binsize()) in case of
+ * \returns The number of bytes written (musly_track_binsize()) in case of
  * success, -1 in case an error occurred.
  *
  * \sa musly_jukebox_poweron(), musly_track_binsize(), musly_track_frombin().
@@ -313,7 +334,7 @@ musly_track_frombin(
  * export the feature data for further analysis.
  * Note: This function is not threadsafe!
  *
- * \param[in] jukenbox The Musly jukenbox to use.
+ * \param[in] jukebox The Musly jukenbox to use.
  * \param[in] from_track the musly_track to convert into a string
  * representation.
  *
@@ -364,8 +385,8 @@ musly_track_analyze_pcm(
  * PCM signal of the music you want to analyze, use musly_track_analyze_pcm().
  *
  * \param[in] jukebox A reference to an initialized musly_jukebox object.
- * \param[in] An audio file. The file will be decoded with the audio decoder.
- * \param[in] The maximum number of seconds to decode. If set to zero the whole
+ * \param[in] audiofile An audio file. The file will be decoded with the audio decoder.
+ * \param[in] max_seconds The maximum number of seconds to decode. If set to zero the whole
  * audio file is decoded.
  * \param[out] track The musly_track to write the music similarity features.
  *

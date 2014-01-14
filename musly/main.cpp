@@ -284,6 +284,10 @@ compute_playlist(
     int ik = 0;
     while ((ik < k) && (i < (int)tracks.size())) {
         int j = track_ids(i);
+        if (j == seed_trackid) {
+            i++;
+            continue;
+        }
         float sim = similarities[j];
         if (sim >= 0) {
             pl << tracks_files[j] << std::endl;
@@ -674,25 +678,26 @@ main(int argc, char *argv[])
 
         // initialize all loaded tracks
         std::vector<musly_trackid> trackids = initialize_collection(tracks);
-        if (trackids.size() != tracks.size()) {
-            // TODO
-        }
+        if (trackids.size() == tracks.size()) {
+            // compute a single playlist
+            int k = po.get_option_int("k");
+            std::cout << "Computing the k=" << k << " most similar tracks to: "
+                    << seed_file << std::endl;
 
-        // TODO: analyze or find given file in collection
+            std::vector<std::string>::iterator it = std::find(
+                    tracks_files.begin(), tracks_files.end(), seed_file);
 
-        // compute a similarity matrix and write MIREX formatted to the
-        // given file
-        int k = po.get_option_int("k");
-        std::cout << "Computing the k=" << k << " most similar tracks to: "
-                << seed_file << std::endl;
-        // TOOD: seek seed
-        std::string pl = compute_playlist(tracks, trackids, tracks_files,
-                tracks[1], 0, k);
-        if (pl == "") {
-            std::cerr << "Failed to compute similar tracks for given file."
-                    << std::endl;
-        } else {
-            std::cout << pl;
+            if (it != tracks_files.end()) {
+                size_t pos = std::distance(tracks_files.begin(), it);
+                std::string pl = compute_playlist(tracks, trackids, tracks_files,
+                        tracks[pos], trackids[pos], k);
+                if (pl == "") {
+                    std::cerr << "Failed to compute similar tracks for given file."
+                            << std::endl;
+                } else {
+                    std::cout << pl;
+                }
+            }
         }
 
         // free the tracks
