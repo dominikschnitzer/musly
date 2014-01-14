@@ -1,120 +1,100 @@
-<!doctype html>
-<html>
-  <head>
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Musly by dominikschnitzer</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="favicon.png">
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>Musly - an opensource audio music similarity library</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/jumbotron.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
   </head>
+
   <body>
-    <div class="wrapper">
-      <header>
-        <h1>Musly</h1>
-        <p>Musly - Music Similarity Library</p>
 
-        <p class="view"><a href="https://github.com/dominikschnitzer/musly">View the Project on GitHub <small>dominikschnitzer/musly</small></a></p>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#"><img src="favicon.png" width="25" height="25"> Musly</a>
+        </div>
 
-
-        <ul>
-          <li><a href="https://github.com/dominikschnitzer/musly/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/dominikschnitzer/musly/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/dominikschnitzer/musly">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h1>
-<a name="under-development" class="anchor" href="#under-development"><span class="octicon octicon-link"></span></a>Under development</h1>
-
-<p>Musly is still under development. Please do not report any issues yet.
-Expect Version 0.1 in January 2014.</p>
-
-<h1>
-<a name="musly" class="anchor" href="#musly"><span class="octicon octicon-link"></span></a>Musly</h1>
-
-<p>(c) 2013-2014, Dominik Schnitzer <a href="mailto:dominik@schnitzer.at">dominik@schnitzer.at</a></p>
-
-<p>Musly is a program and library for high performance audio music similarity
-computation. Musly only uses the audio signal when computing similarities!
-No meta data is used in the similarity computation process.</p>
-
-<p>The source code is released under the MPL 2.0 see the file </p>
-
-<ul>
-<li>The main Musly website is located at: <a href="http://www.musly.org">http://www.musly.org</a>
-</li>
-<li>Please fork me at: <a href="https://github.com/dominikschnitzer/musly">https://github.com/dominikschnitzer/musly</a>
-</li>
-<li>Please report any Musly bug at:
-<a href="https://github.com/dominikschnitzer/musly/issues">https://github.com/dominikschnitzer/musly/issues</a>
-</li>
-<li>Documentation is found in the local  directory and on the main
-website.</li>
-</ul><h2>
-<a name="version-history" class="anchor" href="#version-history"><span class="octicon octicon-link"></span></a>Version History</h2>
-
-<h3>
-<a name="version-01" class="anchor" href="#version-01"><span class="octicon octicon-link"></span></a>VERSION 0.1</h3>
-
-<p>The first public Musly release. It includes two basic audio music similarity
-measures:</p>
-
-<ul>
-<li><p><em>mandelellis</em> (as published in "M. Mandel and D. Ellis: Song-level
-features and support vector machines for music classification. In the
-proceedings of the 6th International Conference on Music Information Retrieval,
-ISMIR, 2005)</p></li>
-<li><p><em>timbre</em> the mandelellis similarity measure tweaked for best
-results. We use a 25 MFCCs representation, the Jensen-Shannon divergence
-and normalize the similarities with Mutual Proximity
-(D. Schnitzer et al.: Using mutual proximity to improve
-content-based audio similarity. In the proceedings of the 12th
-International Society for Music Information Retrieval
-Conference, ISMIR, 2011).</p></li>
-</ul><p>For benchmarks and qualitative comparisons between other audio music
-similarity measures visit <a href="http://www.musly.org">http://www.musly.org</a>.</p>
-
-<h2>
-<a name="command-line-tool" class="anchor" href="#command-line-tool"><span class="octicon octicon-link"></span></a>Command Line Tool</h2>
-
-<p>The command line interface is able to:</p>
-
-<ul>
-<li>Generate M3U playlists for music collections.</li>
-<li>Output full similarity matrices for more in-depth research of the
-audio music similarity functions. It uses the music-ir.org MIREX format
-(see )</li>
-<li>Additionally the music similarity features can be ouput in text format
-to ease reuse of the features.</li>
-</ul><p>The command line tool is called "musly". Use "musly -h" to read about all
-available options.</p>
-
-<h2>
-<a name="library" class="anchor" href="#library"><span class="octicon octicon-link"></span></a>Library</h2>
-
-<h2>
-<a name="development" class="anchor" href="#development"><span class="octicon octicon-link"></span></a>Development</h2>
-
-<p>To help Musly development and fix bugs the most convenient way is to use
-Eclipse. To generate an Eclipse project use:</p>
-
-<pre><code>cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_ECLIPSE_EXECUTABLE=/path/to/eclipse/eclipse /path/to/musly-src
-</code></pre>
-
-<p>from an empty directory. The directory is filled with Eclipse project
-information which can be imported as an Eclipse project.</p>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/dominikschnitzer">dominikschnitzer</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="methods.html">Similarity Methods</a></li>
+            <li><a href="https://github.com/dominikschnitzer/musly">Source</a></li>
+            <li><a href="https://github.com/dominikschnitzer/musly/releases">Downloads</a></li>
+            <li><a href="documentation.html">Documentation</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
-    
-  </body>
-</html>
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Audio Music Similarity</h1>
+        <p>Musly is a fast and high-quality audio music similarity library written in C/C++.<br>
+        It is licensed under the terms of the <a href="http://www.mozilla.org/MPL/2.0/FAQ.html">MPL 2.0</a> open source license.</p>
+        <p><a class="btn btn-primary btn-lg" role="button" href="about.html">Learn more »</a></p>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-4">
+          <h2>Audio Music Similarity</h2>
+          <p>Musly analyzes the the audio signal of music pieces to estimate their similarity. No meta-data about the music piece is included in the similarity estimation. To use Musly in your application, have a look at the library <a href="documentation.html">documentation</a> or try the <a href="demo.html">demo</a> application included in the package and generating some automatic music playlists right away.</p>
+        </div>
+        <div class="col-md-4">
+          <h2>Download</h2>
+          <p>Download the latest release or check out the source code on Github</p>
+          <p><a class="btn btn-default" href="https://github.com/dominikschnitzer/musly" role="button">Download »</a></p>
+       </div>
+        <div class="col-md-4">
+          <h2>Commercial Music Similarity</h2>
+          <p>The Austrian research institute for artificial intelligence (<a href="http://www.ofai.at/">OFAI</a>) offers commercial Musly plugins. These audio music similarity methods extend the methods included in Musly and offer higher retrieval quality, higher speed and incorporate indexing methods so that it can be used with millions of music tracks.</p>
+          <p><a href="http://www.ofai.at/research/impml/projects/musly.html" class="btn btn-default" href="#" role="button">Visit the OFAI website for more details »</a></p>
+        </div>
+      </div>
+
+      <hr>
+
+      <footer>
+        <p>© <a href="http://www.schnitzer.at/dominik">Dominik Schnitzer</a>, 2014</p>
+      </footer>
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+  
+
+</body></html>
