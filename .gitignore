@@ -11,3 +11,6 @@
 *.lai
 *.la
 *.a
+
+# Optional external Musly Add-On Code
+libmusly/external

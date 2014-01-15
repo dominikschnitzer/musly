@@ -58,10 +58,11 @@ The command line interface is able to:
   to ease reuse of the features.
   
 The command line tool is called "musly". Use "musly -h" to read about all
-available options.
+available options. See <http://www.musly.org> for more information.
 
 
 ## Library ##
+
 
 
 

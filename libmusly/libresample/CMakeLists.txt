@@ -11,5 +11,10 @@ add_library(libmusly_resample
 set_target_properties(libmusly_resample
     PROPERTIES PREFIX "")
 
+set(LIBMUSLY_LIBS
+    ${LIBMUSLY_LIBS}
+    libmusly_resample
+    PARENT_SCOPE)
+
 install(TARGETS libmusly_resample
     DESTINATION lib)

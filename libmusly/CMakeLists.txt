@@ -6,6 +6,11 @@
 add_subdirectory(
     libresample)
 
+if(EXISTS "external" AND IS_DIRECTORY "external")
+    add_subdirectory(
+        external)
+endif()
+
 include_directories(
     ${EIGEN3_INCLUDE_DIR}
     ${LIBAV_INCLUDE_DIRS}
@@ -31,7 +36,7 @@ add_library(libmusly
     lib.cpp)
 
 target_link_libraries(libmusly
-    libmusly_resample
+    ${LIBMUSLY_LIBS}
     ${LIBAV_LIBRARIES})
 
 set_target_properties(libmusly
