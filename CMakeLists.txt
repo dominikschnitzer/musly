@@ -48,7 +48,7 @@ add_subdirectory(musly)
 add_subdirectory(include) 
 
 # Documentation
-set(musly_DOC_FILES AUTHORS COPYING README)
+set(musly_DOC_FILES AUTHORS COPYING README.md)
 set(musly_DOC_PATH "share/doc/musly")
 install(FILES ${musly_DOC_FILES}
         DESTINATION ${musly_DOC_PATH})
