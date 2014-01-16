@@ -383,6 +383,8 @@ musly_track_analyze_pcm(
  * feature data. To compute the similarity to other musly_track objects,
  * use the musly_jukebox_similarity() function. If you already decoded the
  * PCM signal of the music you want to analyze, use musly_track_analyze_pcm().
+ * NOTE: Currently the central 30 seconds of each decoded pcm input are
+ * hardcoded to be used as input for the subsequent audio analysis functions.
  *
  * \param[in] jukebox A reference to an initialized musly_jukebox object.
  * \param[in] audiofile An audio file. The file will be decoded with the audio decoder.

@@ -6,10 +6,8 @@
 cmake_minimum_required(VERSION 2.8)
 
 project(musly)
-
-set(MUSLY_VERSION_MAJOR 0)
-set(MUSLY_VERSION_MINOR 1)
-set(MUSLY_VERSION "${MUSLY_VERSION_MAJOR}.${MUSLY_VERSION_MINOR}")
+set(MUSLY_VERSION "0.1")
+add_definitions(-DMUSLY_VERSION="${MUSLY_VERSION}")
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_definitions(-Wall -g)
@@ -34,10 +32,6 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 find_package(Eigen3 REQUIRED)
 find_package(LibAV 0.8 COMPONENTS avcodec avformat avutil REQUIRED)
-
-configure_file(
-    "${PROJECT_SOURCE_DIR}/config.h.in"
-    "${PROJECT_BINARY_DIR}/config.h")
 
 include_directories(
     "${PROJECT_BINARY_DIR}"

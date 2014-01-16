@@ -6,12 +6,13 @@
 add_subdirectory(
     libresample)
 
-if(EXISTS "external" AND IS_DIRECTORY "external")
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/external")
     add_subdirectory(
         external)
 endif()
 
 include_directories(
+    ${LIBMUSLY_INCLUDE}
     ${EIGEN3_INCLUDE_DIR}
     ${LIBAV_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR})
@@ -33,7 +34,8 @@ add_library(libmusly
     mfcc.cpp
     gaussianstatistics.cpp
     mutualproximity.cpp
-    lib.cpp)
+    lib.cpp
+    ${LIBMUSLY_EXTERNAL})
 
 target_link_libraries(libmusly
     ${LIBMUSLY_LIBS}

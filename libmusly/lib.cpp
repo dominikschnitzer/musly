@@ -9,8 +9,6 @@
  * with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "config.h"
-
 #include <arpa/inet.h>
 #include <vector>
 
@@ -343,7 +341,16 @@ musly_track_analyze_audiofile(
             return -1;
         }
 
-        return musly_track_analyze_pcm(jukebox, pcm.data(), pcm.size(), track);
+        // select the central max_pcmlength (usually 30s) of the piece
+        int start = 0;
+        int sel_central_samples = 30*22050;
+        int len = pcm.size();
+        if (len > sel_central_samples) {
+            start = (len - sel_central_samples) / 2;
+            len = sel_central_samples;
+        }
+
+        return musly_track_analyze_pcm(jukebox, pcm.data()+start, len, track);
 
     } else {
         return -1;
