@@ -11,6 +11,8 @@
 
 #include "resampler.h"
 
+#include "minilog.h"
+
 namespace musly {
 
 resampler::resampler(int input_rate, int output_rate):
@@ -49,6 +51,9 @@ std::vector<float> resampler::resample(
                 pcm_input+in_pos, block_len, is_last_iteration,
                 &input_read, dst, dstlen);
 
+        if (pcm_out.size() < (size_t)(out_pos+out_written)) {
+            pcm_out.resize(out_pos+out_written);
+        }
         for (int i = 0; i < out_written; i++) {
             if (dst[i] < -1) {
                 pcm_out[out_pos + i] = -1;
