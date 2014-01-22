@@ -84,10 +84,11 @@ public:
             musly_track** tracks,
             int length);
 
-    virtual int
-    init_track(
-            musly_track* track,
-            musly_trackid trackid);
+    virtual void
+    init_tracks(
+            musly_track** tracks,
+            musly_trackid* trackids,
+            int length);
 };
 
 } /* namespace methods */

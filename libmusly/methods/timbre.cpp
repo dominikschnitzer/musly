@@ -185,19 +185,20 @@ timbre::set_musicstyle(
     return mp.set_normtracks(tracks, length);
 }
 
-int
-timbre::init_track(
-        musly_track* track,
-        musly_trackid trackid)
+void
+timbre::init_tracks(
+        musly_track** tracks,
+        musly_trackid* trackids,
+        int length)
 {
     Eigen::VectorXf sim(mp.get_normtracks()->size());
 
-    similarity_raw(track, mp.get_normtracks()->data(),
-            mp.get_normtracks()->size(), sim.data());
+    for (int i = 0; i < length; i++) {
+        similarity_raw(tracks[i], mp.get_normtracks()->data(),
+                mp.get_normtracks()->size(), sim.data());
 
-    mp.set_normfacts(trackid, sim);
-
-    return 0;
+        mp.set_normfacts(trackids[i], sim);
+    }
 }
 
 

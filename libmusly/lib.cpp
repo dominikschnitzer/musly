@@ -151,14 +151,17 @@ musly_jukebox_setmusicstyle(
     return -1;
 }
 
-musly_trackid
-musly_jukebox_addtrack(
+int
+musly_jukebox_addtracks(
         musly_jukebox* jukebox,
-        musly_track* track)
+        musly_track** tracks,
+        musly_trackid* trackids,
+        int length)
 {
     if (jukebox && jukebox->method) {
         musly::method* m = reinterpret_cast<musly::method*>(jukebox->method);
-        return m->add_track(track);
+        m->add_tracks(tracks, trackids, length);
+        return 0;
     } else {
         return -1;
     }

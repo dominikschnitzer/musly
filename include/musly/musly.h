@@ -17,7 +17,7 @@ Using the Musly library interface in your application is straightforward : 0. .
  2. initialize musly: musly_jukebox_poweron()
  3. analyze some music: musly_track_analyze_audiofile()
  4. initialize the similarity component with musly_jukebox_setmusicstyle() and
-    musly_jukebox_addtrack().
+    musly_jukebox_addtracks().
  5. compute similarities and playlists: musly_jukebox_similarity()
  6. deinitialize musly: musly_jukebox_similarity()
  
@@ -116,7 +116,7 @@ musly_jukebox_aboutmethod(
  *
  * The returned reference is required for almost all subsequent calls to Musly
  * library calls. To add a music track to the jukebox inventory use
- * musly_jukebox_addtrack(). To compute recommendations with the jukebox use
+ * musly_jukebox_addtracks(). To compute recommendations with the jukebox use
  * musly_jukebox_similarity(). Note that before computation of similarity, the
  * music style needs to be set with musly_jukebox_setmusicstyle().
  *
@@ -124,7 +124,7 @@ musly_jukebox_aboutmethod(
  * \param[in] decoder the desired decoder to initialize.
  * \returns a reference to an initialized Musly jukebox object.
  *
- * \sa musly_jukebox_poweroff(), musly_jukebox_addtrack(),
+ * \sa musly_jukebox_poweroff(), musly_jukebox_addtracks(),
  * musly_jukebox_setmusicstyle(), musly_jukebox_similarity()
  */
 MUSLY_EXPORT musly_jukebox*
@@ -181,10 +181,12 @@ musly_jukebox_setmusicstyle(
  *
  * \sa musly_jukebox_setmusicstyle(), musly_jukebox_similarity()
  */
-MUSLY_EXPORT musly_trackid
-musly_jukebox_addtrack(
+MUSLY_EXPORT int
+musly_jukebox_addtracks(
         musly_jukebox* jukebox,
-        musly_track* track);
+        musly_track** tracks,
+        musly_trackid* trackids,
+        int length);
 
 
 /** Computes the similarity between a seed track and a list of other music
@@ -195,13 +197,13 @@ musly_jukebox_addtrack(
  *  - analyze audio files, e.g. with musly_track_analyze_audiofile()
  *  - set the music style of the jukebox by using a small random sample of
  *    the audio tracks analyzed: musly_jukebox_setmusicstyle()
- *  - add the audio tracks to the musly_jukebox: musly_jukebox_addtrack()
+ *  - add the audio tracks to the musly_jukebox: musly_jukebox_addtracks()
  *  - use this function to compute similarities.
  *
  * \param[in] jukebox The Musly jukebox to use.
  * \param[in] seed_track The seed track to compute similarities to
  * \param[in] seed_trackid The id of the seed track as returned by
- * musly_jukebox_addtrack().
+ * musly_jukebox_addtracks().
  * \param[in] tracks An array of musly_track objects to compute the
  * similarities to.
  * \param[in] trackids An array of musly_trackids corresponding to the tracks
@@ -214,7 +216,7 @@ musly_jukebox_addtrack(
  *
  * \sa musly_jukebox_poweron(), musly_track_analyze_audiofile(),
  * musly_track_analyze_pcm(), musly_jukebox_setmusicstyle(),
- * musly_jukebox_addtrack()
+ * musly_jukebox_addtracks()
  */
 MUSLY_EXPORT int
 musly_jukebox_similarity(

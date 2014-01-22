@@ -161,17 +161,20 @@ read_collectionfile(
 std::vector<musly_trackid>
 initialize_collection(std::vector<musly_track*>& tracks)
 {
-    std::vector<musly_trackid> trackids;
+    std::vector<musly_trackid> trackids(tracks.size(), -1);
 
     int ret = musly_jukebox_setmusicstyle(mj, tracks.data(),
             tracks.size());
     if (ret != 0) {
+        std::cout << "ERROR" << std::endl;
         return trackids;
     }
 
-    for (int i = 0; i < (int)tracks.size(); i++) {
-        musly_trackid tid = musly_jukebox_addtrack(mj, tracks[i]);
-        trackids.push_back(tid);
+    // ignore return value, return trackids anyways.
+    ret = musly_jukebox_addtracks(mj, tracks.data(), trackids.data(),
+            tracks.size());
+    if (ret != 0) {
+        return trackids;
     }
 
     return trackids;

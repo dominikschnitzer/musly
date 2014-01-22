@@ -77,16 +77,18 @@ method::track_tostr(
     return trackstr.c_str();
 }
 
-musly_trackid
-method::add_track(
-        musly_track* track)
+void
+method::add_tracks(
+        musly_track** tracks,
+        musly_trackid* trackids,
+        int length)
 {
-    //get next trackid
-    musly_trackid trackid = current_tid;
-    current_tid++;
+    for (int i = 0; i < length; i++) {
+        trackids[i] = current_tid;
+        current_tid++;
+    }
 
-    init_track(track, trackid);
-    return trackid;
+    init_tracks(tracks, trackids, length);
 }
 
 int
@@ -98,12 +100,12 @@ method::set_musicstyle(
 }
 
 
-int
-method::init_track(
-        musly_track* track,
-        musly_trackid trackid)
+void
+method::init_tracks(
+        musly_track** tracks,
+        musly_trackid* trackids,
+        int length)
 {
-    return 0;
 }
 
 } /* namespace musly */
