@@ -99,7 +99,6 @@ method::set_musicstyle(
     return 0;
 }
 
-
 void
 method::init_tracks(
         musly_track** tracks,
@@ -107,5 +106,16 @@ method::init_tracks(
         int length)
 {
 }
+
+int
+method::guess_neighbors(
+        musly_trackid seed,
+        musly_trackid* neighbors,
+        int length)
+{
+    // all tracks
+    return -1;
+}
+
 
 } /* namespace musly */

@@ -30,8 +30,6 @@ similarity measures. It is our reference implementation.
 #ifndef MUSLY_H_
 #define MUSLY_H_
 
-#include <stddef.h>
-
 #include <musly/musly_types.h>
 
 #ifdef WIN32
@@ -166,7 +164,7 @@ MUSLY_EXPORT int
 musly_jukebox_setmusicstyle(
         musly_jukebox* jukebox,
         musly_track** tracks,
-        size_t num_tracks);
+        int num_tracks);
 
 
 /** Add a track to the Musly jukebox. To use the music similarity routines
@@ -186,7 +184,7 @@ musly_jukebox_addtracks(
         musly_jukebox* jukebox,
         musly_track** tracks,
         musly_trackid* trackids,
-        int length);
+        int num_tracks);
 
 
 /** Computes the similarity between a seed track and a list of other music
@@ -225,8 +223,41 @@ musly_jukebox_similarity(
         musly_trackid seed_trackid,
         musly_track** tracks,
         musly_trackid* trackids,
-        size_t num_tracks,
+        int num_tracks,
         float* similarities);
+
+
+/** Tries to guess the most similar neighbors to the given trackid. If
+ * similarity measures implement this call, it is usually a very efficient
+ * way to pre-filter the whole jukebox collection for possible matches
+ * (neighbors) to the query song (seed). The musly_tracks do not have to be
+ * loaded to memory to use that call. It operates solely on an index usually
+ * built when adding the track to the jukebox (musly_jukebox_addtrack()). A
+ * maximum of num_neighbors is written in the neighbors list of track ids.
+ * The returned neighbors can be used to drastically reduce the number of input
+ * tracks (and thus computation time) for musyl_jukebox_similarity().
+ * If the method is not implemented or all neighbors should be analyzed,
+ * -1 is returned. In that case consider all musly_tracks as possible nearest
+ * neighbors and thus as input to musly_jukebox_similarity().
+ *
+ * \param[in] jukebox An initialized Musly jukebox object with tracks added
+ * through musly_jukebox_addtrack().
+ * \param[in] seed The seed track id to search for its nearest neighbors.
+ * \param[out] neighbors The neighbors will be written to this preallocated
+ * array.
+ * \param[in] num_neighbors The maximum number of neighbors to write to the
+ * neighbors array.
+ * \returns the number of neighbors found for the given seed trackid (success).
+ * -1 is returned on a failure.
+ *
+ * \sa musly_jukebox_similarity(), musly_jukebox_addtrack().
+ */
+int
+musly_jukebox_guessneighbors(
+        musly_jukebox* jukebox,
+        musly_trackid seed,
+        musly_trackid* neighbors,
+        int num_neighbors);
 
 
 /** Allocates a musly_track in memory. As the size of a musly_track varies for
@@ -373,7 +404,7 @@ MUSLY_EXPORT int
 musly_track_analyze_pcm(
         musly_jukebox* jukebox,
         float* mono_22khz_pcm,
-        size_t length_pcm,
+        int length_pcm,
         musly_track* track);
 
 

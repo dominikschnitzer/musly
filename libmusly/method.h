@@ -130,6 +130,15 @@ public:
      *
      */
     virtual int
+    guess_neighbors(
+            musly_trackid seed,
+            musly_trackid* neighbors,
+            int length);
+
+    /**
+     *
+     */
+    virtual int
     set_musicstyle(
             musly_track** tracks,
             int length);

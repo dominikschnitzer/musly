@@ -139,7 +139,7 @@ int
 musly_jukebox_setmusicstyle(
         musly_jukebox* jukebox,
         musly_track** tracks,
-        size_t num_tracks)
+        int num_tracks)
 {
     if (jukebox && jukebox->method) {
         musly::method* m = reinterpret_cast<musly::method*>(jukebox->method);
@@ -176,11 +176,9 @@ musly_jukebox_similarity(
         musly_trackid seed_trackid,
         musly_track** tracks,
         musly_trackid* trackids,
-        size_t num_tracks,
+        int num_tracks,
         float* similarities)
 {
-    // TODO implement full call
-
     if (jukebox && jukebox->method) {
         musly::method* m = reinterpret_cast<musly::method*>(jukebox->method);
         return m->similarity(
@@ -192,6 +190,20 @@ musly_jukebox_similarity(
     }
 }
 
+int
+musly_jukebox_guessneighbors(
+        musly_jukebox* jukebox,
+        musly_trackid seed,
+        musly_trackid* neighbors,
+        int num_neighbors)
+{
+    if (jukebox && jukebox->method) {
+        musly::method* m = reinterpret_cast<musly::method*>(jukebox->method);
+        return m->guess_neighbors(seed, neighbors, num_neighbors);
+    } else {
+        return -1;
+    }
+}
 
 
 musly_track*
@@ -313,7 +325,7 @@ int
 musly_track_analyze_pcm(
         musly_jukebox* jukebox,
         float* mono_22khz_pcm,
-        size_t length_pcm,
+        int length_pcm,
         musly_track* track)
 {
     if (jukebox && jukebox->method) {
