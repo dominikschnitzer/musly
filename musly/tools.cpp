@@ -100,3 +100,72 @@ longest_common_prefix(const std::vector<std::string> &strs)
     }
     return prefix;
 }
+
+
+void
+field_from_strings(
+        const std::vector<std::string>& strings,
+        int fidx,
+        std::map<int, std::string>& id2string,
+        std::vector<int>& ids)
+{
+    int prefix_len = 0;
+    if (fidx < 0) {
+        prefix_len = longest_common_prefix(strings).length();
+        fidx = 0;
+    }
+
+    std::map<std::string, int> genre_idx;
+    int running_id = 0;
+
+    for (size_t i = 0; i < strings.size(); i++) {
+
+        std::string file = strings[i].substr(prefix_len,
+                strings[i].length()-prefix_len);
+
+        std::vector<std::string> filesplit = split(file, '/');
+        if (fidx < (int)filesplit.size()) {
+            std::string g = filesplit[fidx];
+            int id;
+            if (genre_idx.find(g) != genre_idx.end()) {
+                id = genre_idx[g];
+            } else {
+                genre_idx[g] = running_id;
+                id2string[running_id] = g;
+                id = running_id;
+                running_id++;
+            }
+            ids.push_back(id);
+        } else {
+            std::string g = "Unknown";
+            int id = -1;
+            if (genre_idx.find(g) == genre_idx.end()) {
+                id2string[id] = g;
+            }
+            ids.push_back(id);
+        }
+    }
+}
+
+std::string
+limit_string(
+        const std::string& s,
+        int maxsize)
+{
+    if ((int)s.size() <= maxsize) {
+        return s;
+    }
+
+    if (maxsize == 0) {
+        return "";
+    } else if (maxsize == 1) {
+        return ".";
+    } else if (maxsize == 2) {
+        return "..";
+    } else {
+        std::string s2 = s.substr(s.size()-maxsize, maxsize);
+        s2[0] = '.';
+        s2[1] = '.';
+        return s2;
+    }
+}

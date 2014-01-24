@@ -27,57 +27,13 @@
 musly_jukebox* mj = 0;
 
 
-void
-field_from_filename(
-        const std::vector<std::string>& tracks_files,
-        int e,
-        std::map<int, std::string>& ids,
-        std::vector<int>& tracks_ids)
-{
-    int prefix_len = 0;
-    if (e < 0) {
-        prefix_len = longest_common_prefix(tracks_files).length();
-        e = 0;
-    }
-
-    std::map<std::string, int> genre_idx;
-    int running_id = 0;
-
-    for (size_t i = 0; i < tracks_files.size(); i++) {
-
-        std::string file = tracks_files[i].substr(prefix_len,
-                tracks_files[i].length()-prefix_len);
-
-        std::vector<std::string> filesplit = split(file, '/');
-        if (e < (int)filesplit.size()) {
-            std::string g = filesplit[e];
-            int id;
-            if (genre_idx.find(g) != genre_idx.end()) {
-                id = genre_idx[g];
-            } else {
-                genre_idx[g] = running_id;
-                ids[running_id] = g;
-                id = running_id;
-                running_id++;
-            }
-            tracks_ids.push_back(id);
-        } else {
-            std::string g = "Unknown";
-            int id = -1;
-            if (genre_idx.find(g) == genre_idx.end()) {
-                ids[id] = g;
-            }
-            tracks_ids.push_back(id);
-        }
-    }
-}
 
 int
 read_collectionfile(
         collection_file& cf,
         char mode,
-        std::vector<musly_track*>* tracks = 0,
-        std::vector<std::string>* tracks_files = 0)
+        std::vector<musly_track*>* tracks = NULL,
+        std::vector<std::string>* tracks_files = NULL)
 {
     // check if collection file is readable
     if (!cf.open("r+b")) {
@@ -156,47 +112,53 @@ read_collectionfile(
     return count;
 }
 
-std::vector<musly_trackid>
-initialize_collection(std::vector<musly_track*>& tracks)
+
+void
+tracks_free(
+        std::vector<musly_track*>& tracks)
+{
+    // free the tracks
+    for (int i = 0; i < (int)tracks.size(); i++) {
+        musly_track* mti = tracks[i];
+        musly_track_free(mti);
+    }
+}
+
+bool
+tracks_initialize(
+        std::vector<musly_track*>& tracks)
 {
     std::vector<musly_trackid> trackids(tracks.size(), -1);
 
+    // initialize the jukebox music style
+    // TODO: random subsample
     int ret = musly_jukebox_setmusicstyle(mj, tracks.data(),
             tracks.size());
     if (ret != 0) {
-        std::cout << "ERROR" << std::endl;
-        return trackids;
+        return false;
     }
 
-    // ignore return value, return trackids anyways.
+    // add the tracks to the jukebox
     ret = musly_jukebox_addtracks(mj, tracks.data(), trackids.data(),
             tracks.size());
     if (ret != 0) {
-        return trackids;
+        return false;
     }
 
-    return trackids;
-}
-
-
-std::map<musly_trackid, int>
-prepare_collection(
-        const std::vector<musly_trackid>& trackids)
-{
-    std::map<musly_trackid, int> trackmap;
+    // do a sanity check of the trackids
     for (int i = 0; i < (int)trackids.size(); i++) {
-        trackmap[trackids[i]] = i;
+        if (i != trackids[i]) {
+            return false;
+        }
     }
 
-    return trackmap;
+    return true;
 }
-
 
 
 int
 write_mirex(
         std::vector<musly_track*>& tracks,
-        std::vector<musly_trackid>& trackids,
         std::vector<std::string>& tracks_files,
         const std::string& file,
         const std::string& method)
@@ -221,10 +183,15 @@ write_mirex(
     }
     f << std::endl;
 
+    std::vector<musly_trackid> alltrackids(tracks.size());
+    for (int i = 0; i < (int)alltrackids.size(); i++) {
+        alltrackids[i] = i;
+    }
+
     std::vector<float> similarities(tracks.size());
     for (int i = 0; i < (int)tracks.size(); i++) {
-        int ret = musly_jukebox_similarity(mj, tracks[i], trackids[i],
-                tracks.data(), trackids.data(),
+        int ret = musly_jukebox_similarity(mj, tracks[i], i,
+                tracks.data(), alltrackids.data(),
                 tracks.size(), similarities.data());
         if (ret != 0) {
             fill(similarities.begin(), similarities.end(),
@@ -245,124 +212,89 @@ write_mirex(
 }
 
 
-typedef std::pair<int, float> sim_type;
-struct sim_comp {
-  bool operator()(sim_type const& lhs, sim_type const& rhs){
+typedef std::pair<int, float> similarity_knn;
+struct similarity_comp {
+  bool
+  operator()(
+          similarity_knn const& lhs,
+          similarity_knn const& rhs) {
     return lhs.second < rhs.second;
   }
 };
 
-std::vector<sim_type>
+std::vector<similarity_knn>
 compute_similarity(
         musly_jukebox* mj,
-        musly_track* seed,
-        musly_trackid seed_trackid,
-        int seed_artist,
-        musly_track** tracks,
-        musly_trackid* trackids,
-        int* artists,
-        int length,
         int k,
-        std::map<musly_trackid, int>& trackmap)
+        std::vector<int>& artists,
+        musly_trackid seed,
+        std::vector<musly_track*>& alltracks,
+        std::vector<musly_trackid>& alltrackids)
 {
-    int guess_len = (int)(length*0.1);
+    int guess_len = (int)(alltracks.size()*0.1);
     std::vector<musly_trackid> guess_ids(guess_len);
-    guess_len = musly_jukebox_guessneighbors(mj, seed_trackid,
+    guess_len = musly_jukebox_guessneighbors(mj, seed,
             guess_ids.data(), guess_len);
 
-    std::vector<sim_type> knn_sim;
+    std::vector<similarity_knn> knn_sim;
+    std::vector<float> similarities;
+    std::vector<musly_trackid>* ids;
 
     // need to compute the full similarity
     if (guess_len <= 0) {
-        std::vector<float> similarities(length);
-        int ret = musly_jukebox_similarity(mj, seed, seed_trackid,
-                tracks, trackids, length, similarities.data());
+        similarities.resize(alltracks.size());
+        int ret = musly_jukebox_similarity(mj,
+                alltracks[seed], seed, alltracks.data(),
+                alltrackids.data(), alltrackids.size(), similarities.data());
         if (ret != 0) {
             return knn_sim;
         }
+        ids = &alltrackids;
 
-        // activate stupid artist filter, if set
-        if (artists != NULL) {
-            for (int i = 0; i < length; i++) {
-                if (seed_artist == artists[i]) {
-                    similarities[i] = std::numeric_limits<float>::infinity();
-                }
-            }
-        }
-
-        for (int i = 0; i < length; i++) {
-
-            // skip self
-            if (seed_trackid == trackids[i]) {
-                continue;
-            }
-
-            if ((int)knn_sim.size() < k) {
-                knn_sim.push_back(std::make_pair(i, similarities[i]));
-                std::push_heap(knn_sim.begin(), knn_sim.end(), sim_comp());
-
-            // if the neighbors are already filled && our distance is smaller
-            // than the maximum in the heap, update the heap
-            } else if (similarities[i] < knn_sim.front().second) {
-                std::pop_heap(knn_sim.begin(), knn_sim.end(), sim_comp());
-                knn_sim.back() = std::make_pair(i, similarities[i]);
-                std::push_heap(knn_sim.begin(), knn_sim.end(), sim_comp());
-            }
-        }
-
-        std::sort_heap(knn_sim.begin(), knn_sim.end(), sim_comp());
-
-    // fast similarity with guessed neighbors
+    // use the results of the pre-filter
     } else {
-        std::vector<float> similarities(guess_len);
-
-        // build tracks list from neighbor guess
         std::vector<musly_track*> guess_tracks(guess_len);
         for (int i = 0; i < guess_len; i++) {
-           guess_tracks[i] = tracks[trackmap[guess_ids[i]]];
+           guess_tracks[i] = alltracks[guess_ids[i]];
         }
-
-        // compute similarities
+        similarities.resize(guess_ids.size());
         int ret = musly_jukebox_similarity(mj,
-                seed, seed_trackid,
-                guess_tracks.data(), guess_ids.data(), guess_len,
-                similarities.data());
+                alltracks[seed], seed, guess_tracks.data(),
+                guess_ids.data(), guess_ids.size(), similarities.data());
         if (ret != 0) {
             return knn_sim;
         }
+        ids = &guess_ids;
+    }
 
+    for (int i = 0; i < (int)ids->size(); i++) {
 
+        musly_trackid curid = ids->at(i);
 
-
-        for (int i = 0; i < guess_len; i++) {
-
-            // skip self
-            if (seed_trackid == guess_ids[i]) {
-                continue;
-            }
-
-            int idx = trackmap[guess_ids[i]];
-
-            // activate stupid artist filter, if set
-            if ((artists != NULL) && (seed_artist == artists[idx])) {
-                continue;
-            }
-
-            if ((int)knn_sim.size() < k) {
-                knn_sim.push_back(std::make_pair(idx, similarities[i]));
-                std::push_heap(knn_sim.begin(), knn_sim.end(), sim_comp());
-
-            // if the neighbors are already filled && our distance is smaller
-            // than the maximum in the heap, update the heap
-            } else if (similarities[i] < knn_sim.front().second) {
-                std::pop_heap(knn_sim.begin(), knn_sim.end(), sim_comp());
-                knn_sim.back() = std::make_pair(idx, similarities[i]);
-                std::push_heap(knn_sim.begin(), knn_sim.end(), sim_comp());
-            }
+        // skip self
+        if (seed == curid) {
+            continue;
         }
 
-        std::sort_heap(knn_sim.begin(), knn_sim.end(), sim_comp());
+        // artist filter
+        if ((artists.size() > 0) && (artists[seed] == artists[curid])) {
+            continue;
+        }
+
+        if ((int)knn_sim.size() < k) {
+            knn_sim.push_back(std::make_pair(curid, similarities[i]));
+            std::push_heap(knn_sim.begin(), knn_sim.end(), similarity_comp());
+
+        // if the neighbors are already filled && our distance is smaller
+        // than the maximum in the heap, update the heap
+        } else if (similarities[i] < knn_sim.front().second) {
+            std::pop_heap(knn_sim.begin(), knn_sim.end(), similarity_comp());
+            knn_sim.back() = std::make_pair(curid, similarities[i]);
+            std::push_heap(knn_sim.begin(), knn_sim.end(), similarity_comp());
+        }
     }
+
+    std::sort_heap(knn_sim.begin(), knn_sim.end(), similarity_comp());
 
     return knn_sim;
 }
@@ -370,27 +302,17 @@ compute_similarity(
 
 std::string
 compute_playlist(
-        std::vector<musly_track*>& tracks,
-        std::vector<musly_trackid>& trackids,
+        std::vector<musly_track*>& alltracks,
+        std::vector<musly_trackid>& alltrackids,
         std::vector<std::string>& tracks_files,
-        std::map<musly_trackid, int>& trackmap,
-        musly_track* seed_track,
-        musly_trackid seed_trackid,
+        musly_trackid seed,
         int k)
 {
-    // search for seed
-    std::vector<musly_trackid>::iterator seed_it =
-            std::find(trackids.begin(), trackids.end(), seed_trackid);
-    if (seed_it == trackids.end()) {
-        return "";
-    }
-
-    k = std::min(k, (int)tracks.size());
-    std::vector<sim_type> track_idx = compute_similarity(mj,
-            seed_track, seed_trackid, 0,
-            tracks.data(), trackids.data(), NULL,
-            tracks.size(), k,
-            trackmap);
+    k = std::min(k, (int)alltracks.size());
+    std::vector<int> artists_null; // disable artist filtering
+    std::vector<similarity_knn> track_idx = compute_similarity(
+            mj, k, artists_null,
+            seed, alltracks, alltrackids);
     if (track_idx.size() == 0) {
         return "";
     }
@@ -409,9 +331,7 @@ compute_playlist(
 
 Eigen::MatrixXi
 evaluate_collection(
-        std::vector<musly_track*>& tracks,
-        std::vector<musly_trackid>& trackids,
-        std::map<musly_trackid, int>& trackmap,
+        std::vector<musly_track*>& alltracks,
         std::vector<int>& genres,
         int num_genres,
         std::vector<int>& artists,
@@ -421,26 +341,22 @@ evaluate_collection(
     Eigen::VectorXi genre_hist(num_genres);
     Eigen::MatrixXi genre_confusion =
             Eigen::MatrixXi::Zero(num_genres, num_genres);
-
-    if (k >= (int)tracks.size()) {
+    if (k >= (int)alltracks.size()) {
         std::cerr << "Evaluation failed. Too few tracks!" << std::endl;
         return genre_confusion;
     }
 
-    for (int i = 0; i < (int)tracks.size(); i++) {
-        std::vector<sim_type> track_idx;
-        if (num_artists > 0) {
-            track_idx = compute_similarity(mj,
-                    tracks[i], trackids[i], artists[i],
-                    tracks.data(), trackids.data(), artists.data(),
-                    tracks.size(), k, trackmap);
-        } else {
-            track_idx = compute_similarity(mj,
-                    tracks[i], trackids[i], 0,
-                    tracks.data(), trackids.data(), NULL,
-                    tracks.size(), k, trackmap);
-        }
-        if (track_idx.size() == 0) {
+    std::vector<musly_trackid> alltrackids(alltracks.size());
+    for (int i = 0; i < (int)alltracks.size(); i++) {
+        alltrackids[i] = i;
+    }
+
+    for (int i = 0; i < (int)alltracks.size(); i++) {
+
+        std::vector<similarity_knn> knn_tracks = compute_similarity(
+                mj, k, artists, i, alltracks, alltrackids);
+
+        if (knn_tracks.size() == 0) {
             std::cerr << "Failed to compute similar tracks. Skipping."
                     << std::endl;
             continue;
@@ -460,7 +376,7 @@ evaluate_collection(
         for (int j = 0; j < k; j++) {
 
             // get the index of the j'th knn
-            int knn_idx = track_idx[j].first;
+            int knn_idx = knn_tracks[j].first;
             int gj = genres[knn_idx];
             if ((gj >= 0) && (gj < num_genres)) {
                 genre_hist[gj]++;
@@ -540,9 +456,7 @@ main(int argc, char *argv[])
         int track_count = read_collectionfile(cf, 'q');
         if (track_count < 0) {
             // the error message was already displayed. just quit here.
-            if (mj) {
-                musly_jukebox_poweroff(mj);
-            }
+            musly_jukebox_poweroff(mj);
             return ret;
         }
         std::cout << "Read " << track_count << " musly tracks." << std::endl;
@@ -558,38 +472,33 @@ main(int argc, char *argv[])
         if (fi.get_nextfilename(file)) {
             do {
                 if (cf.contains_track(file)) {
-                    std::cout << "Skipping file #" << count
-                            << ", already in Musly collection: "
-                            << cf.get_file() << std::endl;
-                    std::cout << file << std::endl << std::endl;
+                    std::cout << "Skipping already analyzed [" << count << "]: "
+                            << limit_string(file, 60) << std::endl;
                     count++;
 
                     continue;
                 }
-                std::cout << "Musly analyzing file #" << count << std::endl;
-                std::cout << file << std::endl;
+                std::cout << "Analyzing [" << count << "]: "
+                        << limit_string(file, 60) << std::flush;
                 int ret = musly_track_analyze_audiofile(mj, file.c_str(), 120, mt);
                 if (ret == 0) {
                     int serialized_buffersize =
                             musly_track_tobin(mj, mt, buffer);
                     if (serialized_buffersize == buffersize) {
                         cf.append_track(file, buffer, buffersize);
-                        std::cout << "Appending to collection file: "
-                                << cf.get_file()
-                                << std::endl;
+                        std::cout << " - [OK]" << std::endl;
                         count++;
                     } else {
-                        std::cout << "Serialization failed." << std::endl;
+                        std::cout << " - [FAILED]." << std::endl;
                         // Do not append failed files
                         //cf.append_track(file, 0, 0);
                     }
 
                 } else {
-                    std::cout << "Analysis failed." << std::endl;
+                    std::cout << " - [FAILED]." << std::endl;
                     // Do not append failed files
                     //cf.append_track(file, 0, 0);
                 }
-                std::cout << std::endl;
 
             } while (fi.get_nextfilename(file));
 
@@ -641,9 +550,8 @@ main(int argc, char *argv[])
         std::vector<std::string> tracks_files;
         int track_count = read_collectionfile(cf, 't', &tracks, &tracks_files);
         if (track_count < 0) {
-            if (mj) {
-                musly_jukebox_poweroff(mj);
-            }
+            std::cerr << "Reading the collection failed." << std::endl;
+            musly_jukebox_poweroff(mj);
             return -1;
         }
         std::cout << "Loaded " << track_count << " musly tracks to memory."
@@ -651,33 +559,38 @@ main(int argc, char *argv[])
 
         // initialize all loaded tracks
         std::cout << "Initializing collection..." << std::endl;
-        std::vector<musly_trackid> trackids = initialize_collection(tracks);
-        std::map<musly_trackid, int> trackmap = prepare_collection(trackids);
+        if (!tracks_initialize(tracks)) {
+            std::cerr << "Initialization failed! Aborting" << std::endl;
+            tracks_free(tracks);
+            musly_jukebox_poweroff(mj);
+            return -1;
+        }
 
-        std::cout << "Evaluating collection..." << std::endl;
         // do we need an artist filter
         int f = po.get_option_int("f");
         std::vector<int> artists;
         std::map<int, std::string> artist_ids;
         if (f >= 0) {
-            field_from_filename(tracks_files, f, artist_ids, artists);
+            field_from_strings(tracks_files, f, artist_ids, artists);
+            std::cout << "Artist filter active (-f)." << std::endl
+                    << "Found " << artist_ids.size() << " artists."
+                    << std::endl;
         }
 
         // get the position of the genre in the path
         int e = po.get_option_int("e");
-        // try to extract the genre from the filename
         std::vector<int> genres;
         std::map<int, std::string> genre_ids;
-        field_from_filename(tracks_files, e, genre_ids, genres);
+        field_from_strings(tracks_files, e, genre_ids, genres);
+        std::cout << "Found " << genre_ids.size() << " genres." << std::endl;
 
         int k = po.get_option_int("k");
         std::cout << "k-NN Genre classification (k=" << k << "): "
                 << cf.get_file() << std::endl;
-        Eigen::MatrixXi genre_confusion = evaluate_collection(
-                tracks, trackids, trackmap,
-                genres, genre_ids.size(),
-                artists, artist_ids.size(),
-                k);
+
+        std::cout << "Evaluating collection..." << std::endl;
+        Eigen::MatrixXi genre_confusion = evaluate_collection(tracks,
+                genres, genre_ids.size(), artists, artist_ids.size(), k);
 
         std::cout << "Genre Confusion matrix:" << std::endl;
         std::cout << genre_confusion << std::endl;
@@ -686,12 +599,8 @@ main(int argc, char *argv[])
                 ((float)genre_confusion.diagonal().sum()/
                         (float)genre_confusion.sum())*100.0 << "%)"<< std::endl;
 
+        tracks_free(tracks);
 
-        // free the tracks
-        for (int i = 0; i < (int)tracks.size(); i++) {
-            musly_track* mti = tracks[i];
-            musly_track_free(mti);
-        }
 
     // -l: list files in collection file
     } else if (po.get_action() == "l") {
@@ -723,23 +632,25 @@ main(int argc, char *argv[])
         std::cout << "Loaded " << track_count << " musly tracks to memory."
                 << std::endl;
 
+        std::cout << "Initializing collection..." << std::endl;
         // initialize all loaded tracks
-        std::vector<musly_trackid> trackids = initialize_collection(tracks);
+        if (!tracks_initialize(tracks)) {
+            std::cerr << "Initialization failed! Aborting" << std::endl;
+            tracks_free(tracks);
+            musly_jukebox_poweroff(mj);
+            return -1;
+        }
 
-        // could all tracks be initialized correctly?
-        if (trackids.size() == tracks.size()) {
-            // compute a similarity matrix and write MIREX formatted to the
-            // given file
-            std::cout << "Computing and writing similarity matrix to: " << file
-                    << std::endl;
-            std::cout << "Note: no neighbor guessing is applied here!" << std::endl;
-            ret = write_mirex(tracks, trackids, tracks_files, file,
-                    cf.get_method());
-            if (ret == 0) {
-                std::cout << "Success." << std::endl;
-            } else {
-                std::cerr << "Failed to open file for writing." << std::endl;
-            }
+        // compute a similarity matrix and write MIREX formatted to the
+        // given file
+        std::cout << "Computing and writing similarity matrix to: " << file
+                << std::endl;
+        std::cout << "Note: no neighbor guessing is applied here!" << std::endl;
+        ret = write_mirex(tracks, tracks_files, file, cf.get_method());
+        if (ret == 0) {
+            std::cout << "Success." << std::endl;
+        } else {
+            std::cerr << "Failed to open file for writing." << std::endl;
         }
 
         // free the tracks
@@ -760,44 +671,47 @@ main(int argc, char *argv[])
         std::cout << "Loaded " << track_count << " musly tracks to memory."
                 << std::endl;
 
+        std::cout << "Initializing collection..." << std::endl;
         // initialize all loaded tracks
-        std::vector<musly_trackid> trackids = initialize_collection(tracks);
-        std::map<musly_trackid, int> trackmap = prepare_collection(trackids);
-
-        if (trackids.size() == tracks.size()) {
-            // compute a single playlist
-            int k = po.get_option_int("k");
-            std::cout << "Computing the k=" << k << " most similar tracks to: "
-                    << seed_file << std::endl;
-
-            std::vector<std::string>::iterator it = std::find(
-                    tracks_files.begin(), tracks_files.end(), seed_file);
-
-            if (it != tracks_files.end()) {
-                size_t pos = std::distance(tracks_files.begin(), it);
-                std::string pl = compute_playlist(tracks, trackids, tracks_files,
-                        trackmap, tracks[pos], trackids[pos], k);
-                if (pl == "") {
-                    std::cerr << "Failed to compute similar tracks for given file."
-                            << std::endl;
-                } else {
-                    std::cout << pl;
-                }
-            }
+        if (!tracks_initialize(tracks)) {
+            std::cerr << "Initialization failed! Aborting" << std::endl;
+            tracks_free(tracks);
+            musly_jukebox_poweroff(mj);
+            return -1;
         }
 
-        // free the tracks
-        for (int i = 0; i < (int)tracks.size(); i++) {
-            musly_track* mti = tracks[i];
-            musly_track_free(mti);
+        std::vector<std::string>::iterator it = std::find(
+                tracks_files.begin(), tracks_files.end(), seed_file);
+        if (it == tracks_files.end()) {
+            std::cerr << "File not found in collection! Aborting." << std::endl;
+            tracks_free(tracks);
+            musly_jukebox_poweroff(mj);
+            return -1;
         }
 
+        // compute a single playlist
+        int k = po.get_option_int("k");
+        std::cout << "Computing the k=" << k << " most similar tracks to: "
+                << seed_file << std::endl;
+        std::vector<musly_trackid> trackids(tracks.size());
+        for (int i = 0; i < (int)trackids.size(); i++) {
+            trackids[i] = i;
+        }
+        musly_trackid seed = std::distance(tracks_files.begin(), it);
+        std::string pl = compute_playlist(tracks, trackids, tracks_files,
+                seed, k);
+        if (pl == "") {
+            std::cerr << "Failed to compute similar tracks for given file."
+                    << std::endl;
+        } else {
+            std::cout << pl;
+        }
+
+        tracks_free(tracks);
     }
 
     // cleanup
-    if (mj) {
-        musly_jukebox_poweroff(mj);
-    }
+    musly_jukebox_poweroff(mj);
 
     return ret;
 }

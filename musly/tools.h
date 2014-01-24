@@ -14,8 +14,10 @@
 
 #include <cstdio>
 #include <string>
-#include <vector>
 #include <sstream>
+#include <vector>
+#include <map>
+
 
 
 int
@@ -38,5 +40,17 @@ split(
 std::string
 longest_common_prefix(
         const std::vector<std::string> &strs);
+
+void
+field_from_strings(
+        const std::vector<std::string>& strings,
+        int fidx,
+        std::map<int, std::string>& id2string,
+        std::vector<int>& ids);
+
+std::string
+limit_string(
+        const std::string& s,
+        int size);
 
 #endif /* MUSLY_TOOLS_H_ */
