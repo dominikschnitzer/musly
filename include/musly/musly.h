@@ -167,15 +167,18 @@ musly_jukebox_setmusicstyle(
         int num_tracks);
 
 
-/** Add a track to the Musly jukebox. To use the music similarity routines
+/** Add tracks to the Musly jukebox. To use the music similarity routines
  * each Musly track has to be added to a jukebox. Internally Musly allocates an
  * initialization vector for each track computed with the tracks passed to
  * musly_jukebox_setmusicstyle().
  *
  * \param[in] jukebox the Musly jukebox to add the track to.
- * \param[in] track the musly_track to add to the jukebox.
- * \returns the track identifier for the track added to the jukebox. It is
- * unique within this Musly jukebox object.
+ * \param[in] tracks an array of musly_track objects to add to the jukebox.
+ * \param[out] trackids the track identifiers assigned by musly. The first
+ * track will have an id of 0 with the numbers increasing subsequently.
+ * \param[in] num_tracks the length of the tracks and trackids array.
+ * \returns 0 on success -1 on an error. When an error is returned no
+ * track was added to Musly.
  *
  * \sa musly_jukebox_setmusicstyle(), musly_jukebox_similarity()
  */
