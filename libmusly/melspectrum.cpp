@@ -28,7 +28,6 @@ melspectrum::melspectrum(
     Eigen::VectorXf ps_freq = Eigen::VectorXf::LinSpaced(powerspectrum_bins,
             0.0f, sample_rate/2.0f);
 
-
     // determine the best mel bin for each frequency
     Eigen::VectorXf freq = Eigen::VectorXf::LinSpaced(sample_rate/2-min_freq,
             min_freq, sample_rate/2);

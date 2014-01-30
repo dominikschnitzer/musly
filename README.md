@@ -1,8 +1,3 @@
-# Under development #
-
-Musly is still under development. Please do not report any issues yet.
-Expect Version 0.1 in January 2014.
-
 Musly
 =====
 
@@ -25,6 +20,7 @@ The source code is released under the MPL 2.0 see the file <musly/COPYING>
 ## Version History ##
 
 ### VERSION 0.1 ###
+Released on 30 Jan 2014.
 
 The first public Musly release. It includes two basic audio music similarity
 measures:
@@ -63,7 +59,7 @@ available options. See <http://www.musly.org> for more information.
 
 ## Library ##
 
-
+Please see the library documentation in <doc/html> directory or on-line.
 
 
 ## Development ##
@@ -72,7 +68,9 @@ To help Musly development and fix bugs the most convenient way is to use
 Eclipse. To generate an Eclipse project use:
 
 ```
-cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_ECLIPSE_EXECUTABLE=/path/to/eclipse/eclipse /path/to/musly-src
+cmake -G"Eclipse CDT4 - Unix Makefiles"\
+      -DCMAKE_ECLIPSE_EXECUTABLE=/path/to/eclipse/eclipse \
+      /path/to/musly-src
 ```
 
 from an empty directory. The directory is filled with Eclipse project
