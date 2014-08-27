@@ -77,7 +77,7 @@ mandelellis::analyze_track(
 {
     MINILOG(logTRACE) << "ME analysis started. samples=" << length;
 
-    // select the central max_pcmlength (usually 30s) of the piece
+    // select the central max_pcmlength (usually 60s) of the piece
     int start = 0;
     if (length > max_pcmlength) {
         start = (length - max_pcmlength) / 2;

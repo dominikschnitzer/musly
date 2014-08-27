@@ -19,7 +19,7 @@ Using the Musly library interface in your application is straightforward : 0. .
  4. initialize the similarity component with musly_jukebox_setmusicstyle() and
     musly_jukebox_addtracks().
  5. compute similarities and playlists: musly_jukebox_similarity()
- 6. deinitialize musly: musly_jukebox_similarity()
+ 6. deinitialize musly: musly_jukebox_poweroff()
  
 A more detailed description of the libary calls and parameters can be found
 in musly.h. The source code distribution also includes a sample application
@@ -149,8 +149,14 @@ musly_jukebox_poweroff(
  * it is necessary to give the algorithms a hint about the music we are working
  * with. Do this by passing a random sample of the tracks you want to analyze.
  * As a rule of thumb use a maximum of 1000 randomly selected tracks to set
- * the music style. The a copy of the musly_track array is stored internally.
- * The referenced array can be safely deallocated after the call if required.
+ * the music style. The tracks are analyzed and copied to internal storage as
+ * needed, so you may safely deallocate the given array and tracks after
+ * the call.
+ *
+ * \note
+ * This must be called before adding any tracks to the jukebox. If you change
+ * the music style of a filled jukebox, tracks added after the style change
+ * will not be properly compared to tracks added before the style change.
  *
  * \param[in] jukebox the Musly jukebox to set the music stlye.
  * \param[in] tracks a random sample array of Musly tracks to use for
@@ -238,7 +244,7 @@ musly_jukebox_similarity(
  * built when adding the track to the jukebox (musly_jukebox_addtrack()). A
  * maximum of num_neighbors is written in the neighbors list of track ids.
  * The returned neighbors can be used to drastically reduce the number of input
- * tracks (and thus computation time) for musyl_jukebox_similarity().
+ * tracks (and thus computation time) for musly_jukebox_similarity().
  * If the method is not implemented or all neighbors should be analyzed,
  * -1 is returned. In that case consider all musly_tracks as possible nearest
  * neighbors and thus as input to musly_jukebox_similarity().
@@ -370,7 +376,7 @@ musly_track_frombin(
  * export the feature data for further analysis.
  * Note: This function is not threadsafe!
  *
- * \param[in] jukebox The Musly jukenbox to use.
+ * \param[in] jukebox The Musly jukebox to use.
  * \param[in] from_track the musly_track to convert into a string
  * representation.
  *
@@ -391,6 +397,10 @@ musly_track_tostr(
  * features (use musly_jukebox_similarity()).
  * If you are analyzing music files, use musly_track_analyze_audiofile() which
  * does the decoding and down-/re-sampling of audio itself.
+ *
+ * \note
+ * Depending on the music similarity method, not all of the given signal will
+ * be used in the computation, but possibly only the central 60 seconds.
  *
  * \param[in] jukebox A reference to an initialized musly_jukebox object.
  * \param[in] mono_22khz_pcm The audio signal to analyze represented as a PCM float
@@ -419,8 +429,11 @@ musly_track_analyze_pcm(
  * feature data. To compute the similarity to other musly_track objects,
  * use the musly_jukebox_similarity() function. If you already decoded the
  * PCM signal of the music you want to analyze, use musly_track_analyze_pcm().
- * NOTE: Currently the central 30 seconds of each decoded pcm input are
- * hardcoded to be used as input for the subsequent audio analysis functions.
+ *
+ * \note
+ * While you can control how many seconds to decode, only the central 30
+ * seconds of the decoded part are passed on to musly_track_analyze_pcm()
+ * to build the music similarity model.
  *
  * \param[in] jukebox A reference to an initialized musly_jukebox object.
  * \param[in] audiofile An audio file. The file will be decoded with the audio decoder.
