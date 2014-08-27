@@ -349,14 +349,14 @@ musly_track_analyze_audiofile(
         // try decoding the given audio file
         musly::decoder* d = reinterpret_cast<musly::decoder*>(jukebox->decoder);
 
-        // decode a maximum of 60 seconds
+        // decode a maximum of max_seconds
         std::vector<float> pcm =
                 d->decodeto_22050hz_mono_float(audiofile, max_seconds);
         if (pcm.size() == 0) {
             return -1;
         }
 
-        // select the central max_pcmlength (usually 30s) of the piece
+        // select the central 30s of the decoded part
         int start = 0;
         int sel_central_samples = 30*22050;
         int len = pcm.size();
