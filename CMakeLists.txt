@@ -7,7 +7,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 project(musly)
-set(MUSLY_VERSION "0.1")
+set(MUSLY_VERSION "0.2")
 add_definitions(-DMUSLY_VERSION="${MUSLY_VERSION}")
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
