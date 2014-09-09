@@ -140,7 +140,7 @@ tracks_initialize(
 
     // add the tracks to the jukebox
     ret = musly_jukebox_addtracks(mj, tracks.data(), trackids.data(),
-            tracks.size());
+            tracks.size(), true);
     if (ret != 0) {
         return false;
     }

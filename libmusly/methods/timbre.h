@@ -1,5 +1,6 @@
 /**
  * Copyright 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
+ *                2014, Jan Schlueter <jan.schlueter@ofai.at>
  *
  * This file is part of Musly, a program for high performance music
  * similarity computation: http://www.musly.org/.
@@ -18,12 +19,13 @@
 #include "mfcc.h"
 #include "gaussianstatistics.h"
 #include "mutualproximity.h"
+#include "idpool.h"
 
 namespace musly {
 namespace methods {
 
 class timbre :
-        public musly::method
+        public musly::method, musly::ordered_idpool_observer
 
 {
 MUSLY_METHOD_REGCLASS(timbre);
@@ -47,6 +49,7 @@ private:
     mfcc mfccs;
     gaussian_statistics gs;
     mutualproximity mp;
+    ordered_idpool<musly_trackid> idpool;
 
     void
     similarity_raw(
@@ -85,10 +88,28 @@ public:
             int length);
 
     virtual void
-    init_tracks(
+    add_tracks(
             musly_track** tracks,
             musly_trackid* trackids,
+            int length,
+            bool generate_ids);
+
+    virtual void
+    remove_tracks(
+            musly_trackid* trackids,
             int length);
+
+    virtual int
+    get_trackcount();
+
+    virtual int
+    get_maxtrackid();
+
+    virtual void
+    swapped_positions(
+            int pos_a,
+            int pos_b);
+
 };
 
 } /* namespace methods */

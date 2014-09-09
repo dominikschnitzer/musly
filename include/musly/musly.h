@@ -1,4 +1,5 @@
 /* Copyright 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
+ *                2014, Jan Schlueter <jan.schluter@ofai.at>
  *
  * This file is part of Musly, a program for high performance music
  * similarity computation: http://www.musly.org/.
@@ -115,8 +116,9 @@ musly_jukebox_aboutmethod(
  * The returned reference is required for almost all subsequent calls to Musly
  * library calls. To add a music track to the jukebox inventory use
  * musly_jukebox_addtracks(). To compute recommendations with the jukebox use
- * musly_jukebox_similarity(). Note that before computation of similarity, the
- * music style needs to be set with musly_jukebox_setmusicstyle().
+ * musly_jukebox_similarity(). Note that before adding tracks or computing
+ * similarities, the music style needs to be set with
+ * musly_jukebox_setmusicstyle().
  *
  * \param[in] method the desired music similarity method.
  * \param[in] decoder the desired decoder to initialize.
@@ -155,8 +157,9 @@ musly_jukebox_poweroff(
  *
  * \note
  * This must be called before adding any tracks to the jukebox. If you change
- * the music style of a filled jukebox, tracks added after the style change
- * will not be properly compared to tracks added before the style change.
+ * the music style of a filled jukebox, you need to re-register all existing
+ * tracks via musly_jukebox_addtracks(), otherwise tracks added after the style
+ * change will not be properly compared to tracks added before the change.
  *
  * \param[in] jukebox the Musly jukebox to set the music stlye.
  * \param[in] tracks a random sample array of Musly tracks to use for
@@ -178,22 +181,81 @@ musly_jukebox_setmusicstyle(
  * initialization vector for each track computed with the tracks passed to
  * musly_jukebox_setmusicstyle().
  *
- * \param[in] jukebox the Musly jukebox to add the track to.
+ * \param[in] jukebox the Musly jukebox to add the tracks to.
  * \param[in] tracks an array of musly_track objects to add to the jukebox.
- * \param[out] trackids the track identifiers assigned by musly. The first
- * track will have an id of 0 with the numbers increasing subsequently.
- * \param[in] num_tracks the length of the tracks and trackids array.
+ * \param[in,out] trackids the track identifiers for the tracks, either
+ * read or written depending on the \p generate_ids parameter.
+ * \param[in] num_tracks the length of the \p tracks and \p trackids array.
+ * \param[in] generate_ids controls whether ids are to be generated
+ * automatically or given by the caller.
+ * If nonzero, Musly will assign sequential identifiers starting from
+ * <tt>musly_jukebox_maxtrackid(jukebox) + 1</tt> and write the ids to
+ * \p trackids. If zero, Musly will assign the ids given in \p trackids,
+ * replacing existing tracks for ids already used by the jukebox.
+ *
  * \returns 0 on success -1 on an error. When an error is returned no
  * track was added to Musly.
  *
- * \sa musly_jukebox_setmusicstyle(), musly_jukebox_similarity()
+ * \sa musly_jukebox_removetracks(), musly_jukebox_trackcount(),
+ * musly_jukebox_setmusicstyle(), musly_jukebox_similarity()
  */
 MUSLY_EXPORT int
 musly_jukebox_addtracks(
         musly_jukebox* jukebox,
         musly_track** tracks,
         musly_trackid* trackids,
+        int num_tracks,
+        int generate_ids);
+
+
+/** Remove tracks from the Musly jukebox.
+ *
+ * \param[in] jukebox the Musly jukebox to remove the tracks from.
+ * \param[in] trackids the track identifiers of the tracks to remove,
+ * unknown identifiers will be silently ignored.
+ * \param[in] num_tracks the length of the \p trackids array.
+ *
+ * \returns 0 on success -1 on an error.
+ *
+ * \sa musly_jukebox_addtracks(), musly_jukebox_trackcount()
+ */
+MUSLY_EXPORT int
+musly_jukebox_removetracks(
+        musly_jukebox* jukebox,
+        musly_trackid* trackids,
         int num_tracks);
+
+
+/** Returns the number of tracks currently registered with the Musly jukebox.
+ * Along with musly_jukebox_maxtrackid(), this can be used for versioning the
+ * state of a jukebox.
+ *
+ * \param[in] jukebox the Musly jukebox to query
+ * \returns the number of tracks currently registered with \p jukebox, or -1
+ * on an error
+ *
+ * \sa musly_jukebox_addtracks(), musly_jukebox_removetracks()
+ */
+MUSLY_EXPORT int
+musly_jukebox_trackcount(
+        musly_jukebox* jukebox);
+
+
+/** Returns the largest track identifier ever registered with the Musly
+ * jukebox. Along with musly_jukebox_trackcount(), this can be used for
+ * versioning the state of a jukebox:
+ * <tt>(maxtrackid+1).(maxtrackid+1-trackcount)</tt> is a two-element version
+ * number that will never decrease in the lifetime of a jukebox, provided that
+ * musly_jukebox_maxtrackid() always increases when adding a track.
+ *
+ * \param[in] jukebox the Musly jukebox to query
+ * \return the largest trackid seen by \p jukebox, or -1 if it has not seen any
+ *
+ * \sa musly_jukebox_addtracks(), musly_jukebox_removetracks()
+ */
+MUSLY_EXPORT musly_trackid
+musly_jukebox_maxtrackid(
+        musly_jukebox* jukebox);
 
 
 /** Computes the similarity between a seed track and a list of other music
@@ -241,7 +303,7 @@ musly_jukebox_similarity(
  * way to pre-filter the whole jukebox collection for possible matches
  * (neighbors) to the query song (seed). The musly_tracks do not have to be
  * loaded to memory to use that call. It operates solely on an index usually
- * built when adding the track to the jukebox (musly_jukebox_addtrack()). A
+ * built when adding the track to the jukebox (musly_jukebox_addtracks()). A
  * maximum of num_neighbors is written in the neighbors list of track ids.
  * The returned neighbors can be used to drastically reduce the number of input
  * tracks (and thus computation time) for musly_jukebox_similarity().

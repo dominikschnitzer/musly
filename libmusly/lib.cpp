@@ -1,5 +1,6 @@
 /**
  * Copyright 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
+ *                2014, Jan Schlueter <jan.schlueter@ofai.at>
  *
  * This file is part of Musly, a program for high performance music
  * similarity computation: http://www.musly.org/.
@@ -147,8 +148,6 @@ musly_jukebox_setmusicstyle(
     } else {
         return -1;
     }
-
-    return -1;
 }
 
 int
@@ -156,17 +155,55 @@ musly_jukebox_addtracks(
         musly_jukebox* jukebox,
         musly_track** tracks,
         musly_trackid* trackids,
-        int length)
+        int length,
+        int generate_ids)
 {
     if (jukebox && jukebox->method) {
         musly::method* m = reinterpret_cast<musly::method*>(jukebox->method);
-        m->add_tracks(tracks, trackids, length);
+        m->add_tracks(tracks, trackids, length, (generate_ids != 0));
         return 0;
     } else {
         return -1;
     }
+}
 
-    return -1;
+int
+musly_jukebox_removetracks(
+        musly_jukebox* jukebox,
+        musly_trackid* trackids,
+        int length)
+{
+	if (jukebox && jukebox->method) {
+	    musly::method* m = reinterpret_cast<musly::method*>(jukebox->method);
+		m->remove_tracks(trackids, length);
+		return 0;
+	} else {
+		return -1;
+	}
+}
+
+int
+musly_jukebox_trackcount(
+        musly_jukebox* jukebox)
+{
+    if (jukebox && jukebox->method) {
+        musly::method* m = reinterpret_cast<musly::method*>(jukebox->method);
+        return m->get_trackcount();
+    } else {
+        return -1;
+    }
+}
+
+int
+musly_jukebox_maxtrackid(
+        musly_jukebox* jukebox)
+{
+    if (jukebox && jukebox->method) {
+        musly::method* m = reinterpret_cast<musly::method*>(jukebox->method);
+        return m->get_maxtrackid();
+    } else {
+        return -1;
+    }
 }
 
 int

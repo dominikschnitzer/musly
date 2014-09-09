@@ -1,5 +1,6 @@
 /**
  * Copyright 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
+ *                2014, Jan Schlueter <jan.schlueter@ofai.at>
  *
  * This file is part of Musly, a program for high performance music
  * similarity computation: http://www.musly.org/.
@@ -10,6 +11,7 @@
  */
 
 #include <Eigen/Core>
+#include <algorithm>
 
 #include "musly/musly_types.h"
 #include "mutualproximity.h"
@@ -62,8 +64,14 @@ mutualproximity::get_normtracks()
 }
 
 void
+mutualproximity::append_normfacts(
+        int count) {
+    norm_facts.resize(norm_facts.size() + count);
+}
+
+void
 mutualproximity::set_normfacts(
-        musly_trackid trackid,
+        int position,
         Eigen::VectorXf& sim)
 {
     double mu = sim.mean();
@@ -71,12 +79,26 @@ mutualproximity::set_normfacts(
     double std = (sim_mu.transpose() * sim_mu);
     std /= (static_cast<double>(sim.size()) - 1.0);
 
-    // allocate space
-    if (trackid >= (int)norm_facts.size()) {
-        norm_facts.resize(trackid+1);
-        norm_facts[trackid].mu = mu;
-        norm_facts[trackid].std = sqrt(std);
+    // allocate space if needed
+    // (ideally, this has already been taken care of by append_normfacts)
+    if (position >= (int)norm_facts.size()) {
+        norm_facts.resize(position+1);
     }
+    norm_facts[position].mu = mu;
+    norm_facts[position].std = sqrt(std);
+}
+
+void
+mutualproximity::swap_normfacts(
+        int position1,
+        int position2) {
+    std::swap(norm_facts[position1], norm_facts[position2]);
+}
+
+void
+mutualproximity::trim_normfacts(
+        int count) {
+    norm_facts.resize(norm_facts.size() - count);
 }
 
 double
@@ -106,22 +128,22 @@ mutualproximity::normcdf(double x)
 
 int
 mutualproximity::normalize(
-        musly_trackid seed_trackid,
-        musly_trackid* trackids,
+        int seed_position,
+        int* other_positions,
         int length,
         float* sim)
 {
-    if (seed_trackid >= (int)norm_facts.size()) {
+    if (seed_position >= (int)norm_facts.size()) {
         return -1;
     }
-    float seed_mu = norm_facts[seed_trackid].mu;
-    float seed_std = norm_facts[seed_trackid].std;
+    float seed_mu = norm_facts[seed_position].mu;
+    float seed_std = norm_facts[seed_position].std;
     for (int i = 0; i < length; i++) {
-        int tid = trackids[i];
-        if (tid >= (int)norm_facts.size()) {
+        int pos = other_positions[i];
+        if (pos >= (int)norm_facts.size()) {
             return -1;
         }
-        if (tid == seed_trackid) {
+        if (pos == seed_position) {
             sim[i] = 0;
             continue;
         }
@@ -132,7 +154,7 @@ mutualproximity::normalize(
         }
 
         double p1 = 1 - normcdf((d - seed_mu)/seed_std);
-        double p2 = 1 - normcdf((d - norm_facts[tid].mu)/norm_facts[tid].std);
+        double p2 = 1 - normcdf((d - norm_facts[pos].mu)/norm_facts[pos].std);
         sim[i] = 1 - p1*p2;
     }
     return 0;
