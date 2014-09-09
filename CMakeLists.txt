@@ -2,6 +2,7 @@
 # Process with cmake to create your desired buildfiles.
 #
 # (c) 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
+#          2014, Jan Schlueter <jan.schlueter@ofai.at>
 
 cmake_minimum_required(VERSION 2.8)
 
@@ -28,6 +29,8 @@ else ()
     set(BUILD_SHARED_LIBS ON)
 endif ()
 
+option(BUILD_TEST "Build selftest executable" OFF)
+
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 find_package(Eigen3 REQUIRED)
@@ -40,6 +43,10 @@ include_directories(
 add_subdirectory(libmusly) 
 add_subdirectory(musly) 
 add_subdirectory(include) 
+if (BUILD_TEST)
+    enable_testing()
+    add_subdirectory(test)
+endif ()
 
 # Documentation
 set(musly_DOC_FILES AUTHORS COPYING README.md)
