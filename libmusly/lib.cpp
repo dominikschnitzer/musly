@@ -234,14 +234,26 @@ musly_jukebox_guessneighbors(
         musly_trackid* neighbors,
         int num_neighbors)
 {
+    return musly_jukebox_guessneighbors_filtered(
+            jukebox, seed, neighbors, num_neighbors, NULL, 0);
+}
+
+int
+musly_jukebox_guessneighbors_filtered(
+        musly_jukebox* jukebox,
+        musly_trackid seed,
+        musly_trackid* neighbors,
+        int num_neighbors,
+        musly_trackid* limit_to,
+        int num_limit_to)
+{
     if (jukebox && jukebox->method) {
         musly::method* m = reinterpret_cast<musly::method*>(jukebox->method);
-        return m->guess_neighbors(seed, neighbors, num_neighbors);
+        return m->guess_neighbors(seed, neighbors, num_neighbors, limit_to, num_limit_to);
     } else {
         return -1;
     }
 }
-
 
 musly_track*
 musly_track_alloc(
