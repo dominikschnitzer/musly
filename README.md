@@ -31,6 +31,8 @@ additions:
     zero, track IDs are given by the user.
 -   `musly_jukebox_removetracks()`, `musly_jukebox_trackcount()` and
     `musly_jukebox_maxtrackid()` are added to the API.
+-   `musly_jukebox_guessneighbors_filtered()` is added to the API, allowing
+    the filter step to be constrained to a subset of registered tracks.
 
 ### VERSION 0.1 ###
 Released on 30 Jan 2014.
