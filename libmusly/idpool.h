@@ -176,6 +176,10 @@ public:
         return positions;
     }
 
+    inline const T& operator[](int const& index) const {
+        return registered_ids[index];
+    }
+
     inline int
     position_of(T id) {
         typename std::map<T,int>::iterator it = positions.find(id);
