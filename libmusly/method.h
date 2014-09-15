@@ -1,5 +1,6 @@
 /**
  * Copyright 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
+ *                2014, Jan Schlueter <jan.schlueter@ofai.at>
  *
  * This file is part of Musly, a program for high performance music
  * similarity computation: http://www.musly.org/.
@@ -39,10 +40,6 @@ private:
      */
     std::string trackstr;
 
-    /** Current trackid
-     */
-    musly_trackid current_tid;
-
 protected:
     /** Add features to the Musly method track model. Each musly::method music
      * similarity method needs to store the features for each music track in a
@@ -58,11 +55,11 @@ protected:
      * you can access the allocated feature with:
      * \code
      *   musly_track* t = ... // allocated, analyzed track
-     *   fload zc = t[zc_offset];
+     *   float zc = t[zc_offset];
      * \endcode
      *
-     * \param name The name of the features.
-     * \param num_floats The number of elements (float values) that will be
+     * \param[in] name The name of the features.
+     * \param[in] num_floats The number of elements (float values) that will be
      * used to store the features.
      * \returns The offset of the added feature relative to a musly_track.
      */
@@ -79,7 +76,7 @@ public:
      * short description or reference the music similarity method implemented
      * by your object.
      *
-     * \returns A null terminated string describing th music similarity method.
+     * \returns A null terminated string describing the music similarity method.
      */
     virtual const char*
     about() = 0;
@@ -146,20 +143,32 @@ public:
     /**
      *
      */
-    void
+    virtual void
     add_tracks(
             musly_track** tracks,
             musly_trackid* trackids,
-            int length);
+            int length,
+            bool generate_ids) = 0;
 
     /**
      *
      */
     virtual void
-    init_tracks(
-            musly_track** tracks,
+    remove_tracks(
             musly_trackid* trackids,
-            int length);
+            int length) = 0;
+
+    /**
+     *
+     */
+    virtual int
+    get_trackcount() = 0;
+
+    /**
+     *
+     */
+    virtual int
+    get_maxtrackid() = 0;
 
 };
 

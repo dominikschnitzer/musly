@@ -1,5 +1,6 @@
 /**
  * Copyright 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
+ *                2014, Jan Schlueter <jan.schlueter@ofai.at>
  *
  * This file is part of Musly, a program for high performance music
  * similarity computation: http://www.musly.org/.
@@ -17,7 +18,7 @@
 #include "melspectrum.h"
 #include "mfcc.h"
 #include "gaussianstatistics.h"
-#include "mutualproximity.h"
+#include "idpool.h"
 
 namespace musly {
 namespace methods {
@@ -46,6 +47,7 @@ private:
     melspectrum mel;
     mfcc mfccs;
     gaussian_statistics gs;
+    unordered_idpool<musly_trackid> idpool;
 
     void
     similarity_raw(
@@ -77,6 +79,24 @@ public:
             musly_trackid* trackids,
             int length,
             float* similarities);
+
+    virtual void
+    add_tracks(
+            musly_track** tracks,
+            musly_trackid* trackids,
+            int length,
+            bool generate_ids);
+
+    virtual void
+    remove_tracks(
+            musly_trackid* trackids,
+            int length);
+
+    virtual int
+    get_trackcount();
+
+    virtual int
+    get_maxtrackid();
 
 };
 

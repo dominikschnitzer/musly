@@ -1,5 +1,6 @@
 /**
  * Copyright 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
+ *                2014, Jan Schlueter <jan.schlueter@ofai.at>
  *
  * This file is part of Musly, a program for high performance music
  * similarity computation: http://www.musly.org/.
@@ -32,14 +33,27 @@ public:
     get_normtracks();
 
     void
+    append_normfacts(
+            int count);
+
+    void
     set_normfacts(
-            musly_trackid trackid,
+            int position,
             Eigen::VectorXf& sim);
+
+    void
+    swap_normfacts(
+            int position1,
+            int position2);
+
+    void
+    trim_normfacts(
+            int count);
 
     int
     normalize(
-            musly_trackid seed_trackid,
-            musly_trackid* trackids,
+            int seed_position,
+            int* other_positions,
             int length,
             float* sim);
 

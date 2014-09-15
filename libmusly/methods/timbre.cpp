@@ -1,5 +1,6 @@
 /**
  * Copyright 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
+ *                2014, Jan Schlueter <jan.schlueter@ofai.at>
  *
  * This file is part of Musly, a program for high performance music
  * similarity computation: http://www.musly.org/.
@@ -51,6 +52,9 @@ timbre::timbre() :
     track_covar = track_addfield_floats("gaussian.covar", gs.get_covarelems());
     // add the log(det(covar)) of the covariance for performance reasons
     track_logdet = track_addfield_floats("gaussian.covar_logdet", 1);
+
+    // React on changes to the trackid mapping in the ordered_idpool
+    idpool.set_observer(this);
 }
 
 timbre::~timbre()
@@ -169,7 +173,15 @@ timbre::similarity(
     similarity_raw(track, tracks, length, similarities);
 
     // normalize with mp
-    mp.normalize(seed_trackid, trackids, length, similarities);
+    // - lookup positions of trackids in the ordered_idpool
+    int seed_position = idpool.position_of(seed_trackid);
+    int* other_positions = new int[length];
+    for (int i = 0; i < length; i++) {
+        other_positions[i] = idpool.position_of(trackids[i]);
+    }
+    // - call mp.normalize with these positions
+    mp.normalize(seed_position, other_positions, length, similarities);
+    delete[] other_positions;
 
     return 0;
 }
@@ -186,21 +198,57 @@ timbre::set_musicstyle(
 }
 
 void
-timbre::init_tracks(
+timbre::add_tracks(
         musly_track** tracks,
         musly_trackid* trackids,
-        int length)
-{
-    Eigen::VectorXf sim(mp.get_normtracks()->size());
+        int length,
+        bool generate_ids) {
+    int num_new;
+    if (generate_ids) {
+        idpool.generate_ids(trackids, length);
+        num_new = length;
+    }
+    else {
+        num_new = idpool.add_ids(trackids, length);
+    }
 
+    Eigen::VectorXf sim(mp.get_normtracks()->size());
+    mp.append_normfacts(num_new);
+    int pos = idpool.get_size() - length;
     for (int i = 0; i < length; i++) {
         similarity_raw(tracks[i], mp.get_normtracks()->data(),
                 mp.get_normtracks()->size(), sim.data());
 
-        mp.set_normfacts(trackids[i], sim);
+        mp.set_normfacts(pos + i, sim);
     }
 }
 
+void
+timbre::remove_tracks(
+        musly_trackid* trackids,
+        int length) {
+    length = idpool.move_to_end(trackids, length);
+    mp.trim_normfacts(length);
+    idpool.remove_last(length);
+}
+
+int
+timbre::get_trackcount() {
+    return idpool.get_size();
+}
+
+int
+timbre::get_maxtrackid() {
+    return idpool.get_max_seen();
+}
+
+void
+timbre::swapped_positions(
+        int pos_a,
+        int pos_b) {
+    // positions in idpool have changed; update mp index accordingly
+    mp.swap_normfacts(pos_a, pos_b);
+}
 
 } /* namespace methods */
 } /* namespace musly */

@@ -1,5 +1,6 @@
 /**
  * Copyright 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
+ *                2014, Jan Schlueter <jan.schlueter@ofai.at>
  *
  * This file is part of Musly, a program for high performance music
  * similarity computation: http://www.musly.org/.
@@ -15,8 +16,7 @@
 namespace musly {
 
 method::method() :
-        track_size(0),
-        current_tid(0)
+        track_size(0)
 {
 }
 
@@ -77,34 +77,12 @@ method::track_tostr(
     return trackstr.c_str();
 }
 
-void
-method::add_tracks(
-        musly_track** tracks,
-        musly_trackid* trackids,
-        int length)
-{
-    for (int i = 0; i < length; i++) {
-        trackids[i] = current_tid;
-        current_tid++;
-    }
-
-    init_tracks(tracks, trackids, length);
-}
-
 int
 method::set_musicstyle(
         musly_track** tracks,
         int length)
 {
     return 0;
-}
-
-void
-method::init_tracks(
-        musly_track** tracks,
-        musly_trackid* trackids,
-        int length)
-{
 }
 
 int

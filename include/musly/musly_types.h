@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
  *
  * This file is part of Musly, a program for high performance music
@@ -49,7 +49,7 @@ typedef struct {
 typedef float musly_track;
 
 
-/** Not yet used.
+/** An identifier given to a musly track when registering it with a jukebox.
  */
 typedef int musly_trackid;
 

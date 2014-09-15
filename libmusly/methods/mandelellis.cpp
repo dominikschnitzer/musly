@@ -1,5 +1,6 @@
 /**
  * Copyright 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
+ *                2014, Jan Schlueter <jan.schlueter@ofai.at>
  *
  * This file is part of Musly, a program for high performance music
  * similarity computation: http://www.musly.org/.
@@ -151,6 +152,37 @@ mandelellis::similarity(
     delete[] tmp_t;
 
     return 0;
+}
+
+void
+mandelellis::add_tracks(
+        musly_track** tracks,
+        musly_trackid* trackids,
+        int length,
+        bool generate_ids) {
+    if (generate_ids) {
+        idpool.generate_ids(trackids, length);
+    }
+    else {
+        idpool.add_ids(trackids, length);
+    }
+}
+
+void
+mandelellis::remove_tracks(
+        musly_trackid* trackids,
+        int length) {
+    idpool.remove_ids(trackids, length);
+}
+
+int
+mandelellis::get_trackcount() {
+    return idpool.get_size();
+}
+
+int
+mandelellis::get_maxtrackid() {
+    return idpool.get_max_seen();
 }
 
 
