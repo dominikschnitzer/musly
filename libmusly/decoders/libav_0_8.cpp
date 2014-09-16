@@ -211,6 +211,7 @@ libav_0_8::decodeto_22050hz_mono_float(
                             delete[] buffer;
                         }
                         buffer = new float[input_samples];
+                        buffersize = input_samples;
                     }
 
                     // convert samples to float
