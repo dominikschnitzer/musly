@@ -1,5 +1,6 @@
 /**
  * Copyright 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
+ *                2014, Jan Schlueter <jan.schlueter@ofai.at>
  *
  * This file is part of Musly, a program for high performance music
  * similarity computation: http://www.musly.org/.
@@ -19,6 +20,7 @@
 extern "C" {
     #include <libavcodec/avcodec.h>
     #include <libavformat/avformat.h>
+    #include <libavutil/channel_layout.h>
 }
 
 #include "minilog.h"
@@ -40,19 +42,21 @@ int
 libav_0_8::samples_tofloat(
         void* const out,
         const void* const in,
+        const int out_stride,
         const int in_stride,
         const AVSampleFormat in_fmt,
         int len)
 {
     const int is = in_stride;
+    const int os = out_stride;
     const uint8_t* pi = (uint8_t*)in;
     uint8_t* po = (uint8_t*)out;
-    uint8_t* end = po + sizeof(float)*len;
+    uint8_t* end = po + os*len;
 
 #define CONVFLOAT(ifmt, expr)\
 if (in_fmt == ifmt) {\
     do{\
-        *(float*)po = expr; pi += is; po += sizeof(float);\
+        *(float*)po = expr; pi += is; po += os;\
     } while(po < end);\
 }
     CONVFLOAT(AV_SAMPLE_FMT_U8, (*(const uint8_t*)pi - 0x80)*(1.0 / (1<<7)))
@@ -116,6 +120,9 @@ libav_0_8::decodeto_22050hz_mono_float(
     }
 
     // open the decoder
+    // (kindly ask for stereo downmix and floats, but not all decoders care)
+    decx->request_channel_layout = AV_CH_LAYOUT_STEREO_DOWNMIX;
+    decx->request_sample_fmt = AV_SAMPLE_FMT_FLT;
     avret = avcodec_open2(decx, dec, NULL);
     if (avret < 0) {
         MINILOG(logERROR) << "Could not open codec.";
@@ -128,14 +135,6 @@ libav_0_8::decodeto_22050hz_mono_float(
     if ((decx->channels != 1) && (decx->channels != 2)) {
         MINILOG(logWARNING) << "Unsupported number of channels: "
                 << decx->channels;
-
-        avformat_close_input(&fmtx);
-        return std::vector<float>(0);
-    }
-
-    // check if we have a planar audio file
-    if (av_sample_fmt_is_planar(decx->sample_fmt)) {
-        MINILOG(logERROR) << "Unsupported sample format: planar";
 
         avformat_close_input(&fmtx);
         return std::vector<float>(0);
@@ -158,7 +157,9 @@ libav_0_8::decodeto_22050hz_mono_float(
     int got_frame = 0;
 
     // configuration
-    int input_stride = av_get_bytes_per_sample(decx->sample_fmt);
+    const int input_stride = av_get_bytes_per_sample(decx->sample_fmt);
+    const int num_planes = av_sample_fmt_is_planar(decx->sample_fmt) ? decx->channels : 1;
+    const int output_stride = sizeof(float) * num_planes;
 
     // read packets
     float* buffer = NULL;
@@ -215,17 +216,24 @@ libav_0_8::decodeto_22050hz_mono_float(
                     }
 
                     // convert samples to float
-                    if (samples_tofloat(buffer, frame->data[0], input_stride,
-                            decx->sample_fmt, input_samples) < 0) {
-                        MINILOG(logERROR) << "Strange sample format. Abort.";
+                    // If we have planar samples (num_planes > 1), the channels
+                    // are stored in separate frame->data[i] arrays and we
+                    // convert to interleaved samples on the way.
+                    for (int i = 0; i < num_planes; i++) {
+                        if (samples_tofloat(buffer + i, frame->data[i],
+                                output_stride, input_stride,
+                                av_get_packed_sample_fmt(decx->sample_fmt),
+                                input_samples / num_planes) < 0) {
+                            MINILOG(logERROR) << "Strange sample format. Abort.";
 
-                        av_free(frame);
-                        av_free_packet(&pkt);
-                        avformat_close_input(&fmtx);
-                        if (buffer) {
-                            delete[] buffer;
+                            av_free(frame);
+                            av_free_packet(&pkt);
+                            avformat_close_input(&fmtx);
+                            if (buffer) {
+                                delete[] buffer;
+                            }
+                            return decoded_pcm;
                         }
-                        return decoded_pcm;
                     }
 
                     // inplace downmix to mono, if required

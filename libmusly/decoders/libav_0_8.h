@@ -1,5 +1,6 @@
 /**
  * Copyright 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
+ *                2014, Jan Schlueter <jan.schlueter@ofai.at>
  *
  * This file is part of Musly, a program for high performance music
  * similarity computation: http://www.musly.org/.
@@ -27,6 +28,7 @@ private:
     samples_tofloat(
             void* const out,
             const void* const in,
+            const int out_stride,
             const int in_stride,
             const AVSampleFormat in_fmt,
             int len);
