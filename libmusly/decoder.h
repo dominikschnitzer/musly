@@ -1,5 +1,6 @@
 /**
  * Copyright 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
+ *                2014, Jan Schlueter <jan.schlueter@ofai.at>
  *
  * This file is part of Musly, a program for high performance music
  * similarity computation: http://www.musly.org/.
@@ -28,7 +29,8 @@ public:
     virtual std::vector<float>
     decodeto_22050hz_mono_float(
             const std::string& file,
-            int max_seconds) = 0;
+            float excerpt_length,
+            float excerpt_start) = 0;
 
 };
 

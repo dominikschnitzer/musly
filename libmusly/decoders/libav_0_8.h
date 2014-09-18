@@ -39,7 +39,8 @@ public:
     virtual std::vector<float>
     decodeto_22050hz_mono_float(
             const std::string& file,
-            int max_seconds);
+            float excerpt_length,
+            float excerpt_start);
 };
 
 } /* namespace decoders */

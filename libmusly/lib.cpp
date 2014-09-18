@@ -390,7 +390,8 @@ int
 musly_track_analyze_audiofile(
         musly_jukebox* jukebox,
         const char* audiofile,
-        int max_seconds,
+        float excerpt_length,
+        float excerpt_start,
         musly_track* track)
 {
     if (jukebox && jukebox->decoder) {
@@ -398,23 +399,15 @@ musly_track_analyze_audiofile(
         // try decoding the given audio file
         musly::decoder* d = reinterpret_cast<musly::decoder*>(jukebox->decoder);
 
-        // decode a maximum of max_seconds
+        // decode the specified excerpt
         std::vector<float> pcm =
-                d->decodeto_22050hz_mono_float(audiofile, max_seconds);
+                d->decodeto_22050hz_mono_float(audiofile, excerpt_length, excerpt_start);
         if (pcm.size() == 0) {
             return -1;
         }
 
-        // select the central 30s of the decoded part
-        int start = 0;
-        int sel_central_samples = 30*22050;
-        int len = pcm.size();
-        if (len > sel_central_samples) {
-            start = (len - sel_central_samples) / 2;
-            len = sel_central_samples;
-        }
-
-        return musly_track_analyze_pcm(jukebox, pcm.data()+start, len, track);
+        // pass it on to build the similarity model
+        return musly_track_analyze_pcm(jukebox, pcm.data(), pcm.size(), track);
 
     } else {
         return -1;

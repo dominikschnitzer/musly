@@ -532,14 +532,24 @@ musly_track_analyze_pcm(
  * PCM signal of the music you want to analyze, use musly_track_analyze_pcm().
  *
  * \note
- * While you can control how many seconds to decode, only the central 30
- * seconds of the decoded part are passed on to musly_track_analyze_pcm()
- * to build the music similarity model.
+ * While you can control which portion of the file will be decoded and passed
+ * to musly_track_analyze_pcm(), it depends on the music similarity measure
+ * whether the full excerpt is going to be used to build the similarity model.
+ * Generally, it is enough to decode 30 to 60 seconds, and it is advisable to
+ * exclude nonrepresentative parts such as the intro and outro of a song.
  *
  * \param[in] jukebox A reference to an initialized musly_jukebox object.
- * \param[in] audiofile An audio file. The file will be decoded with the audio decoder.
- * \param[in] max_seconds The maximum number of seconds to decode. If set to zero the whole
- * audio file is decoded.
+ * \param[in] audiofile An audio file. The file will be decoded with the audio
+ * decoder.
+ * \param[in] excerpt_length The maximum length in seconds of the excerpt to
+ * decode. If zero or greater than the file length, decodes the whole file.
+ * Suggested value: 30.
+ * \param[in] excerpt_start The starting position in seconds of the excerpt to
+ * decode. If zero, decoding starts at the beginning. If negative, the excerpt
+ * is centered in the file, but starts at <tt>-excerpt_start<tt> the latest.
+ * If positive and <tt>excerpt_start + excerpt_length</tt> exceeds the file
+ * length, then the excerpt is taken from the end of the file.
+ * Suggested value: -48.
  * \param[out] track The musly_track to write the music similarity features.
  *
  * \returns 0 on success, -1 on failure.
@@ -550,7 +560,8 @@ MUSLY_EXPORT int
 musly_track_analyze_audiofile(
         musly_jukebox* jukebox,
         const char* audiofile,
-        int max_seconds,
+        float excerpt_length,
+        float excerpt_start,
         musly_track* track);
 
 #ifdef __cplusplus

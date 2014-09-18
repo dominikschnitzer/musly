@@ -480,7 +480,7 @@ main(int argc, char *argv[])
                 }
                 std::cout << "Analyzing [" << count << "]: "
                         << limit_string(file, 60) << std::flush;
-                int ret = musly_track_analyze_audiofile(mj, file.c_str(), 120, mt);
+                int ret = musly_track_analyze_audiofile(mj, file.c_str(), 30, -48, mt);
                 if (ret == 0) {
                     int serialized_buffersize =
                             musly_track_tobin(mj, mt, buffer);
