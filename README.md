@@ -33,6 +33,10 @@ additions:
     `musly_jukebox_maxtrackid()` are added to the API.
 -   `musly_jukebox_guessneighbors_filtered()` is added to the API, allowing
     the filter step to be constrained to a subset of registered tracks.
+-   `musly_track_analyze_audiofile()` accepts two parameters `excerpt_length`
+    and `excerpt_start` controlling the length and position of the audio
+    excerpt to be decoded and analyzed instead of the previous `max_seconds`,
+    and the libav-based decoder's performance has been improved significantly.
 
 ### VERSION 0.1 ###
 Released on 30 Jan 2014.
