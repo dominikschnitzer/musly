@@ -106,6 +106,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a9446ab1e6e40fe18cf03dc2c933bfb01"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="musly_8h.html#a9446ab1e6e40fe18cf03dc2c933bfb01">musly_jukebox_guessneighbors</a> (<a class="el" href="structmusly__jukebox.html">musly_jukebox</a> *jukebox, <a class="el" href="musly__types_8h.html#a792054f9e0bc4891cf6e8f4483895f12">musly_trackid</a> seed, <a class="el" href="musly__types_8h.html#a792054f9e0bc4891cf6e8f4483895f12">musly_trackid</a> *neighbors, int num_neighbors)</td></tr>
 <tr class="memdesc:a9446ab1e6e40fe18cf03dc2c933bfb01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tries to guess the most similar neighbors to the given trackid.  <a href="#a9446ab1e6e40fe18cf03dc2c933bfb01">More...</a><br/></td></tr>
 <tr class="separator:a9446ab1e6e40fe18cf03dc2c933bfb01"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a88b99daf48098bfb2aa46ea95869ad1b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="musly_8h.html#a88b99daf48098bfb2aa46ea95869ad1b">musly_jukebox_guessneighbors_filtered</a> (<a class="el" href="structmusly__jukebox.html">musly_jukebox</a> *jukebox, <a class="el" href="musly__types_8h.html#a792054f9e0bc4891cf6e8f4483895f12">musly_trackid</a> seed, <a class="el" href="musly__types_8h.html#a792054f9e0bc4891cf6e8f4483895f12">musly_trackid</a> *neighbors, int num_neighbors, <a class="el" href="musly__types_8h.html#a792054f9e0bc4891cf6e8f4483895f12">musly_trackid</a> *limit_to, int num_limit_to)</td></tr>
+<tr class="memdesc:a88b99daf48098bfb2aa46ea95869ad1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tries to guess the most similar neighbors to the given trackid.  <a href="#a88b99daf48098bfb2aa46ea95869ad1b">More...</a><br/></td></tr>
+<tr class="separator:a88b99daf48098bfb2aa46ea95869ad1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c43fe07d5511b36f012a02bb7963aec"><td class="memItemLeft" align="right" valign="top"><a class="el" href="musly_8h.html#a69598017d76c3d22e9f5a897afae1932">MUSLY_EXPORT</a> <a class="el" href="musly__types_8h.html#aa584590cd7f056b50b940138d5e7777b">musly_track</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="musly_8h.html#a6c43fe07d5511b36f012a02bb7963aec">musly_track_alloc</a> (<a class="el" href="structmusly__jukebox.html">musly_jukebox</a> *jukebox)</td></tr>
 <tr class="memdesc:a6c43fe07d5511b36f012a02bb7963aec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocates a musly_track in memory.  <a href="#a6c43fe07d5511b36f012a02bb7963aec">More...</a><br/></td></tr>
 <tr class="separator:a6c43fe07d5511b36f012a02bb7963aec"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -308,6 +311,73 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the number of neighbors found for the given seed trackid (success). -1 is returned on a failure.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#a6dfead82d6ece20a4b80e96b57ebec18" title="Computes the similarity between a seed track and a list of other music tracks. ">musly_jukebox_similarity()</a>, musly_jukebox_addtrack(). </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a88b99daf48098bfb2aa46ea95869ad1b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int musly_jukebox_guessneighbors_filtered </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structmusly__jukebox.html">musly_jukebox</a> *&#160;</td>
+          <td class="paramname"><em>jukebox</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="musly__types_8h.html#a792054f9e0bc4891cf6e8f4483895f12">musly_trackid</a>&#160;</td>
+          <td class="paramname"><em>seed</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="musly__types_8h.html#a792054f9e0bc4891cf6e8f4483895f12">musly_trackid</a> *&#160;</td>
+          <td class="paramname"><em>neighbors</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>num_neighbors</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="musly__types_8h.html#a792054f9e0bc4891cf6e8f4483895f12">musly_trackid</a> *&#160;</td>
+          <td class="paramname"><em>limit_to</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>num_limit_to</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Tries to guess the most similar neighbors to the given trackid. </p>
+<p>In contrast to <a class="el" href="musly_8h.html#a9446ab1e6e40fe18cf03dc2c933bfb01" title="Tries to guess the most similar neighbors to the given trackid. ">musly_jukebox_guessneighbors()</a>, this version does not search for neighbor candidates among all registered tracks of the jukebox, but allows to limit the search to a list of tracks identified by their track ids. This can be useful to incorporate external search results, e.g., using metadata.</p>
+<dl class="section note"><dt>Note</dt><dd><a class="el" href="musly_8h.html#a88b99daf48098bfb2aa46ea95869ad1b" title="Tries to guess the most similar neighbors to the given trackid. ">musly_jukebox_guessneighbors_filtered()</a> with <code>num_limit_to</code> set to zero is exactly equivalent to <a class="el" href="musly_8h.html#a9446ab1e6e40fe18cf03dc2c933bfb01" title="Tries to guess the most similar neighbors to the given trackid. ">musly_jukebox_guessneighbors()</a>. <a class="el" href="musly_8h.html#a88b99daf48098bfb2aa46ea95869ad1b" title="Tries to guess the most similar neighbors to the given trackid. ">musly_jukebox_guessneighbors_filtered()</a> with <code>limit_to</code> set to a list of all registered track ids will generally also return the same results as <a class="el" href="musly_8h.html#a9446ab1e6e40fe18cf03dc2c933bfb01" title="Tries to guess the most similar neighbors to the given trackid. ">musly_jukebox_guessneighbors()</a>, but may be a lot slower due to additional lookups and worse locality.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>An initialized Musly jukebox object with tracks added through musly_jukebox_addtrack(). </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">seed</td><td>The seed track id to search for its nearest neighbors. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">neighbors</td><td>The neighbors will be written to this preallocated array. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">num_neighbors</td><td>The maximum number of neighbors to write to the neighbors array. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">limit_to</td><td>A list of track ids to limit the search to </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">num_limit_to</td><td>The length of the <code>limit_to</code> array. If zero, <code>limit_to</code> is ignored and all registered track ids are searched instead. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the number of neighbors found for the given seed trackid (success). -1 is returned on a failure.</dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#a9446ab1e6e40fe18cf03dc2c933bfb01" title="Tries to guess the most similar neighbors to the given trackid. ">musly_jukebox_guessneighbors()</a>, <a class="el" href="musly_8h.html#a6dfead82d6ece20a4b80e96b57ebec18" title="Computes the similarity between a seed track and a list of other music tracks. ">musly_jukebox_similarity()</a>. </dd></dl>
 
 </div>
 </div>
@@ -1000,7 +1070,7 @@ Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 9 2014 18:55:08 for Musly by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Sep 15 2014 17:14:12 for Musly by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -89,7 +89,9 @@ int
 method::guess_neighbors(
         musly_trackid seed,
         musly_trackid* neighbors,
-        int length)
+        int length,
+        musly_trackid* limit_to,
+        int num_limit_to)
 {
     // all tracks
     return -1;

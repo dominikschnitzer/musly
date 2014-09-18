@@ -331,6 +331,45 @@ musly_jukebox_guessneighbors(
         int num_neighbors);
 
 
+/** Tries to guess the most similar neighbors to the given trackid. In contrast
+ * to musly_jukebox_guessneighbors(), this version does not search for neighbor
+ * candidates among all registered tracks of the jukebox, but allows to limit
+ * the search to a list of tracks identified by their track ids. This can be
+ * useful to incorporate external search results, e.g., using metadata.
+ *
+ * \note
+ * musly_jukebox_guessneighbors_filtered() with \p num_limit_to set to zero is
+ * exactly equivalent to musly_jukebox_guessneighbors().
+ * musly_jukebox_guessneighbors_filtered() with \p limit_to set to a list of
+ * all registered track ids will generally also return the same results as
+ * musly_jukebox_guessneighbors(), but may be a lot slower due to additional
+ * lookups and worse locality.
+ *
+ * \param[in] jukebox An initialized Musly jukebox object with tracks added
+ * through musly_jukebox_addtrack().
+ * \param[in] seed The seed track id to search for its nearest neighbors.
+ * \param[out] neighbors The neighbors will be written to this preallocated
+ * array.
+ * \param[in] num_neighbors The maximum number of neighbors to write to the
+ * neighbors array.
+ * \param[in] limit_to A list of track ids to limit the search to
+ * \param[in] num_limit_to The length of the \p limit_to array. If zero,
+ * \p limit_to is ignored and all registered track ids are searched instead.
+ * \returns the number of neighbors found for the given seed trackid (success).
+ * -1 is returned on a failure.
+ *
+ * \sa musly_jukebox_guessneighbors(), musly_jukebox_similarity().
+ */
+int
+musly_jukebox_guessneighbors_filtered(
+        musly_jukebox* jukebox,
+        musly_trackid seed,
+        musly_trackid* neighbors,
+        int num_neighbors,
+        musly_trackid* limit_to,
+        int num_limit_to);
+
+
 /** Allocates a musly_track in memory. As the size of a musly_track varies for
  * each music similarity method, an initialized Musly jukebox object reference
  * needs to be passed argument. You need to free the allocated musly_track with
