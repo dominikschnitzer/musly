@@ -167,10 +167,9 @@ libav_0_8::decodeto_22050hz_mono_float(
     std::vector<float> decoded_pcm;
     int subsequent_errors = 0;
     int subsequent_errors_max = 20;
-    while ((av_read_frame(fmtx, &pkt) >= 0) &&
-            ((max_seconds == 0) ||
-                    ((int)decoded_pcm.size() < (max_seconds*decx->sample_rate))))
-   {
+    while (((max_seconds == 0) || ((int)decoded_pcm.size() < max_seconds*decx->sample_rate))
+            && (av_read_frame(fmtx, &pkt) >= 0))
+    {
         // use only audio frames
         if (pkt.stream_index == audio_stream_idx) {
             uint8_t* data = pkt.data;
