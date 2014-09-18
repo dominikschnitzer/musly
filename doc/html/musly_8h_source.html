@@ -222,18 +222,19 @@
 <div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160;        <a class="code" href="musly__types_8h.html#aa584590cd7f056b50b940138d5e7777b">musly_track</a>* track);</div>
 <div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160;</div>
 <div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;</div>
-<div class="line"><a name="l00549"></a><span class="lineno">  549</span>&#160;<a class="code" href="musly_8h.html#a69598017d76c3d22e9f5a897afae1932">MUSLY_EXPORT</a> <span class="keywordtype">int</span></div>
-<div class="line"><a name="l00550"></a><span class="lineno">  550</span>&#160;<a class="code" href="musly_8h.html#adcbb975563a941697da8e3c4f8765da2">musly_track_analyze_audiofile</a>(</div>
-<div class="line"><a name="l00551"></a><span class="lineno">  551</span>&#160;        <a class="code" href="structmusly__jukebox.html">musly_jukebox</a>* jukebox,</div>
-<div class="line"><a name="l00552"></a><span class="lineno">  552</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* audiofile,</div>
-<div class="line"><a name="l00553"></a><span class="lineno">  553</span>&#160;        <span class="keywordtype">int</span> max_seconds,</div>
-<div class="line"><a name="l00554"></a><span class="lineno">  554</span>&#160;        <a class="code" href="musly__types_8h.html#aa584590cd7f056b50b940138d5e7777b">musly_track</a>* track);</div>
-<div class="line"><a name="l00555"></a><span class="lineno">  555</span>&#160;</div>
-<div class="line"><a name="l00556"></a><span class="lineno">  556</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00557"></a><span class="lineno">  557</span>&#160;<span class="preprocessor"></span>}</div>
-<div class="line"><a name="l00558"></a><span class="lineno">  558</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00559"></a><span class="lineno">  559</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00560"></a><span class="lineno">  560</span>&#160;<span class="preprocessor">#endif // MUSLY_H_</span></div>
+<div class="line"><a name="l00559"></a><span class="lineno">  559</span>&#160;<a class="code" href="musly_8h.html#a69598017d76c3d22e9f5a897afae1932">MUSLY_EXPORT</a> <span class="keywordtype">int</span></div>
+<div class="line"><a name="l00560"></a><span class="lineno">  560</span>&#160;<a class="code" href="musly_8h.html#af78d36e036c5a52ff77a564f9e263259">musly_track_analyze_audiofile</a>(</div>
+<div class="line"><a name="l00561"></a><span class="lineno">  561</span>&#160;        <a class="code" href="structmusly__jukebox.html">musly_jukebox</a>* jukebox,</div>
+<div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* audiofile,</div>
+<div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160;        <span class="keywordtype">float</span> excerpt_length,</div>
+<div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160;        <span class="keywordtype">float</span> excerpt_start,</div>
+<div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160;        <a class="code" href="musly__types_8h.html#aa584590cd7f056b50b940138d5e7777b">musly_track</a>* track);</div>
+<div class="line"><a name="l00566"></a><span class="lineno">  566</span>&#160;</div>
+<div class="line"><a name="l00567"></a><span class="lineno">  567</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00568"></a><span class="lineno">  568</span>&#160;<span class="preprocessor"></span>}</div>
+<div class="line"><a name="l00569"></a><span class="lineno">  569</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00570"></a><span class="lineno">  570</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00571"></a><span class="lineno">  571</span>&#160;<span class="preprocessor">#endif // MUSLY_H_</span></div>
 <div class="ttc" id="musly_8h_html_a3de4892f674f845cf4b0fe2f5af77331"><div class="ttname"><a href="musly_8h.html#a3de4892f674f845cf4b0fe2f5af77331">musly_track_free</a></div><div class="ttdeci">MUSLY_EXPORT void musly_track_free(musly_track *track)</div><div class="ttdoc">Frees a musly_track previously allocated with musly_track_alloc(). </div></div>
 <div class="ttc" id="musly_8h_html_a6ecc1b54fdd883b73b8bcfb8e07e5b01"><div class="ttname"><a href="musly_8h.html#a6ecc1b54fdd883b73b8bcfb8e07e5b01">musly_jukebox_poweroff</a></div><div class="ttdeci">MUSLY_EXPORT void musly_jukebox_poweroff(musly_jukebox *jukebox)</div><div class="ttdoc">Deinitializes the given Musly jukebox. </div></div>
 <div class="ttc" id="musly_8h_html_a2c653b4ea8349785cd437cce3a8cf99f"><div class="ttname"><a href="musly_8h.html#a2c653b4ea8349785cd437cce3a8cf99f">musly_jukebox_maxtrackid</a></div><div class="ttdeci">MUSLY_EXPORT musly_trackid musly_jukebox_maxtrackid(musly_jukebox *jukebox)</div><div class="ttdoc">Returns the largest track identifier ever registered with the Musly jukebox. </div></div>
@@ -243,7 +244,6 @@
 <div class="ttc" id="musly_8h_html_a69f7fc47f7ceb62673a53cfac06bd750"><div class="ttname"><a href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750">musly_jukebox_addtracks</a></div><div class="ttdeci">MUSLY_EXPORT int musly_jukebox_addtracks(musly_jukebox *jukebox, musly_track **tracks, musly_trackid *trackids, int num_tracks, int generate_ids)</div><div class="ttdoc">Add tracks to the Musly jukebox. </div></div>
 <div class="ttc" id="musly_8h_html_ac86051d740c66e0ebedd58c0f9280717"><div class="ttname"><a href="musly_8h.html#ac86051d740c66e0ebedd58c0f9280717">musly_track_tobin</a></div><div class="ttdeci">MUSLY_EXPORT int musly_track_tobin(musly_jukebox *jukebox, musly_track *from_track, unsigned char *to_buffer)</div><div class="ttdoc">Serializes a musly_track to a byte buffer. </div></div>
 <div class="ttc" id="musly_8h_html_a385b39f2ca83a08809329c771a314f2f"><div class="ttname"><a href="musly_8h.html#a385b39f2ca83a08809329c771a314f2f">musly_jukebox_listmethods</a></div><div class="ttdeci">MUSLY_EXPORT const char * musly_jukebox_listmethods()</div><div class="ttdoc">Lists all available music similarity methods. </div></div>
-<div class="ttc" id="musly_8h_html_adcbb975563a941697da8e3c4f8765da2"><div class="ttname"><a href="musly_8h.html#adcbb975563a941697da8e3c4f8765da2">musly_track_analyze_audiofile</a></div><div class="ttdeci">MUSLY_EXPORT int musly_track_analyze_audiofile(musly_jukebox *jukebox, const char *audiofile, int max_seconds, musly_track *track)</div><div class="ttdoc">Compute a music similarity model (musly_track) from the audio file. </div></div>
 <div class="ttc" id="musly_8h_html_acf76c80478ff84c795cb912eaafb1e46"><div class="ttname"><a href="musly_8h.html#acf76c80478ff84c795cb912eaafb1e46">musly_jukebox_aboutmethod</a></div><div class="ttdeci">MUSLY_EXPORT const char * musly_jukebox_aboutmethod(musly_jukebox *jukebox)</div><div class="ttdoc">Describe the initialized method. </div></div>
 <div class="ttc" id="musly_8h_html_a69598017d76c3d22e9f5a897afae1932"><div class="ttname"><a href="musly_8h.html#a69598017d76c3d22e9f5a897afae1932">MUSLY_EXPORT</a></div><div class="ttdeci">#define MUSLY_EXPORT</div><div class="ttdef"><b>Definition:</b> musly.h:41</div></div>
 <div class="ttc" id="musly_8h_html_a6c43fe07d5511b36f012a02bb7963aec"><div class="ttname"><a href="musly_8h.html#a6c43fe07d5511b36f012a02bb7963aec">musly_track_alloc</a></div><div class="ttdeci">MUSLY_EXPORT musly_track * musly_track_alloc(musly_jukebox *jukebox)</div><div class="ttdoc">Allocates a musly_track in memory. </div></div>
@@ -263,10 +263,11 @@
 <div class="ttc" id="musly_8h_html_a04026ab777b0fcc516946250257894a2"><div class="ttname"><a href="musly_8h.html#a04026ab777b0fcc516946250257894a2">musly_track_frombin</a></div><div class="ttdeci">MUSLY_EXPORT int musly_track_frombin(musly_jukebox *jukebox, unsigned char *from_buffer, musly_track *to_track)</div><div class="ttdoc">Deserializes a byte buffer to a musly_track. </div></div>
 <div class="ttc" id="musly_8h_html_aa817bd8fc3b5dd2fb285c6bf9709983b"><div class="ttname"><a href="musly_8h.html#aa817bd8fc3b5dd2fb285c6bf9709983b">musly_jukebox_listdecoders</a></div><div class="ttdeci">MUSLY_EXPORT const char * musly_jukebox_listdecoders()</div><div class="ttdoc">Lists all available audio file decoders. </div></div>
 <div class="ttc" id="musly_8h_html_a69bb0402dd32bebb9e2daf0514e715c7"><div class="ttname"><a href="musly_8h.html#a69bb0402dd32bebb9e2daf0514e715c7">musly_version</a></div><div class="ttdeci">MUSLY_EXPORT const char * musly_version()</div><div class="ttdoc">Return the version of Musly. </div></div>
+<div class="ttc" id="musly_8h_html_af78d36e036c5a52ff77a564f9e263259"><div class="ttname"><a href="musly_8h.html#af78d36e036c5a52ff77a564f9e263259">musly_track_analyze_audiofile</a></div><div class="ttdeci">MUSLY_EXPORT int musly_track_analyze_audiofile(musly_jukebox *jukebox, const char *audiofile, float excerpt_length, float excerpt_start, musly_track *track)</div><div class="ttdoc">Compute a music similarity model (musly_track) from the audio file. </div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Sep 15 2014 17:14:12 for Musly by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Sep 18 2014 13:10:09 for Musly by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
