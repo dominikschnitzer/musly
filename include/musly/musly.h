@@ -323,7 +323,7 @@ musly_jukebox_similarity(
  *
  * \sa musly_jukebox_similarity(), musly_jukebox_addtrack().
  */
-int
+MUSLY_EXPORT int
 musly_jukebox_guessneighbors(
         musly_jukebox* jukebox,
         musly_trackid seed,
@@ -360,7 +360,7 @@ musly_jukebox_guessneighbors(
  *
  * \sa musly_jukebox_guessneighbors(), musly_jukebox_similarity().
  */
-int
+MUSLY_EXPORT int
 musly_jukebox_guessneighbors_filtered(
         musly_jukebox* jukebox,
         musly_trackid seed,
