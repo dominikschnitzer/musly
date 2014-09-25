@@ -20,7 +20,9 @@
 extern "C" {
     #include <libavcodec/avcodec.h>
     #include <libavformat/avformat.h>
+#ifdef HAVE_AVUTIL_CHANNEL_LAYOUT
     #include <libavutil/channel_layout.h>
+#endif
 }
 
 #include "minilog.h"
@@ -53,17 +55,25 @@ libav_0_8::samples_tofloat(
     uint8_t* po = (uint8_t*)out;
     uint8_t* end = po + os*len;
 
-#define CONVFLOAT(ifmt, expr)\
-if (in_fmt == ifmt) {\
+#define CONVFLOAT(ifmt, ifmtp, expr)\
+if (in_fmt == ifmt || in_fmt == ifmtp) {\
     do{\
         *(float*)po = expr; pi += is; po += os;\
     } while(po < end);\
 }
-    CONVFLOAT(AV_SAMPLE_FMT_U8, (*(const uint8_t*)pi - 0x80)*(1.0 / (1<<7)))
-    else CONVFLOAT(AV_SAMPLE_FMT_S16, *(const int16_t*)pi*(1.0 / (1<<15)))
-    else CONVFLOAT(AV_SAMPLE_FMT_S32, *(const int32_t*)pi*(1.0 / (1U<<31)))
-    else CONVFLOAT(AV_SAMPLE_FMT_FLT, *(const float*)pi)
-    else CONVFLOAT(AV_SAMPLE_FMT_DBL, *(const double*)pi)
+    // Implementation note: We could use av_get_packed_sample_fmt
+    // to avoid checking for two formats each time, but we want to
+    // stay compatible to libav versions that do not have it yet.
+    CONVFLOAT(AV_SAMPLE_FMT_U8, AV_SAMPLE_FMT_U8P,
+            (*(const uint8_t*)pi - 0x80)*(1.0 / (1<<7)))
+    else CONVFLOAT(AV_SAMPLE_FMT_S16, AV_SAMPLE_FMT_S16P,
+            *(const int16_t*)pi*(1.0 / (1<<15)))
+    else CONVFLOAT(AV_SAMPLE_FMT_S32, AV_SAMPLE_FMT_S32P,
+            *(const int32_t*)pi*(1.0 / (1U<<31)))
+    else CONVFLOAT(AV_SAMPLE_FMT_FLT, AV_SAMPLE_FMT_FLTP,
+            *(const float*)pi)
+    else CONVFLOAT(AV_SAMPLE_FMT_DBL, AV_SAMPLE_FMT_DBLP,
+            *(const double*)pi)
     else return -1;
 
     return 0;
@@ -284,7 +294,7 @@ libav_0_8::decodeto_22050hz_mono_float(
                     for (int i = 0; i < num_planes; i++) {
                         if (samples_tofloat(buffer + i, frame->data[i],
                                 output_stride, input_stride,
-                                av_get_packed_sample_fmt(decx->sample_fmt),
+                                decx->sample_fmt,
                                 input_samples / num_planes) < 0) {
                             MINILOG(logERROR) << "Strange sample format. Abort.";
 
