@@ -1,5 +1,6 @@
 /**
  * Copyright 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
+ *                2014, Jan Schlueter <jan.schlueter@ofai.at>
  *
  * This file is part of Musly, a program for high performance music
  * similarity computation: http://www.musly.org/.
@@ -157,7 +158,7 @@ tracks_initialize(
 
 
 int
-write_mirex(
+write_mirex_full(
         std::vector<musly_track*>& tracks,
         std::vector<std::string>& tracks_files,
         const std::string& file,
@@ -300,6 +301,55 @@ compute_similarity(
 }
 
 
+int
+write_mirex_sparse(
+        std::vector<musly_track*>& tracks,
+        std::vector<std::string>& tracks_files,
+        const std::string& file,
+        const std::string& method,
+        int k)
+{
+    std::ofstream f(file.c_str());
+    if (f.fail()) {
+        return -1;
+    }
+
+    f << "Musly MIREX similarity matrix (Version: " << musly_version()
+            << "), Method: " <<
+            method << std::endl;
+
+    k = std::min(k, (int)tracks.size());
+    std::vector<int> artists_null; // disable artist filtering
+
+    std::vector<musly_trackid> trackids(tracks.size());
+    for (musly_trackid i = 0; i < (int)trackids.size(); i++) {
+        trackids[i] = i;
+    }
+
+    for (int i = 0; i < (int)tracks.size(); i++) {
+        // compute k nearest neighbors
+        std::vector<similarity_knn> track_idx = compute_similarity(
+                mj, k, artists_null,
+                i, tracks, trackids);
+        if (track_idx.size() == 0) {
+            continue;
+        }
+
+        // write to file
+        f << tracks_files[i];
+        for (int i = 0; i < k; i++) {
+            int j = track_idx[i].first;
+            f << "\t" << tracks_files[j] << "," << track_idx[i].second;
+        }
+        f << std::endl;
+    }
+
+    f.close();
+
+    return 0;
+}
+
+
 std::string
 compute_playlist(
         std::vector<musly_track*>& alltracks,
@@ -433,7 +483,7 @@ main(int argc, char *argv[])
     if (po.get_action() == "h") {
         po.display_help();
 
-    // -A: about musly
+    // -i: about musly
     } else if (po.get_action() == "i") {
         std::cout << "Version: " << musly_version() << std::endl;
         std::cout << "Available similarity methods: " <<
@@ -618,9 +668,10 @@ main(int argc, char *argv[])
             ret = -1;
         }
 
-    // -m: write a MIREX similarity matrix to the given file
-    } else if (po.get_action() == "m") {
-        std::string file = po.get_option_str("m");
+    // -m: write a MIREX full similarity matrix to the given file
+    // -s: write a MIREX sparse similarity matrix to the given file
+    } else if (po.get_action() == "m" || po.get_action() == "s") {
+        std::string file = po.get_option_str(po.get_action());
 
         // read collection file to memory
         std::vector<musly_track*> tracks;
@@ -645,8 +696,13 @@ main(int argc, char *argv[])
         // given file
         std::cout << "Computing and writing similarity matrix to: " << file
                 << std::endl;
-        std::cout << "Note: no neighbor guessing is applied here!" << std::endl;
-        ret = write_mirex(tracks, tracks_files, file, cf.get_method());
+        if (po.get_action() == "m") {
+            std::cout << "Note: no neighbor guessing is applied here!" << std::endl;
+            ret = write_mirex_full(tracks, tracks_files, file, cf.get_method());
+        } else {
+            int k = po.get_option_int("k");
+            ret = write_mirex_sparse(tracks, tracks_files, file, cf.get_method(), k);
+        }
         if (ret == 0) {
             std::cout << "Success." << std::endl;
         } else {
@@ -654,10 +710,7 @@ main(int argc, char *argv[])
         }
 
         // free the tracks
-        for (int i = 0; i < (int)tracks.size(); i++) {
-            musly_track* mti = tracks[i];
-            musly_track_free(mti);
-        }
+        tracks_free(tracks);
     } else if (po.get_action() == "p") {
         std::string seed_file = po.get_option_str("p");
 
