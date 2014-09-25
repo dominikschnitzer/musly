@@ -133,9 +133,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a9752c9a9adfd5f99454cb31084a717ad"><td class="memItemLeft" align="right" valign="top"><a class="el" href="musly_8h.html#a69598017d76c3d22e9f5a897afae1932">MUSLY_EXPORT</a> int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="musly_8h.html#a9752c9a9adfd5f99454cb31084a717ad">musly_track_analyze_pcm</a> (<a class="el" href="structmusly__jukebox.html">musly_jukebox</a> *jukebox, float *mono_22khz_pcm, int length_pcm, <a class="el" href="musly__types_8h.html#aa584590cd7f056b50b940138d5e7777b">musly_track</a> *track)</td></tr>
 <tr class="memdesc:a9752c9a9adfd5f99454cb31084a717ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute a music similarity model (musly_track) from the given PCM signal.  <a href="#a9752c9a9adfd5f99454cb31084a717ad">More...</a><br/></td></tr>
 <tr class="separator:a9752c9a9adfd5f99454cb31084a717ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adcbb975563a941697da8e3c4f8765da2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="musly_8h.html#a69598017d76c3d22e9f5a897afae1932">MUSLY_EXPORT</a> int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="musly_8h.html#adcbb975563a941697da8e3c4f8765da2">musly_track_analyze_audiofile</a> (<a class="el" href="structmusly__jukebox.html">musly_jukebox</a> *jukebox, const char *audiofile, int max_seconds, <a class="el" href="musly__types_8h.html#aa584590cd7f056b50b940138d5e7777b">musly_track</a> *track)</td></tr>
-<tr class="memdesc:adcbb975563a941697da8e3c4f8765da2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute a music similarity model (musly_track) from the audio file.  <a href="#adcbb975563a941697da8e3c4f8765da2">More...</a><br/></td></tr>
-<tr class="separator:adcbb975563a941697da8e3c4f8765da2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af78d36e036c5a52ff77a564f9e263259"><td class="memItemLeft" align="right" valign="top"><a class="el" href="musly_8h.html#a69598017d76c3d22e9f5a897afae1932">MUSLY_EXPORT</a> int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="musly_8h.html#af78d36e036c5a52ff77a564f9e263259">musly_track_analyze_audiofile</a> (<a class="el" href="structmusly__jukebox.html">musly_jukebox</a> *jukebox, const char *audiofile, float excerpt_length, float excerpt_start, <a class="el" href="musly__types_8h.html#aa584590cd7f056b50b940138d5e7777b">musly_track</a> *track)</td></tr>
+<tr class="memdesc:af78d36e036c5a52ff77a564f9e263259"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute a music similarity model (musly_track) from the audio file.  <a href="#af78d36e036c5a52ff77a564f9e263259">More...</a><br/></td></tr>
+<tr class="separator:af78d36e036c5a52ff77a564f9e263259"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a class="anchor" id="a69598017d76c3d22e9f5a897afae1932"></a>
@@ -395,7 +395,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Lists all available audio file decoders. </p>
-<p>The decoders are returned as a single null terminated string. The decoders are separated by a comma (,). Use a decoder name to power on a Musly jukebox <a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a> The decoders are used in <a class="el" href="musly_8h.html#adcbb975563a941697da8e3c4f8765da2" title="Compute a music similarity model (musly_track) from the audio file. ">musly_track_analyze_audiofile()</a>.</p>
+<p>The decoders are returned as a single null terminated string. The decoders are separated by a comma (,). Use a decoder name to power on a Musly jukebox <a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a> The decoders are used in <a class="el" href="musly_8h.html#af78d36e036c5a52ff77a564f9e263259" title="Compute a music similarity model (musly_track) from the audio file. ">musly_track_analyze_audiofile()</a>.</p>
 <dl class="section return"><dt>Returns</dt><dd>all available audio file decoders.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a> </dd></dl>
 
@@ -598,7 +598,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a>, <a class="el" href="musly_8h.html#a9752c9a9adfd5f99454cb31084a717ad" title="Compute a music similarity model (musly_track) from the given PCM signal. ">musly_track_analyze_pcm()</a>, <a class="el" href="musly_8h.html#adcbb975563a941697da8e3c4f8765da2" title="Compute a music similarity model (musly_track) from the audio file. ">musly_track_analyze_audiofile()</a> </dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a>, <a class="el" href="musly_8h.html#a9752c9a9adfd5f99454cb31084a717ad" title="Compute a music similarity model (musly_track) from the given PCM signal. ">musly_track_analyze_pcm()</a>, <a class="el" href="musly_8h.html#af78d36e036c5a52ff77a564f9e263259" title="Compute a music similarity model (musly_track) from the audio file. ">musly_track_analyze_audiofile()</a> </dd></dl>
 
 </div>
 </div>
@@ -660,7 +660,7 @@ Functions</h2></td></tr>
 <p>To compute similarities between two music tracks the following steps have to been taken:</p>
 <ul>
 <li>initialize a <a class="el" href="structmusly__jukebox.html" title="The Musly base object storing the initialized music similarity method and audio decoder information...">musly_jukebox</a> object with: <a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a></li>
-<li>analyze audio files, e.g. with <a class="el" href="musly_8h.html#adcbb975563a941697da8e3c4f8765da2" title="Compute a music similarity model (musly_track) from the audio file. ">musly_track_analyze_audiofile()</a></li>
+<li>analyze audio files, e.g. with <a class="el" href="musly_8h.html#af78d36e036c5a52ff77a564f9e263259" title="Compute a music similarity model (musly_track) from the audio file. ">musly_track_analyze_audiofile()</a></li>
 <li>set the music style of the jukebox by using a small random sample of the audio tracks analyzed: <a class="el" href="musly_8h.html#ab96efc48ff5ce54f49bb20960249cfd6" title="Initialize the jukebox music style. ">musly_jukebox_setmusicstyle()</a></li>
 <li>add the audio tracks to the <a class="el" href="structmusly__jukebox.html" title="The Musly base object storing the initialized music similarity method and audio decoder information...">musly_jukebox</a>: <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Add tracks to the Musly jukebox. ">musly_jukebox_addtracks()</a></li>
 <li>use this function to compute similarities.</li>
@@ -678,7 +678,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 on success and -1 on an error.</dd></dl>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a>, <a class="el" href="musly_8h.html#adcbb975563a941697da8e3c4f8765da2" title="Compute a music similarity model (musly_track) from the audio file. ">musly_track_analyze_audiofile()</a>, <a class="el" href="musly_8h.html#a9752c9a9adfd5f99454cb31084a717ad" title="Compute a music similarity model (musly_track) from the given PCM signal. ">musly_track_analyze_pcm()</a>, <a class="el" href="musly_8h.html#ab96efc48ff5ce54f49bb20960249cfd6" title="Initialize the jukebox music style. ">musly_jukebox_setmusicstyle()</a>, <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Add tracks to the Musly jukebox. ">musly_jukebox_addtracks()</a> </dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a>, <a class="el" href="musly_8h.html#af78d36e036c5a52ff77a564f9e263259" title="Compute a music similarity model (musly_track) from the audio file. ">musly_track_analyze_audiofile()</a>, <a class="el" href="musly_8h.html#a9752c9a9adfd5f99454cb31084a717ad" title="Compute a music similarity model (musly_track) from the given PCM signal. ">musly_track_analyze_pcm()</a>, <a class="el" href="musly_8h.html#ab96efc48ff5ce54f49bb20960249cfd6" title="Initialize the jukebox music style. ">musly_jukebox_setmusicstyle()</a>, <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Add tracks to the Musly jukebox. ">musly_jukebox_addtracks()</a> </dd></dl>
 
 </div>
 </div>
@@ -736,7 +736,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="adcbb975563a941697da8e3c4f8765da2"></a>
+<a class="anchor" id="af78d36e036c5a52ff77a564f9e263259"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -755,8 +755,14 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>max_seconds</em>, </td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>excerpt_length</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>excerpt_start</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -774,18 +780,19 @@ Functions</h2></td></tr>
 
 <p>Compute a music similarity model (musly_track) from the audio file. </p>
 <p>The audio file is decoded with the decoder selected when initializing the <a class="el" href="structmusly__jukebox.html" title="The Musly base object storing the initialized music similarity method and audio decoder information...">musly_jukebox</a>, down- and re-sampled to a 22050Hz mono signal before a musly_track is computed. The audio is analyzed according to the initialized music similarity method and the musly_track is filled with the feature data. To compute the similarity to other musly_track objects, use the <a class="el" href="musly_8h.html#a6dfead82d6ece20a4b80e96b57ebec18" title="Computes the similarity between a seed track and a list of other music tracks. ">musly_jukebox_similarity()</a> function. If you already decoded the PCM signal of the music you want to analyze, use <a class="el" href="musly_8h.html#a9752c9a9adfd5f99454cb31084a717ad" title="Compute a music similarity model (musly_track) from the given PCM signal. ">musly_track_analyze_pcm()</a>.</p>
-<dl class="section note"><dt>Note</dt><dd>While you can control how many seconds to decode, only the central 30 seconds of the decoded part are passed on to <a class="el" href="musly_8h.html#a9752c9a9adfd5f99454cb31084a717ad" title="Compute a music similarity model (musly_track) from the given PCM signal. ">musly_track_analyze_pcm()</a> to build the music similarity model.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>While you can control which portion of the file will be decoded and passed to <a class="el" href="musly_8h.html#a9752c9a9adfd5f99454cb31084a717ad" title="Compute a music similarity model (musly_track) from the given PCM signal. ">musly_track_analyze_pcm()</a>, it depends on the music similarity measure whether the full excerpt is going to be used to build the similarity model. Generally, it is enough to decode 30 to 60 seconds, and it is advisable to exclude nonrepresentative parts such as the intro and outro of a song.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>A reference to an initialized <a class="el" href="structmusly__jukebox.html" title="The Musly base object storing the initialized music similarity method and audio decoder information...">musly_jukebox</a> object. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">audiofile</td><td>An audio file. The file will be decoded with the audio decoder. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">max_seconds</td><td>The maximum number of seconds to decode. If set to zero the whole audio file is decoded. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">track</td><td>The musly_track to write the music similarity features.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">excerpt_length</td><td>The maximum length in seconds of the excerpt to decode. If zero or greater than the file length, decodes the whole file. Suggested value: 30. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">excerpt_start</td><td>The starting position in seconds of the excerpt to decode. If zero, decoding starts at the beginning. If negative, the excerpt is centered in the file, but starts at <code>-excerpt_start<code> the latest. If positive and <code>excerpt_start + excerpt_length</code> exceeds the file length, then the excerpt is taken from the end of the file. Suggested value: -48. </code></code></td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">track</td><td><code><code>The musly_track to write the music similarity features.</code></code></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure.</dd></dl>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#adcbb975563a941697da8e3c4f8765da2" title="Compute a music similarity model (musly_track) from the audio file. ">musly_track_analyze_audiofile()</a>, <a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a>. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code><code> 0 on success, -1 on failure.</code></code></dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><code><code> <a class="el" href="musly_8h.html#af78d36e036c5a52ff77a564f9e263259" title="Compute a music similarity model (musly_track) from the audio file. ">musly_track_analyze_audiofile()</a>, <a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a>. </code></code></dd></dl>
 
 </div>
 </div>
@@ -826,7 +833,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Compute a music similarity model (musly_track) from the given PCM signal. </p>
-<p>The audio is analyzed according to the initialized music similarity method and the musly_track is filled with the feature data. The musly_track can then be used to compute the music similarity between other musly_track features (use <a class="el" href="musly_8h.html#a6dfead82d6ece20a4b80e96b57ebec18" title="Computes the similarity between a seed track and a list of other music tracks. ">musly_jukebox_similarity()</a>). If you are analyzing music files, use <a class="el" href="musly_8h.html#adcbb975563a941697da8e3c4f8765da2" title="Compute a music similarity model (musly_track) from the audio file. ">musly_track_analyze_audiofile()</a> which does the decoding and down-/re-sampling of audio itself.</p>
+<p>The audio is analyzed according to the initialized music similarity method and the musly_track is filled with the feature data. The musly_track can then be used to compute the music similarity between other musly_track features (use <a class="el" href="musly_8h.html#a6dfead82d6ece20a4b80e96b57ebec18" title="Computes the similarity between a seed track and a list of other music tracks. ">musly_jukebox_similarity()</a>). If you are analyzing music files, use <a class="el" href="musly_8h.html#af78d36e036c5a52ff77a564f9e263259" title="Compute a music similarity model (musly_track) from the audio file. ">musly_track_analyze_audiofile()</a> which does the decoding and down-/re-sampling of audio itself.</p>
 <dl class="section note"><dt>Note</dt><dd>Depending on the music similarity method, not all of the given signal will be used in the computation, but possibly only the central 60 seconds.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -838,7 +845,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure.</dd></dl>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#adcbb975563a941697da8e3c4f8765da2" title="Compute a music similarity model (musly_track) from the audio file. ">musly_track_analyze_audiofile()</a>, <a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a>. </dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#af78d36e036c5a52ff77a564f9e263259" title="Compute a music similarity model (musly_track) from the audio file. ">musly_track_analyze_audiofile()</a>, <a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a>. </dd></dl>
 
 </div>
 </div>
@@ -1070,7 +1077,7 @@ Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Sep 15 2014 17:14:12 for Musly by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Sep 18 2014 13:10:09 for Musly by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
