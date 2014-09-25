@@ -45,7 +45,7 @@ programoptions::programoptions(int argc, char *argv[],
     opterr = 0;
     while (1) {
 
-        int c = getopt(argc, argv, "v:ihc:a:x:Ee:f:Nn:k:ldm:p:");
+        int c = getopt(argc, argv, "v:ihc:a:x:Ee:f:Nn:k:ldm:s:p:");
         if (c == -1) {
             break;
         }
@@ -71,6 +71,7 @@ programoptions::programoptions(int argc, char *argv[],
         case 'l':
         case 'd':
         case 'm':
+        case 's':
         case 'p':
             if (action.length() != 0) {
                 action = "error";
@@ -159,8 +160,9 @@ cout << "  -i           information about the music similarity library" << endl;
 cout << "  -c COLL      set the file to write the music similarity features and" << endl
      << "               to use for computing similarities." << endl
      << "               DEFAULT: " << default_collection << endl;
-cout << "  -k NUM       set number of similar songs display when computing" << endl
-     << "               playlists ('-p') or evaluating the collection ('-e')." << endl
+cout << "  -k NUM       set number of similar songs per item when computing" << endl
+     << "               playlists ('-p'), sparse distance matrices ('-s')" << endl
+     << "               or when evaluating the collection ('-e')." << endl
      << "               DEFAULT: " << default_k << endl;
 cout << " INITIALIZATION:" << endl;
 cout << "  -n MTH | -N  initialize the collection (set with '-c') using the" << endl
@@ -192,7 +194,12 @@ cout << "  -f NUM       Use an artist filter for the evaluation ('-e'). The " <<
      << "               DEFAULT: -1 (No artist filter)" << endl;
 cout << "  -m FILE      compute the full similarity matrix for the specified" << endl
      << "               collection and write it to FILE. It is written in MIREX" << endl
-     << "               text format (see http://www.music-ir.org/mirex)." << endl;
+     << "               text format (see http://www.music-ir.org/mirex under" << endl
+     << "               Audio Music Similarity and Retrieval, Distance matrix" << endl
+     << "               output files)." << endl;
+cout << "  -s FILE      compute a sparse similarity matrix giving the k nearest" << endl
+     << "               neighbors for each item of the specified collection and" << endl
+     << "               write it to FILE. It is written in MIREX text format." << endl;
 cout << endl;
 //       ======================================================================
 }

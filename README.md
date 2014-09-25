@@ -23,7 +23,7 @@ The source code is released under the MPL 2.0 see the file <musly/COPYING>
 ### VERSION 0.2 (under development) ###
 Not released yet.
 
-The second public Musly release. It includes the following API changes and
+The second public Musly release. It includes the following changes and
 additions:
 
 -   `musly_jukebox_addtracks()` requires a fifth argument `generate_ids`: If
@@ -37,6 +37,7 @@ additions:
     and `excerpt_start` controlling the length and position of the audio
     excerpt to be decoded and analyzed instead of the previous `max_seconds`,
     and the libav-based decoder's performance has been improved significantly.
+-   The musly command line client can compute sparse distance matrices (-s).
 
 ### VERSION 0.1 ###
 Released on 30 Jan 2014.
@@ -95,7 +96,7 @@ It should end with `100% tests passed, 0 tests failed`.
 The command line interface is able to:
 
 * Generate M3U playlists for music collections.
-* Output full similarity matrices for more in-depth research of the
+* Output full or sparse similarity matrices for more in-depth research of the
   audio music similarity functions. It uses the music-ir.org MIREX format
   (see <musly/doc/MIREX-DistanceMatrix.md>)
 * Additionally the music similarity features can be ouput in text format
