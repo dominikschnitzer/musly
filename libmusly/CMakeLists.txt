@@ -11,7 +11,7 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/external")
     add_subdirectory(
         external)
     set_source_files_properties(${LIBMUSLY_EXTERNAL}
-        PROPERTIES COMPILE_FLAGS ${LIBMUSLY_EXTERNAL_FLAGS})
+        PROPERTIES COMPILE_FLAGS "${LIBMUSLY_EXTERNAL_FLAGS}")
 endif()
 
 if(EXISTS "${LIBAV_INCLUDE_DIRS}/libavutil/channel_layout.h")
