@@ -19,6 +19,27 @@
 #include "decoder.h"
 #include "method.h"
 
+#ifdef BUILD_STATIC
+// Implementation note: Each plugin is supposed to register itself with
+// the MUSLY_METHOD_REGIMPL or MUSLY_DECODER_REGIMPL call. These calls
+// are usually placed in the plugin's cpp file, and executed when loading
+// the shared library. However, with static linking, these calls are not
+// executed, so the plugins are optimized out. Explicitly registering the
+// plugins here instead ensures the plugins are present in static builds.
+
+#include "methods/mandelellis.h"
+#include "methods/timbre.h"
+#include "decoders/libav_0_8.h"
+
+MUSLY_METHOD_REGSTATIC(mandelellis, 0);
+MUSLY_METHOD_REGSTATIC(timbre, 1);
+MUSLY_DECODER_REGSTATIC(libav_0_8, 0);
+
+#ifdef LIBMUSLY_EXTERNAL
+#include "external/register_static.h"
+#endif
+#endif
+
 
 const char*
 musly_version()

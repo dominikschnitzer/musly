@@ -12,6 +12,8 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/external")
         external)
     set_source_files_properties(${LIBMUSLY_EXTERNAL}
         PROPERTIES COMPILE_FLAGS "${LIBMUSLY_EXTERNAL_FLAGS}")
+    set_source_files_properties(lib.cpp
+        PROPERTIES COMPILE_FLAGS "-DLIBMUSLY_EXTERNAL")
 endif()
 
 if(EXISTS "${LIBAV_INCLUDE_DIRS}/libavutil/channel_layout.h")
@@ -44,6 +46,11 @@ add_library(libmusly
     mutualproximity.cpp
     lib.cpp
     ${LIBMUSLY_EXTERNAL})
+
+if(BUILD_STATIC)
+    set_target_properties(libmusly
+        PROPERTIES COMPILE_FLAGS "-DBUILD_STATIC")
+endif()
 
 target_link_libraries(libmusly
     ${LIBMUSLY_LIBS}

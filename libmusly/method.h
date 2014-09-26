@@ -178,19 +178,38 @@ public:
  * has to be used in the header and class declaration. Call it with the class
  * name as parameter.
  */
+#ifndef BUILD_STATIC
 #define MUSLY_METHOD_REGCLASS(classname) \
 private: \
     static const plugin_creator_impl<classname> creator;
+#else
+#define MUSLY_METHOD_REGCLASS(classname)
+#endif
 
 /** A macro to facilitate registering a method class with musly. This macro has
  * to be used in the source file, it has two parameters. Call it with the name
  * of your class and the priority. The priority value is used if the user
  * does not request a special musly::method when calling \sa
- * musly_jukebox_poweron(). The method with the lowest priority value is used.
+ * musly_jukebox_poweron(). The method with the highest priority value is used.
  */
+#ifndef BUILD_STATIC
 #define MUSLY_METHOD_REGIMPL(classname, priority) \
     const plugin_creator_impl<classname> classname::creator(#classname, \
             plugins::METHOD_TYPE, priority);
+#else
+#define MUSLY_METHOD_REGIMPL(classname, priority)
+#endif
+
+/** Alternative form for MUSLY_METHOD_REGIMPL to be used for static builds of
+ * the library. This form has to be placed in global scope in lib.cpp to make
+ * the plugin available in static builds.
+ */
+#ifdef BUILD_STATIC
+#define MUSLY_METHOD_REGSTATIC(classname, priority) \
+    static const musly::plugin_creator_impl<musly::methods::classname> \
+            create ## _ ## classname (#classname, \
+            musly::plugins::METHOD_TYPE, priority);
+#endif
 
 } /* namespace musly */
 #endif /* MUSLY_METHOD_H_ */
