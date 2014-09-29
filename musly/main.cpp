@@ -132,9 +132,18 @@ tracks_initialize(
     std::vector<musly_trackid> trackids(tracks.size(), -1);
 
     // initialize the jukebox music style
-    // TODO: random subsample
-    int ret = musly_jukebox_setmusicstyle(mj, tracks.data(),
-            tracks.size());
+    int ret;
+    if (trackids.size() <= 1000) {
+        // use all available tracks
+        ret = musly_jukebox_setmusicstyle(mj, tracks.data(),
+                tracks.size());
+    }
+    else {
+        // use a random subset of 1000 tracks
+        std::vector<musly_track*> tracks2(tracks);
+        std::random_shuffle(tracks2.begin(), tracks2.end());
+        ret = musly_jukebox_setmusicstyle(mj, tracks2.data(), 1000);
+    }
     if (ret != 0) {
         return false;
     }
