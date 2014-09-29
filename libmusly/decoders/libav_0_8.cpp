@@ -79,6 +79,24 @@ if (in_fmt == ifmt || in_fmt == ifmtp) {\
     return 0;
 }
 
+void libav_log_callback(void *ptr, int level, const char *fmt, va_list vargs)
+{
+    if (level <= av_log_get_level()) {
+#if __cplusplus > 199711L
+        int len = vsnprintf(NULL, 0, fmt, vargs);
+        // Note: len does not include the terminating '\0' character.
+        // We intentionally make the buffer one character too short
+        // to avoid including the end-of-line character of libav.
+        char *buf = new char[len];
+        vsnprintf(buf, len, fmt, vargs);
+        MINILOG(logTRACE) << "libav: " << buf;
+        delete[] buf;
+#else
+        vfprintf(FileLogger::get_stream(), fmt, vargs);
+#endif
+    }
+}
+
 std::vector<float>
 libav_0_8::decodeto_22050hz_mono_float(
         const std::string& file,
@@ -88,21 +106,33 @@ libav_0_8::decodeto_22050hz_mono_float(
     MINILOG(logTRACE) << "Decoding: " << file << " started.";
 
     const int target_rate = 22050;
+    int avret;
 
-    // silence libav
-    av_log_set_level(0);
-
+    // show libav messages only in verbose mode
+    if (MiniLog::current_level() >= logTRACE) {
+        av_log_set_level(AV_LOG_VERBOSE);
+        av_log_set_callback(libav_log_callback);
+    }
+    else {
+        av_log_set_level(AV_LOG_PANIC);
+    }
 
     // guess input format
     AVFormatContext* fmtx = NULL;
-    int avret = avformat_open_input(&fmtx, file.c_str(), NULL, NULL);
+    avret = avformat_open_input(&fmtx, file.c_str(), NULL, NULL);
     if (avret < 0) {
         MINILOG(logERROR) << "Could not open file, or detect file format";
         return std::vector<float>(0);
     }
 
     // retrieve stream information
-    if (avformat_find_stream_info(fmtx, NULL) < 0) {
+#ifdef _OPENMP
+    #pragma omp critical
+#endif
+    {
+    avret = avformat_find_stream_info(fmtx, NULL);
+    }
+    if (avret < 0) {
         MINILOG(logERROR) << "Could not find stream info";
 
         avformat_close_input(&fmtx);
@@ -134,7 +164,12 @@ libav_0_8::decodeto_22050hz_mono_float(
     // (kindly ask for stereo downmix and floats, but not all decoders care)
     decx->request_channel_layout = AV_CH_LAYOUT_STEREO_DOWNMIX;
     decx->request_sample_fmt = AV_SAMPLE_FMT_FLT;
+#ifdef _OPENMP
+    #pragma omp critical
+#endif
+    {
     avret = avcodec_open2(decx, dec, NULL);
+    }
     if (avret < 0) {
         MINILOG(logERROR) << "Could not open codec.";
 
@@ -380,8 +415,13 @@ libav_0_8::decodeto_22050hz_mono_float(
         delete[] buffer;
     }
     av_free(frame);
+#ifdef _OPENMP
+    #pragma omp critical
+#endif
+    {
     avcodec_close(decx);
     avformat_close_input(&fmtx);
+    }
 
     MINILOG(logTRACE) << "Decoding: " << file << " finalized.";
     return pcm;
