@@ -13,6 +13,10 @@
 #ifndef MUSLY_DECODERS_LIBAV_0_8_H_
 #define MUSLY_DECODERS_LIBAV_0_8_H_
 
+extern "C" {
+    #include <libavcodec/avcodec.h>
+}
+
 #include "decoder.h"
 
 namespace musly {

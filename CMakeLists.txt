@@ -18,7 +18,7 @@ else ()
     add_definitions(-DNDEBUG -Wall -g -O3)
 endif () 
 
-option(BUILD_STATIC "Make a static build" OFF)
+option(BUILD_STATIC "Make a static build of libmusly" OFF)
 if (BUILD_STATIC)
     set(BUILD_SHARED_LIBS OFF)
 
