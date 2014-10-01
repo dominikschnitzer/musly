@@ -2,7 +2,7 @@ Musly
 =====
 
 (c) 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
-         2014, Jan Schlüter <jan.schlueter@ofai.at>
+and      2014, Jan Schlüter <jan.schlueter@ofai.at>
 
 Musly is a program and library for high performance audio music similarity
 computation. Musly only uses the audio signal when computing similarities!
@@ -41,6 +41,12 @@ additions:
 -   When configured with `-DUSE_OPENMP=On` in `cmake` (or enabling the option
     in `ccmake`), the musly command line client and library are built with
     OpenMP support. The command line client parallelizes several computations.
+-   `musly_jukebox_binsize()`, `musly_jukebox_tobin()`,
+    `musly_jukebox_frombin()`, `musly_jukebox_tofile()` and
+    `musly_jukebox_fromfile()` are added to the API, allowing to serialize
+    and restore the internal state of a jukebox influenced by calls to
+    `musly_jukebox_setmusicstyle()`, `musly_jukebox_addtracks()` and
+    `musly_jukebox_removetracks()`.
 
 ### VERSION 0.1 ###
 Released on 30 Jan 2014.
