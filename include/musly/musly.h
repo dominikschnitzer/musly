@@ -535,12 +535,13 @@ musly_track_size(
 
 
 /** Returns the buffer size in bytes required to hold a musly_track. To
- * serialize a musly_track for persistent use musly_track_tobin(). The buffer
- * size varies for each music similarity method.
+ * serialize a musly_track for platform-independent usage, call
+ * musly_track_tobin(), otherwise just copy the memory directly.
+ * The size returned is dependent on the music similarity method.
  *
  * \param[in] jukebox A reference to an initialized musly_jukebox object.
  *
- * \returns The required minimum buffer size required to hold a musly_track.
+ * \returns The required buffer size required to hold a musly_track.
  *
  * \sa musly_jukebox_poweron(), musly_track_tobin(), musly_track_frombin().
  */
@@ -561,6 +562,11 @@ musly_track_binsize(
  * \returns The number of bytes written (musly_track_binsize()) in case of
  * success, -1 in case an error occurred.
  *
+ * \note This transforms the musly_track data from host byte order to
+ * network byte order (which is big endian). If you do not need to transmit
+ * the data across platforms, you can directly copy musly_track_binsize() bytes
+ * from \p from_track to \p to_buffer, or not use a buffer at all.
+ *
  * \sa musly_jukebox_poweron(), musly_track_binsize(), musly_track_frombin().
  */
 MUSLY_EXPORT int
@@ -580,6 +586,11 @@ musly_track_tobin(
  *
  * \returns The number of bytes read (musly_track_binsize()) in case of
  * success, -1 in case an error occurred.
+ *
+ * \note This transforms the musly_track data from network byte order (which is
+ * big endian) to host byte order. If you do not need to transmit the data
+ * across platforms, you can directly copy musly_track_binsize() bytes from
+ * \p from_buffer to \p to_track, or not use a buffer at all.
  *
  * \sa musly_jukebox_poweron(), musly_track_binsize(), musly_track_tobin().
  */
