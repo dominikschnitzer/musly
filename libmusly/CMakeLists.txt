@@ -13,7 +13,7 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/external")
     set_source_files_properties(${LIBMUSLY_EXTERNAL}
         PROPERTIES COMPILE_FLAGS "${LIBMUSLY_EXTERNAL_FLAGS}")
     set_source_files_properties(lib.cpp
-        PROPERTIES COMPILE_FLAGS "-DLIBMUSLY_EXTERNAL")
+        PROPERTIES COMPILE_FLAGS "-DLIBMUSLY_EXTERNAL ${LIBMUSLY_EXTERNAL_FLAGS}")
 endif()
 
 if(EXISTS "${LIBAV_INCLUDE_DIRS}/libavutil/channel_layout.h")
