@@ -229,8 +229,15 @@ FileLogger::write(
     if (!stream) {
         return;
     }
+#ifdef _OPENMP
+    #pragma omp critical (minilog)
+    {
+#endif
     fprintf(stream, "%s", msg.c_str());
     fflush(stream);
+#ifdef _OPENMP
+    }
+#endif
 }
 
 class MiniLog :

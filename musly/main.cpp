@@ -132,9 +132,18 @@ tracks_initialize(
     std::vector<musly_trackid> trackids(tracks.size(), -1);
 
     // initialize the jukebox music style
-    // TODO: random subsample
-    int ret = musly_jukebox_setmusicstyle(mj, tracks.data(),
-            tracks.size());
+    int ret;
+    if (trackids.size() <= 1000) {
+        // use all available tracks
+        ret = musly_jukebox_setmusicstyle(mj, tracks.data(),
+                tracks.size());
+    }
+    else {
+        // use a random subset of 1000 tracks
+        std::vector<musly_track*> tracks2(tracks);
+        std::random_shuffle(tracks2.begin(), tracks2.end());
+        ret = musly_jukebox_setmusicstyle(mj, tracks2.data(), 1000);
+    }
     if (ret != 0) {
         return false;
     }
@@ -189,7 +198,14 @@ write_mirex_full(
         alltrackids[i] = i;
     }
 
+#ifdef _OPENMP
+    #pragma omp parallel
+    {
+#endif
     std::vector<float> similarities(tracks.size());
+#ifdef _OPENMP
+    #pragma omp for schedule(static) ordered
+#endif
     for (int i = 0; i < (int)tracks.size(); i++) {
         int ret = musly_jukebox_similarity(mj, tracks[i], i,
                 tracks.data(), alltrackids.data(),
@@ -199,13 +215,23 @@ write_mirex_full(
                     std::numeric_limits<float>::max());
         }
 
+#ifdef _OPENMP
+        #pragma omp ordered
+        {
+#endif
         // write to file
         f << i+1;
         for (int j = 0; j < (int)similarities.size(); j++) {
             f << '\t' << similarities[j];
         }
         f << std::endl;
+#ifdef _OPENMP
+        }  // pragma omp ordered
+#endif
     }
+#ifdef _OPENMP
+    }  // pragma omp parallel
+#endif
 
     f.close();
 
@@ -326,6 +352,9 @@ write_mirex_sparse(
         trackids[i] = i;
     }
 
+#ifdef _OPENMP
+    #pragma omp parallel for schedule(static)
+#endif
     for (int i = 0; i < (int)tracks.size(); i++) {
         // compute k nearest neighbors
         std::vector<similarity_knn> track_idx = compute_similarity(
@@ -335,6 +364,10 @@ write_mirex_sparse(
             continue;
         }
 
+#ifdef _OPENMP
+        #pragma omp critical
+        {
+#endif
         // write to file
         f << tracks_files[i];
         for (int i = 0; i < k; i++) {
@@ -342,6 +375,9 @@ write_mirex_sparse(
             f << "\t" << tracks_files[j] << "," << track_idx[i].second;
         }
         f << std::endl;
+#ifdef _OPENMP
+        }
+#endif
     }
 
     f.close();
@@ -388,7 +424,6 @@ evaluate_collection(
         int num_artists,
         int k)
 {
-    Eigen::VectorXi genre_hist(num_genres);
     Eigen::MatrixXi genre_confusion =
             Eigen::MatrixXi::Zero(num_genres, num_genres);
     if (k >= (int)alltracks.size()) {
@@ -401,6 +436,16 @@ evaluate_collection(
         alltrackids[i] = i;
     }
 
+#ifdef _OPENMP
+    #pragma omp parallel
+    {
+#endif
+    Eigen::VectorXi genre_hist(num_genres);
+    Eigen::MatrixXi thread_genre_confusion =
+            Eigen::MatrixXi::Zero(num_genres, num_genres);
+#ifdef _OPENMP
+    #pragma omp for schedule(static)
+#endif
     for (int i = 0; i < (int)alltracks.size(); i++) {
 
         std::vector<similarity_knn> knn_tracks = compute_similarity(
@@ -441,8 +486,17 @@ evaluate_collection(
         genre_hist.maxCoeff(&g_predicted);
 
         // update the confusion matrix
+#ifdef _OPENMP
+        thread_genre_confusion(g, g_predicted)++;
+#else
         genre_confusion(g, g_predicted)++;
+#endif
     }
+#ifdef _OPENMP
+    #pragma omp critical
+    genre_confusion += thread_genre_confusion;
+    }  // pragma omp parallel
+#endif
 
     return genre_confusion;
 }
@@ -454,6 +508,8 @@ main(int argc, char *argv[])
             << std::endl;
     std::cout << "Version: " << musly_version() << std::endl;
     std::cout << "(c) 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>"
+            << std::endl
+            <<   "         2014, Jan Schlüter <jan.schlueter@ofai.at>"
             << std::endl << std::endl;
 
     // Check if we compiled any music similarity methods
@@ -490,6 +546,11 @@ main(int argc, char *argv[])
                 musly_jukebox_listmethods() << std::endl;
         std::cout << "Available audio file decoders: " <<
                 musly_jukebox_listdecoders() << std::endl;
+#ifdef _OPENMP
+        std::cout << "OpenMP support: enabled" << std::endl;
+#else
+        std::cout << "OpenMP support: disabled" << std::endl;
+#endif
 
     // wrong parameter combination
     } else if (po.get_action() == "error") {
@@ -512,54 +573,85 @@ main(int argc, char *argv[])
         std::cout << "Read " << track_count << " musly tracks." << std::endl;
 
         // search for new files and analyze them
-        std::string file;
         fileiterator fi(po.get_option_str("a"), po.get_option_str("x"));
-        int buffersize = musly_track_binsize(mj);
-        unsigned char* buffer =
-                new unsigned char[buffersize];
-        musly_track* mt = musly_track_alloc(mj);
-        int count = 1;
-        if (fi.get_nextfilename(file)) {
+        std::string afile;
+        if (!fi.get_nextfilename(afile)) {
+            std::cout << "No files found while scanning: " <<
+                    po.get_option_str("a") << std::endl;
+        }
+        else {
+            int buffersize = musly_track_binsize(mj);
+#ifdef _OPENMP
+            // collect all file names in a vector first
+            std::vector<std::string> files;
             do {
+                files.push_back(afile);
+            } while (fi.get_nextfilename(afile));
+            #pragma omp parallel if (files.size() > 1)
+#endif
+            {
+            unsigned char* buffer =
+                    new unsigned char[buffersize];
+            musly_track* mt = musly_track_alloc(mj);
+#ifdef _OPENMP
+            // do a parallel for loop over the collected file names
+            // use a dynamic schedule because computation may differ per file
+            #pragma omp for schedule(dynamic)
+            for (int i = 0; i < files.size(); i++) {
+                // set file to files[i] for the loop body
+                std::string& file = files[i];
+#else
+            // do a while loop over the fileiterator
+            int i = 0;
+            do {
+                // set file to our existing afile for the loop body
+                std::string& file = afile;
+#endif
                 if (cf.contains_track(file)) {
-                    std::cout << "Skipping already analyzed [" << count << "]: "
+#ifdef _OPENMP
+                    #pragma omp critical
+#endif
+                    {
+                    std::cout << "Skipping already analyzed [" << i+1 << "]: "
                             << limit_string(file, 60) << std::endl;
-                    count++;
-
+                    }  // pragma omp critical
                     continue;
                 }
-                std::cout << "Analyzing [" << count << "]: "
+#ifndef _OPENMP
+                std::cout << "Analyzing [" << i+1 << "]: "
                         << limit_string(file, 60) << std::flush;
+#endif
                 int ret = musly_track_analyze_audiofile(mj, file.c_str(), 30, -48, mt);
+#ifdef _OPENMP
+                #pragma omp critical
+                {
+                std::cout << "Analyzing [" << i+1 << "]: "
+                        << limit_string(file, 60);
+#endif
                 if (ret == 0) {
                     int serialized_buffersize =
                             musly_track_tobin(mj, mt, buffer);
                     if (serialized_buffersize == buffersize) {
                         cf.append_track(file, buffer, buffersize);
                         std::cout << " - [OK]" << std::endl;
-                        count++;
                     } else {
                         std::cout << " - [FAILED]." << std::endl;
-                        // Do not append failed files
-                        //cf.append_track(file, 0, 0);
                     }
 
                 } else {
                     std::cout << " - [FAILED]." << std::endl;
-                    // Do not append failed files
-                    //cf.append_track(file, 0, 0);
                 }
-
-            } while (fi.get_nextfilename(file));
-
-            // TODO: Make analysis run in parallel/multi-threaded
-
-        } else {
-            std::cout << "No files found while scanning: " <<
-                    po.get_option_str("a") << std::endl;
+#ifdef _OPENMP
+                }  // pragma omp critical
+            }  // for loop
+#else
+                i++;
+            } while (fi.get_nextfilename(afile));
+#endif
+            delete[] buffer;
+            musly_track_free(mt);
+            }  // pragma omp parallel
         }
-        delete[] buffer;
-        musly_track_free(mt);
 
     // -n: new collection file
     } else if (po.get_action() == "n") {

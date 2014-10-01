@@ -38,6 +38,9 @@ additions:
     excerpt to be decoded and analyzed instead of the previous `max_seconds`,
     and the libav-based decoder's performance has been improved significantly.
 -   The musly command line client can compute sparse distance matrices (-s).
+-   When configured with `-DUSE_OPENMP=On` in `cmake` (or enabling the option
+    in `ccmake`), the musly command line client and library are built with
+    OpenMP support. The command line client parallelizes several computations.
 
 ### VERSION 0.1 ###
 Released on 30 Jan 2014.
