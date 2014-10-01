@@ -10,6 +10,7 @@
  * with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#include <algorithm>
 #include <Eigen/Core>
 
 #include "minilog.h"
@@ -248,6 +249,102 @@ timbre::swapped_positions(
         int pos_b) {
     // positions in idpool have changed; update mp index accordingly
     mp.swap_normfacts(pos_a, pos_b);
+}
+
+int
+timbre::serialize_metadata(
+        unsigned char* buffer) {
+    if (buffer) {
+        // number of registered tracks
+        *(int*)(buffer) = idpool.get_size();
+        buffer += sizeof(int);
+
+        // largest seen track id
+        *(musly_trackid*)(buffer) = idpool.get_max_seen();
+        buffer += sizeof(musly_trackid);
+
+        // mutual proximity tracks
+        std::vector<musly_track*> &mptracks = *mp.get_normtracks();
+        *(int*)(buffer) = mptracks.size();
+        buffer += sizeof(int);
+        for (int i = 0; i < (int)mptracks.size(); i++) {
+            std::copy(mptracks[i], mptracks[i] + track_getsize(), (musly_track*)buffer);
+            buffer += track_getsize() * sizeof(musly_track);
+        }
+    }
+    return sizeof(int) + sizeof(musly_trackid) + sizeof(int)
+            + mp.get_normtracks()->size() * track_getsize() * sizeof(musly_track);
+}
+
+int
+timbre::deserialize_metadata(
+        unsigned char* buffer) {
+    // number of registered tracks
+    int expected_tracks = *(int*)(buffer);
+    buffer += sizeof(int);
+
+    // largest seen track id
+    musly_trackid max_seen = *(musly_trackid*)(buffer);
+    buffer += sizeof(musly_trackid);
+    idpool.add_ids(&max_seen, 1);
+    idpool.remove_ids(&max_seen, 1);
+
+    // mutual proximity tracks
+    int num_mptracks = *(int*)(buffer);
+    buffer += sizeof(int);
+    musly_track** mptracks = new musly_track*[num_mptracks];
+    for (int i = 0; i < num_mptracks; i++) {
+        mptracks[i] = (musly_track*)buffer;
+        buffer += track_getsize() * sizeof(musly_track);
+    }
+    mp.set_normtracks(mptracks, num_mptracks);
+    delete[] mptracks;
+    mp.append_normfacts(expected_tracks);
+
+    return expected_tracks;
+}
+
+int
+timbre::serialize_trackdata(
+        unsigned char* buffer,
+        int num_tracks,
+        int skip_tracks) {
+    if ((num_tracks < 0) || (skip_tracks < 0)) {
+        return -1;
+    }
+    if (buffer) {
+        if (num_tracks + skip_tracks > idpool.get_size()) {
+            return -1;
+        }
+        for (int i = skip_tracks; i < skip_tracks + num_tracks; i++) {
+            *(musly_trackid*)(buffer) = idpool[i];
+            buffer += sizeof(musly_trackid);
+            mp.get_normfacts(i,
+                    (float*)(buffer),
+                    (float*)(buffer + sizeof(float)));
+            buffer += 2 * sizeof(float);
+        }
+    }
+    return num_tracks * (sizeof(musly_trackid) + 2 * sizeof(float));
+}
+
+int
+timbre::deserialize_trackdata(
+        unsigned char* buffer,
+        int num_tracks) {
+    if (num_tracks < 0) {
+        return -1;
+    }
+    int had_tracks = idpool.get_size();
+    for (int i = 0; i < num_tracks; i++) {
+        idpool.add_ids((musly_trackid*)buffer, 1);
+        buffer += sizeof(musly_trackid);
+        mp.set_normfacts(had_tracks + i,
+                *(float*)(buffer),
+                *(float*)(buffer + sizeof(float)));
+        buffer += 2 * sizeof(float);
+    }
+    return num_tracks;
 }
 
 } /* namespace methods */

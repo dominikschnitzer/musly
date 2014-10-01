@@ -370,6 +370,125 @@ musly_jukebox_guessneighbors_filtered(
         int num_limit_to);
 
 
+/**
+ * Returns the size in bytes needed for serializing the jukebox state.
+ *
+ * \param[in] jukebox An initialized Musly jukebox object.
+ * \param[in] header If nonzero, include the size needed for serializing
+ * jukebox metadata. This size is dependent on the similarity measure and
+ * can also depend on the internal jukebox state.
+ * \param[in] num_tracks If greater than zero, include the size needed for
+ * serializing the state of \p num_tracks registered tracks. If negative,
+ * include the size needed for serializing the state of all currently
+ * registered tracks. This size is dependent on the similarity measure only.
+ * \returns The number of bytes needed to store the state information.
+ *
+ * \note This method gives the sizes of internal indices built when calling
+ * musly_jukebox_setmusicstyle() and musly_jukebox_addtracks(). For
+ * the size of musly_track objects, see musly_track_binsize().
+ */
+MUSLY_EXPORT int
+musly_jukebox_binsize(
+        musly_jukebox* jukebox,
+        int header,
+        int num_tracks);
+
+
+/**
+ * Serializes the jukebox state into a byte buffer and returns the number of
+ * bytes written. Call musly_jukebox_binsize() to determine the required
+ * buffer size, and musly_jukebox_frombin() to deserialize a jukebox state.
+ *
+ * \param[in] jukebox An initialized Musly jukebox object.
+ * \param[out] buffer The buffer to write to.
+ * \param[in] header If nonzero, write the jukebox metadata.
+ * \param[in] num_tracks The number of registered tracks to write the jukebox
+ * state for. If negative or too large, writes the state for all except the
+ * first `skip_tracks` registered tracks.
+ * \param[in] skip_tracks The number of tracks to skip. Must be in range
+ * [0, get_trackcount()]. Must be 0 if \p header is nonzero.
+ * \returns The number of bytes written to the buffer, or -1 in case of an
+ * error.
+ *
+ * \note \p skip_tracks allows to serialize the jukebox state in small
+ * portions. Set \p num_tracks to the number of track states you can handle
+ * at once, then call musly_jukebox_tobin() repeatedly in a loop, setting
+ * \p skip_tracks to the number of track states you have already serialized.
+ *
+ * \note This method serializes the internal indices built when calling
+ * musly_jukebox_setmusicstyle() and musly_jukebox_addtracks(). For
+ * serialization of musly_track objects, see musly_track_tobin().
+ *
+ * \sa musly_jukebox_tofile()
+ */
+MUSLY_EXPORT int
+musly_jukebox_tobin(
+        musly_jukebox* jukebox,
+        unsigned char* buffer,
+        int header,
+        int num_tracks,
+        int skip_tracks);
+
+
+/**
+ * Deserializes the jukebox state from a byte buffer and returns the number of
+ * bytes read. Use this to restore a jukebox state previously saved with
+ * musly_jukebox_tobin().
+ *
+ * \param[in] jukebox An initialized Musly jukebox object. This must have been
+ * initialized with the same music similarity method as the jukebox the state
+ * has been exported from, otherwise behavior is undefined.
+ * \param[in] buffer The byte buffer to read from.
+ * \param[in] header If nonzero, will read and restore the jukebox metadata.
+ * \param[in] num_tracks If greater than zero, will read and restore the state
+ * of \p num_tracks registered tracks. If negative, will read and restore the
+ * state of all registered tracks (only possible if \p header is nonzero).
+ * \returns The number of bytes read, or -1 in case of an error.
+ *
+ * \note This method deserializes the internal indices built when calling
+ * musly_jukebox_setmusicstyle() and musly_jukebox_addtracks(). For
+ * deserialization of musly_track objects, see musly_track_frombin().
+ *
+ * \sa musly_jukebox_fromfile()
+ */
+MUSLY_EXPORT int
+musly_jukebox_frombin(
+        musly_jukebox* jukebox,
+        unsigned char* buffer,
+        int header,
+        int num_tracks);
+
+
+/**
+ * Serializes a jukebox state and writes it to a file.
+ *
+ * \param jukebox An initialized Musly jukebox object.
+ * \param filename The name of the file to write to.
+ * \returns The number of bytes written, or -1 in case of an error.
+ *
+ * \sa musly_jukebox_fromfile
+ */
+MUSLY_EXPORT int
+musly_jukebox_tofile(
+        musly_jukebox* jukebox,
+        const char* filename);
+
+
+/**
+ * Restores a jukebox from a file written by musly_jukebox_tofile().
+ *
+ * \param filename The name of the file to read from.
+ * \returns A reference to an initialized Musly jukebox object, or NULL in
+ * case of an error.
+ *
+ * \note Currently, a file cannot be read on a platform of a different
+ * architecture (integer size or byte order) than it was written with.
+ */
+MUSLY_EXPORT musly_jukebox*
+musly_jukebox_fromfile(
+        const char* filename);
+
+
 /** Allocates a musly_track in memory. As the size of a musly_track varies for
  * each music similarity method, an initialized Musly jukebox object reference
  * needs to be passed argument. You need to free the allocated musly_track with

@@ -42,6 +42,18 @@ public:
             Eigen::VectorXf& sim);
 
     void
+    set_normfacts(
+            int position,
+            float mu,
+            float std);
+
+    void
+    get_normfacts(
+            int position,
+            float* mu,
+            float* std);
+
+    void
     swap_normfacts(
             int position1,
             int position2);

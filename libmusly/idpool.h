@@ -89,6 +89,10 @@ private:
 public:
     unordered_idpool() {}
 
+    inline const std::set<T>& idset() const {
+        return registered_ids;
+    }
+
     int
     get_size() {
         return registered_ids.size();
@@ -117,6 +121,20 @@ public:
             }
         }
         return deleted;
+    }
+
+    void
+    export_ids(int from, int to, T* ids) {
+        typename std::set<T>::iterator it = registered_ids.begin();
+        std::advance(it, from);
+#if __cplusplus > 199711L
+        std::copy_n(it, to - from, ids);
+#else
+        while (from < to) {
+            *ids++ = *it++;
+            from++;
+        }
+#endif
     }
 };
 

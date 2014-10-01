@@ -97,5 +97,38 @@ method::guess_neighbors(
     return -1;
 }
 
+int
+method::serialize_metadata(
+        unsigned char* buffer) {
+    if (buffer) {
+        *(int*)(buffer) = get_trackcount();
+    }
+    return sizeof(int);
+}
+
+int
+method::deserialize_metadata(
+        unsigned char* buffer) {
+    int expected_tracks = *(int*)(buffer);
+    return expected_tracks;
+}
+
+int
+method::serialize_trackdata(
+        unsigned char* buffer,
+        int num_tracks,
+        int skip_tracks) {
+    // default: not implemented
+    return -1;
+}
+
+int
+method::deserialize_trackdata(
+        unsigned char* buffer,
+        int num_tracks) {
+    // default: not implemented
+    return -1;
+}
+
 
 } /* namespace musly */
