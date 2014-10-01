@@ -597,7 +597,7 @@ main(int argc, char *argv[])
             // do a parallel for loop over the collected file names
             // use a dynamic schedule because computation may differ per file
             #pragma omp for schedule(dynamic)
-            for (int i = 0; i < files.size(); i++) {
+            for (int i = 0; i < (int)files.size(); i++) {
                 // set file to files[i] for the loop body
                 std::string& file = files[i];
 #else
