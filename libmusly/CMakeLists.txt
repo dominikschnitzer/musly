@@ -21,6 +21,12 @@ if(EXISTS "${LIBAV_INCLUDE_DIRS}/libavutil/channel_layout.h")
         PROPERTIES COMPILE_FLAGS "-DHAVE_AVUTIL_CHANNEL_LAYOUT")
 endif()
 
+if(USE_OPENMP AND OPENMP_FOUND)
+    # disable OpenMP for kiss FFT, it slows things down terribly
+    set_source_files_properties(kissfft/kiss_fft.c
+        PROPERTIES COMPILE_FLAGS "-U_OPENMP")
+endif()
+
 include_directories(
     ${LIBMUSLY_INCLUDE}
     ${EIGEN3_INCLUDE_DIR}
