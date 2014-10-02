@@ -46,7 +46,8 @@ additions:
     `musly_jukebox_fromfile()` are added to the API, allowing to serialize
     and restore the internal state of a jukebox influenced by calls to
     `musly_jukebox_setmusicstyle()`, `musly_jukebox_addtracks()` and
-    `musly_jukebox_removetracks()`.
+    `musly_jukebox_removetracks()`. The command line client makes use of this
+    when given the option -j or -J.
 
 ### VERSION 0.1 ###
 Released on 30 Jan 2014.
