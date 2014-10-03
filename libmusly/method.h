@@ -173,6 +173,13 @@ public:
     get_maxtrackid() = 0;
 
     /**
+     *
+     */
+    virtual int
+    get_trackids(
+            musly_trackid* trackids) = 0;
+
+    /**
      * Writes metadata about the jukebox state into a binary buffer.
      *
      * \param buffer The buffer to write to, or <tt>NULL</tt> to query the

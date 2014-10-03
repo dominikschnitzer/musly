@@ -229,6 +229,18 @@ musly_jukebox_maxtrackid(
 }
 
 int
+musly_jukebox_gettrackids(
+        musly_jukebox* jukebox,
+        musly_trackid* trackids) {
+    if (jukebox && jukebox->method) {
+        musly::method* m = reinterpret_cast<musly::method*>(jukebox->method);
+        return m->get_trackids(trackids);
+    } else {
+        return -1;
+    }
+}
+
+int
 musly_jukebox_similarity(
         musly_jukebox* jukebox,
         musly_track* seed_track,

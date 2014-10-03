@@ -243,6 +243,13 @@ timbre::get_maxtrackid() {
     return idpool.get_max_seen();
 }
 
+int
+timbre::get_trackids(
+        musly_trackid* trackids) {
+    std::copy(idpool.idlist().begin(), idpool.idlist().end(), trackids);
+    return idpool.get_size();
+}
+
 void
 timbre::swapped_positions(
         int pos_a,

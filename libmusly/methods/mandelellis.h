@@ -99,6 +99,10 @@ public:
     get_maxtrackid();
 
     virtual int
+    get_trackids(
+            musly_trackid* trackids);
+
+    virtual int
     serialize_metadata(
             unsigned char* buffer);
 

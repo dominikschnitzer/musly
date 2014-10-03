@@ -258,6 +258,22 @@ musly_jukebox_maxtrackid(
         musly_jukebox* jukebox);
 
 
+/** Returns the trackids of all tracks currently registered with the the Musly
+ * jukebox. Use musly_jukebox_trackcount() to ask how many trackids will be
+ * returned.
+ *
+ * \param[in] jukebox the Musly jukebox to query
+ * \param[out] trackids the ids of all registered tracks
+ * \return the number of track ids written, or -1 in case of an error
+ *
+ * \sa musly_jukebox_trackcount()
+ */
+MUSLY_EXPORT int
+musly_jukebox_gettrackids(
+        musly_jukebox* jukebox,
+        musly_trackid* trackids);
+
+
 /** Computes the similarity between a seed track and a list of other music
  * tracks. To compute similarities between two music tracks the following
  * steps have to been taken:

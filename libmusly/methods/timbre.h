@@ -105,6 +105,10 @@ public:
     virtual int
     get_maxtrackid();
 
+    virtual int
+    get_trackids(
+            musly_trackid* trackids);
+
     virtual void
     swapped_positions(
             int pos_a,

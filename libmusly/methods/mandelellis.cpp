@@ -186,6 +186,13 @@ mandelellis::get_maxtrackid() {
 }
 
 int
+mandelellis::get_trackids(
+        musly_trackid* trackids) {
+    idpool.export_ids(0, idpool.get_size(), trackids);
+    return idpool.get_size();
+}
+
+int
 mandelellis::serialize_metadata(
         unsigned char* buffer) {
     if (buffer) {
