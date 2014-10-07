@@ -54,6 +54,7 @@
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;<a class="el" href="musly__types_8h_source.html">musly/musly_types.h</a>&gt;</code><br/>
+<code>#include &lt;stdio.h&gt;</code><br/>
 </div>
 <p><a href="musly_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -100,6 +101,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a2c653b4ea8349785cd437cce3a8cf99f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="musly_8h.html#a69598017d76c3d22e9f5a897afae1932">MUSLY_EXPORT</a> <a class="el" href="musly__types_8h.html#a792054f9e0bc4891cf6e8f4483895f12">musly_trackid</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="musly_8h.html#a2c653b4ea8349785cd437cce3a8cf99f">musly_jukebox_maxtrackid</a> (<a class="el" href="structmusly__jukebox.html">musly_jukebox</a> *jukebox)</td></tr>
 <tr class="memdesc:a2c653b4ea8349785cd437cce3a8cf99f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the largest track identifier ever registered with the Musly jukebox.  <a href="#a2c653b4ea8349785cd437cce3a8cf99f">More...</a><br/></td></tr>
 <tr class="separator:a2c653b4ea8349785cd437cce3a8cf99f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a3a5999901f9d154ef73debfda07eca"><td class="memItemLeft" align="right" valign="top"><a class="el" href="musly_8h.html#a69598017d76c3d22e9f5a897afae1932">MUSLY_EXPORT</a> int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="musly_8h.html#a5a3a5999901f9d154ef73debfda07eca">musly_jukebox_gettrackids</a> (<a class="el" href="structmusly__jukebox.html">musly_jukebox</a> *jukebox, <a class="el" href="musly__types_8h.html#a792054f9e0bc4891cf6e8f4483895f12">musly_trackid</a> *trackids)</td></tr>
+<tr class="memdesc:a5a3a5999901f9d154ef73debfda07eca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the trackids of all tracks currently registered with the the Musly jukebox.  <a href="#a5a3a5999901f9d154ef73debfda07eca">More...</a><br/></td></tr>
+<tr class="separator:a5a3a5999901f9d154ef73debfda07eca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6dfead82d6ece20a4b80e96b57ebec18"><td class="memItemLeft" align="right" valign="top"><a class="el" href="musly_8h.html#a69598017d76c3d22e9f5a897afae1932">MUSLY_EXPORT</a> int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="musly_8h.html#a6dfead82d6ece20a4b80e96b57ebec18">musly_jukebox_similarity</a> (<a class="el" href="structmusly__jukebox.html">musly_jukebox</a> *jukebox, <a class="el" href="musly__types_8h.html#aa584590cd7f056b50b940138d5e7777b">musly_track</a> *seed_track, <a class="el" href="musly__types_8h.html#a792054f9e0bc4891cf6e8f4483895f12">musly_trackid</a> seed_trackid, <a class="el" href="musly__types_8h.html#aa584590cd7f056b50b940138d5e7777b">musly_track</a> **tracks, <a class="el" href="musly__types_8h.html#a792054f9e0bc4891cf6e8f4483895f12">musly_trackid</a> *trackids, int num_tracks, float *similarities)</td></tr>
 <tr class="memdesc:a6dfead82d6ece20a4b80e96b57ebec18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the similarity between a seed track and a list of other music tracks.  <a href="#a6dfead82d6ece20a4b80e96b57ebec18">More...</a><br/></td></tr>
 <tr class="separator:a6dfead82d6ece20a4b80e96b57ebec18"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -116,8 +120,14 @@ Functions</h2></td></tr>
 <tr class="memdesc:a92f4564deb4149d548af58be73e4ddb9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes the jukebox state into a byte buffer and returns the number of bytes written.  <a href="#a92f4564deb4149d548af58be73e4ddb9">More...</a><br/></td></tr>
 <tr class="separator:a92f4564deb4149d548af58be73e4ddb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a61ea93157ff2d5c47b9d1424d12d8d08"><td class="memItemLeft" align="right" valign="top"><a class="el" href="musly_8h.html#a69598017d76c3d22e9f5a897afae1932">MUSLY_EXPORT</a> int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="musly_8h.html#a61ea93157ff2d5c47b9d1424d12d8d08">musly_jukebox_frombin</a> (<a class="el" href="structmusly__jukebox.html">musly_jukebox</a> *jukebox, unsigned char *buffer, int header, int num_tracks)</td></tr>
-<tr class="memdesc:a61ea93157ff2d5c47b9d1424d12d8d08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserializes the jukebox state from a byte buffer and returns the number of bytes read.  <a href="#a61ea93157ff2d5c47b9d1424d12d8d08">More...</a><br/></td></tr>
+<tr class="memdesc:a61ea93157ff2d5c47b9d1424d12d8d08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserializes the jukebox state from a byte buffer and returns the number of tracks expected or read.  <a href="#a61ea93157ff2d5c47b9d1424d12d8d08">More...</a><br/></td></tr>
 <tr class="separator:a61ea93157ff2d5c47b9d1424d12d8d08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d0a6d87f6e9296c3798e128efd96261"><td class="memItemLeft" align="right" valign="top"><a class="el" href="musly_8h.html#a69598017d76c3d22e9f5a897afae1932">MUSLY_EXPORT</a> int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="musly_8h.html#a3d0a6d87f6e9296c3798e128efd96261">musly_jukebox_tostream</a> (<a class="el" href="structmusly__jukebox.html">musly_jukebox</a> *jukebox, FILE *stream)</td></tr>
+<tr class="memdesc:a3d0a6d87f6e9296c3798e128efd96261"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes a jukebox state and writes it to a stream.  <a href="#a3d0a6d87f6e9296c3798e128efd96261">More...</a><br/></td></tr>
+<tr class="separator:a3d0a6d87f6e9296c3798e128efd96261"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee1092a8568af09f067ff3156059e059"><td class="memItemLeft" align="right" valign="top"><a class="el" href="musly_8h.html#a69598017d76c3d22e9f5a897afae1932">MUSLY_EXPORT</a> <a class="el" href="structmusly__jukebox.html">musly_jukebox</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="musly_8h.html#aee1092a8568af09f067ff3156059e059">musly_jukebox_fromstream</a> (FILE *stream)</td></tr>
+<tr class="memdesc:aee1092a8568af09f067ff3156059e059"><td class="mdescLeft">&#160;</td><td class="mdescRight">Restores a jukebox from a stream written by <a class="el" href="musly_8h.html#a3d0a6d87f6e9296c3798e128efd96261" title="Serializes a jukebox state and writes it to a stream. ">musly_jukebox_tostream()</a>.  <a href="#aee1092a8568af09f067ff3156059e059">More...</a><br/></td></tr>
+<tr class="separator:aee1092a8568af09f067ff3156059e059"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a974e7d23dfaad4939ace6bc8a5d6ea0c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="musly_8h.html#a69598017d76c3d22e9f5a897afae1932">MUSLY_EXPORT</a> int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="musly_8h.html#a974e7d23dfaad4939ace6bc8a5d6ea0c">musly_jukebox_tofile</a> (<a class="el" href="structmusly__jukebox.html">musly_jukebox</a> *jukebox, const char *filename)</td></tr>
 <tr class="memdesc:a974e7d23dfaad4939ace6bc8a5d6ea0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes a jukebox state and writes it to a file.  <a href="#a974e7d23dfaad4939ace6bc8a5d6ea0c">More...</a><br/></td></tr>
 <tr class="separator:a974e7d23dfaad4939ace6bc8a5d6ea0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -357,7 +367,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Deserializes the jukebox state from a byte buffer and returns the number of bytes read. </p>
+<p>Deserializes the jukebox state from a byte buffer and returns the number of tracks expected or read. </p>
 <p>Use this to restore a jukebox state previously saved with <a class="el" href="musly_8h.html#a92f4564deb4149d548af58be73e4ddb9" title="Serializes the jukebox state into a byte buffer and returns the number of bytes written. ">musly_jukebox_tobin()</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -368,9 +378,11 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The number of bytes read, or -1 in case of an error.</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>This method deserializes the internal indices built when calling <a class="el" href="musly_8h.html#ab96efc48ff5ce54f49bb20960249cfd6" title="Initialize the jukebox music style. ">musly_jukebox_setmusicstyle()</a> and <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Add tracks to the Musly jukebox. ">musly_jukebox_addtracks()</a>. For deserialization of musly_track objects, see <a class="el" href="musly_8h.html#a04026ab777b0fcc516946250257894a2" title="Deserializes a byte buffer to a musly_track. ">musly_track_frombin()</a>.</dd></dl>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#aa92b1caf41994beff66710b2980c678b" title="Restores a jukebox from a file written by musly_jukebox_tofile(). ">musly_jukebox_fromfile()</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The number of tracks expected if <code>header</code> is nonzero and <code>num_tracks</code> is zero, the number of tracks read if <code>num_tracks</code> is nonzero, or -1 in case of an error.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This method deserializes the internal indices built when calling <a class="el" href="musly_8h.html#ab96efc48ff5ce54f49bb20960249cfd6" title="Initialize the jukebox music style. ">musly_jukebox_setmusicstyle()</a> and <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Add tracks to the Musly jukebox. ">musly_jukebox_addtracks()</a>. For deserialization of musly_track objects, see <a class="el" href="musly_8h.html#a04026ab777b0fcc516946250257894a2" title="Deserializes a byte buffer to a musly_track. ">musly_track_frombin()</a>.</dd>
+<dd>
+Data cannot be read on a platform of a different architecture (integer size or byte order) than it was written with. Trying so results in unspecified behavior.</dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#aee1092a8568af09f067ff3156059e059" title="Restores a jukebox from a stream written by musly_jukebox_tostream(). ">musly_jukebox_fromstream()</a>, <a class="el" href="musly_8h.html#aa92b1caf41994beff66710b2980c678b" title="Restores a jukebox from a file written by musly_jukebox_tofile(). ">musly_jukebox_fromfile()</a> </dd></dl>
 
 </div>
 </div>
@@ -396,7 +408,76 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A reference to an initialized Musly jukebox object, or NULL in case of an error.</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>Currently, a file cannot be read on a platform of a different architecture (integer size or byte order) than it was written with. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Currently, a file cannot be read on a platform of a different architecture (integer size or byte order) than it was written with. Trying so results in an error; the file includes platform information.</dd>
+<dd>
+Any additional data in the file following the jukebox state will be ignored, so you can freely append custom data after writing it. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="aee1092a8568af09f067ff3156059e059"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="musly_8h.html#a69598017d76c3d22e9f5a897afae1932">MUSLY_EXPORT</a> <a class="el" href="structmusly__jukebox.html">musly_jukebox</a>* musly_jukebox_fromstream </td>
+          <td>(</td>
+          <td class="paramtype">FILE *&#160;</td>
+          <td class="paramname"><em>stream</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Restores a jukebox from a stream written by <a class="el" href="musly_8h.html#a3d0a6d87f6e9296c3798e128efd96261" title="Serializes a jukebox state and writes it to a stream. ">musly_jukebox_tostream()</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">stream</td><td>The file stream to read from. Must be opened in binary mode. The data will be read sequentially, not using any seeking operations, so you can prepend data of your own as long as you position the file pointer to the beginning of the jukebox state before calling this function. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A reference to an initialized Musly jukebox object, or NULL in case of an error.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Currently, a stream cannot be read on a platform of a different architecture (integer size or byte order) than it was written with. Trying so results in an error; the stream includes platform information.</dd>
+<dd>
+See the note in <a class="el" href="musly_8h.html#a3d0a6d87f6e9296c3798e128efd96261" title="Serializes a jukebox state and writes it to a stream. ">musly_jukebox_tostream()</a> for compatibility issues.</dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#a3d0a6d87f6e9296c3798e128efd96261" title="Serializes a jukebox state and writes it to a stream. ">musly_jukebox_tostream()</a> </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a5a3a5999901f9d154ef73debfda07eca"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="musly_8h.html#a69598017d76c3d22e9f5a897afae1932">MUSLY_EXPORT</a> int musly_jukebox_gettrackids </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structmusly__jukebox.html">musly_jukebox</a> *&#160;</td>
+          <td class="paramname"><em>jukebox</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="musly__types_8h.html#a792054f9e0bc4891cf6e8f4483895f12">musly_trackid</a> *&#160;</td>
+          <td class="paramname"><em>trackids</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the trackids of all tracks currently registered with the the Musly jukebox. </p>
+<p>Use <a class="el" href="musly_8h.html#a340577e576414de1dcacfff8df399201" title="Returns the number of tracks currently registered with the Musly jukebox. ">musly_jukebox_trackcount()</a> to ask how many trackids will be returned.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>the Musly jukebox to query </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">trackids</td><td>the ids of all registered tracks </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the number of track ids written, or -1 in case of an error</dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#a340577e576414de1dcacfff8df399201" title="Returns the number of tracks currently registered with the Musly jukebox. ">musly_jukebox_trackcount()</a> </dd></dl>
 
 </div>
 </div>
@@ -863,7 +944,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Serializes the jukebox state into a byte buffer and returns the number of bytes written. </p>
-<p>Call <a class="el" href="musly_8h.html#a3a08a4f5aed5371108c42e800c484317" title="Returns the size in bytes needed for serializing the jukebox state. ">musly_jukebox_binsize()</a> to determine the required buffer size, and <a class="el" href="musly_8h.html#a61ea93157ff2d5c47b9d1424d12d8d08" title="Deserializes the jukebox state from a byte buffer and returns the number of bytes read...">musly_jukebox_frombin()</a> to deserialize a jukebox state.</p>
+<p>Call <a class="el" href="musly_8h.html#a3a08a4f5aed5371108c42e800c484317" title="Returns the size in bytes needed for serializing the jukebox state. ">musly_jukebox_binsize()</a> to determine the required buffer size, and <a class="el" href="musly_8h.html#a61ea93157ff2d5c47b9d1424d12d8d08" title="Deserializes the jukebox state from a byte buffer and returns the number of tracks expected or read...">musly_jukebox_frombin()</a> to deserialize a jukebox state.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>An initialized Musly jukebox object. </td></tr>
@@ -878,7 +959,7 @@ Functions</h2></td></tr>
 <dl class="section note"><dt>Note</dt><dd><code>skip_tracks</code> allows to serialize the jukebox state in small portions. Set <code>num_tracks</code> to the number of track states you can handle at once, then call <a class="el" href="musly_8h.html#a92f4564deb4149d548af58be73e4ddb9" title="Serializes the jukebox state into a byte buffer and returns the number of bytes written. ">musly_jukebox_tobin()</a> repeatedly in a loop, setting <code>skip_tracks</code> to the number of track states you have already serialized.</dd>
 <dd>
 This method serializes the internal indices built when calling <a class="el" href="musly_8h.html#ab96efc48ff5ce54f49bb20960249cfd6" title="Initialize the jukebox music style. ">musly_jukebox_setmusicstyle()</a> and <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Add tracks to the Musly jukebox. ">musly_jukebox_addtracks()</a>. For serialization of musly_track objects, see <a class="el" href="musly_8h.html#ac86051d740c66e0ebedd58c0f9280717" title="Serializes a musly_track to a byte buffer. ">musly_track_tobin()</a>.</dd></dl>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#a974e7d23dfaad4939ace6bc8a5d6ea0c" title="Serializes a jukebox state and writes it to a file. ">musly_jukebox_tofile()</a> </dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#a3d0a6d87f6e9296c3798e128efd96261" title="Serializes a jukebox state and writes it to a stream. ">musly_jukebox_tostream()</a>, <a class="el" href="musly_8h.html#a974e7d23dfaad4939ace6bc8a5d6ea0c" title="Serializes a jukebox state and writes it to a file. ">musly_jukebox_tofile()</a> </dd></dl>
 
 </div>
 </div>
@@ -915,7 +996,45 @@ This method serializes the internal indices built when calling <a class="el" hre
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The number of bytes written, or -1 in case of an error.</dd></dl>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#aa92b1caf41994beff66710b2980c678b" title="Restores a jukebox from a file written by musly_jukebox_tofile(). ">musly_jukebox_fromfile</a> </dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#aa92b1caf41994beff66710b2980c678b" title="Restores a jukebox from a file written by musly_jukebox_tofile(). ">musly_jukebox_fromfile()</a>, <a class="el" href="musly_8h.html#a3d0a6d87f6e9296c3798e128efd96261" title="Serializes a jukebox state and writes it to a stream. ">musly_jukebox_tostream()</a> </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a3d0a6d87f6e9296c3798e128efd96261"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="musly_8h.html#a69598017d76c3d22e9f5a897afae1932">MUSLY_EXPORT</a> int musly_jukebox_tostream </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structmusly__jukebox.html">musly_jukebox</a> *&#160;</td>
+          <td class="paramname"><em>jukebox</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">FILE *&#160;</td>
+          <td class="paramname"><em>stream</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Serializes a jukebox state and writes it to a stream. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">jukebox</td><td>An initialized Musly jukebox object. </td></tr>
+    <tr><td class="paramname">stream</td><td>The file stream to write to. Must be opened in binary mode. The data will be written sequentially, not using any seeking operations, so you can prepend or append data of your own. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The number of bytes written, or -1 in case of an error.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>While this is the most efficient way to embed the jukebox state in a custom file you write, it will only work if libmusly was linked against the same implementation of the C standard library as your application code. To use it, define <code>MUSLY_SUPPORT_STDIO</code> before including <code><a class="el" href="musly_8h.html">musly.h</a></code>.</dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#aee1092a8568af09f067ff3156059e059" title="Restores a jukebox from a stream written by musly_jukebox_tostream(). ">musly_jukebox_fromstream()</a>, <a class="el" href="musly_8h.html#a974e7d23dfaad4939ace6bc8a5d6ea0c" title="Serializes a jukebox state and writes it to a file. ">musly_jukebox_tofile()</a> </dd></dl>
 
 </div>
 </div>
@@ -1316,7 +1435,7 @@ This method serializes the internal indices built when calling <a class="el" hre
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Oct 1 2014 16:19:29 for Musly by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Oct 7 2014 13:23:01 for Musly by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
