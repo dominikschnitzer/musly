@@ -33,6 +33,10 @@ similarity measures. It is our reference implementation.
 
 #include <musly/musly_types.h>
 
+#ifdef MUSLY_SUPPORT_STDIO
+#include <stdio.h>  // to define FILE*
+#endif
+
 #ifdef WIN32
   /** \hideinitializer */
   #define MUSLY_EXPORT __declspec(dllexport)
@@ -435,7 +439,7 @@ musly_jukebox_binsize(
  * musly_jukebox_setmusicstyle() and musly_jukebox_addtracks(). For
  * serialization of musly_track objects, see musly_track_tobin().
  *
- * \sa musly_jukebox_tofile()
+ * \sa musly_jukebox_tostream(), musly_jukebox_tofile()
  */
 MUSLY_EXPORT int
 musly_jukebox_tobin(
@@ -448,8 +452,8 @@ musly_jukebox_tobin(
 
 /**
  * Deserializes the jukebox state from a byte buffer and returns the number of
- * bytes read. Use this to restore a jukebox state previously saved with
- * musly_jukebox_tobin().
+ * tracks expected or read. Use this to restore a jukebox state previously
+ * saved with musly_jukebox_tobin().
  *
  * \param[in] jukebox An initialized Musly jukebox object. This must have been
  * initialized with the same music similarity method as the jukebox the state
@@ -459,13 +463,19 @@ musly_jukebox_tobin(
  * \param[in] num_tracks If greater than zero, will read and restore the state
  * of \p num_tracks registered tracks. If negative, will read and restore the
  * state of all registered tracks (only possible if \p header is nonzero).
- * \returns The number of bytes read, or -1 in case of an error.
+ * \returns The number of tracks expected if \p header is nonzero and
+ * \p num_tracks is zero, the number of tracks read if \p num_tracks is
+ * nonzero, or -1 in case of an error.
  *
  * \note This method deserializes the internal indices built when calling
  * musly_jukebox_setmusicstyle() and musly_jukebox_addtracks(). For
  * deserialization of musly_track objects, see musly_track_frombin().
  *
- * \sa musly_jukebox_fromfile()
+ * \note Data cannot be read on a platform of a different architecture
+ * (integer size or byte order) than it was written with. Trying so results
+ * in unspecified behavior.
+ *
+ * \sa musly_jukebox_fromstream(), musly_jukebox_fromfile()
  */
 MUSLY_EXPORT int
 musly_jukebox_frombin(
@@ -475,6 +485,53 @@ musly_jukebox_frombin(
         int num_tracks);
 
 
+#ifdef MUSLY_SUPPORT_STDIO
+/**
+ * Serializes a jukebox state and writes it to a stream.
+ *
+ * \param jukebox An initialized Musly jukebox object.
+ * \param stream The file stream to write to. Must be opened in binary mode. The
+ * data will be written sequentially, not using any seeking operations, so you
+ * can prepend or append data of your own.
+ * \returns The number of bytes written, or -1 in case of an error.
+ *
+ * \note While this is the most efficient way to embed the jukebox state in a
+ * custom file you write, it will only work if libmusly was linked against the
+ * same implementation of the C standard library as your application code. To
+ * use it, define `MUSLY_SUPPORT_STDIO` before including `musly.h`.
+ *
+ * \sa musly_jukebox_fromstream(), musly_jukebox_tofile()
+ */
+MUSLY_EXPORT int
+musly_jukebox_tostream(
+        musly_jukebox* jukebox,
+        FILE* stream);
+
+
+/**
+ * Restores a jukebox from a stream written by musly_jukebox_tostream().
+ *
+ * \param stream The file stream to read from. Must be opened in binary mode.
+ * The data will be read sequentially, not using any seeking operations, so
+ * you can prepend data of your own as long as you position the file pointer
+ * to the beginning of the jukebox state before calling this function.
+ * \returns A reference to an initialized Musly jukebox object, or NULL in
+ * case of an error.
+ *
+ * \note Currently, a stream cannot be read on a platform of a different
+ * architecture (integer size or byte order) than it was written with.
+ * Trying so results in an error; the stream includes platform information.
+ *
+ * \note See the note in musly_jukebox_tostream() for compatibility issues.
+ *
+ * \sa musly_jukebox_tostream()
+ */
+MUSLY_EXPORT musly_jukebox*
+musly_jukebox_fromstream(
+        FILE* stream);
+#endif  // MUSLY_SUPPORT_STDIO
+
+
 /**
  * Serializes a jukebox state and writes it to a file.
  *
@@ -482,7 +539,7 @@ musly_jukebox_frombin(
  * \param filename The name of the file to write to.
  * \returns The number of bytes written, or -1 in case of an error.
  *
- * \sa musly_jukebox_fromfile
+ * \sa musly_jukebox_fromfile(), musly_jukebox_tostream()
  */
 MUSLY_EXPORT int
 musly_jukebox_tofile(
@@ -499,6 +556,10 @@ musly_jukebox_tofile(
  *
  * \note Currently, a file cannot be read on a platform of a different
  * architecture (integer size or byte order) than it was written with.
+ * Trying so results in an error; the file includes platform information.
+ *
+ * \note Any additional data in the file following the jukebox state will
+ * be ignored, so you can freely append custom data after writing it.
  */
 MUSLY_EXPORT musly_jukebox*
 musly_jukebox_fromfile(

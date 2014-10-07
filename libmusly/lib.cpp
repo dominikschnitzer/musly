@@ -12,8 +12,11 @@
 
 #include <arpa/inet.h>
 #include <vector>
-#include <fstream>
+#include <sstream>
+#include <cstdio>
+#include <cstring>
 
+#define MUSLY_SUPPORT_STDIO
 #include "musly/musly.h"
 #include "minilog.h"
 #include "plugins.h"
@@ -356,21 +359,21 @@ musly_jukebox_frombin(
         int num_tracks) {
     if (jukebox && jukebox->method && ((num_tracks >= 0) || header)) {
         musly::method* m = reinterpret_cast<musly::method*>(jukebox->method);
-        int read = 0;
         if (header) {
             int expected_tracks = m->deserialize_metadata(buffer);
             if (expected_tracks < 0) {
                 return -1;
             }
-            if (num_tracks < 0) {
+            if (num_tracks == 0) {
+                return expected_tracks;
+            }
+            else if (num_tracks < 0) {
                 num_tracks = expected_tracks;
             }
-            read = musly_jukebox_binsize(jukebox, 1, 0);
-            buffer += read;
+            buffer += musly_jukebox_binsize(jukebox, 1, 0);
         }
         if (num_tracks) {
             num_tracks = m->deserialize_trackdata(buffer, num_tracks);
-            read += musly_jukebox_binsize(jukebox, 0, num_tracks);
         }
         return num_tracks;
     } else {
@@ -379,9 +382,11 @@ musly_jukebox_frombin(
 }
 
 int
-musly_jukebox_tofile(
+musly_jukebox_tostream(
         musly_jukebox* jukebox,
-        const char* filename) {
+        FILE* stream) {
+    int written = 0;
+
     if (!jukebox || !jukebox->method) {
         return -1;
     }
@@ -393,48 +398,43 @@ musly_jukebox_tofile(
         return -1;
     }
 
-    // prepare file
-    std::ofstream f(filename, std::ios::binary);
-    if (f.fail()) {
-        return -1;
-    }
-
     // write musly version
-    f << musly_version() << '\0';
-    if (f.fail()) {
+    if (fputs(musly_version(), stream) == EOF || fputc('\0', stream) == EOF) {
         return -1;
     }
+    written += strlen(musly_version()) + 1;
 
     // write platform information
     const uint8_t intsize = sizeof(int);
     const uint32_t byteorder = 0x01020304;
-    f.write((char*)&intsize, sizeof(intsize));
-    if (f.fail()) {
+    if (fwrite(&intsize, sizeof(intsize), 1, stream) != 1) {
         return -1;
     }
-    f.write((char*)&byteorder, sizeof(byteorder));
-    if (f.fail()) {
+    if (fwrite(&byteorder, sizeof(byteorder), 1, stream) != 1) {
         return -1;
     }
+    written += sizeof(intsize) + sizeof(byteorder);
 
     // write general jukebox information
-    f << jukebox->method_name << '\0' <<
-            jukebox->decoder_name << '\0';
-    if (f.fail()) {
+    if (fputs(jukebox->method_name, stream) == EOF ||
+            fputc('\0', stream) == EOF ||
+            fputs(jukebox->decoder_name, stream) == EOF ||
+            fputc('\0', stream) == EOF) {
         return -1;
     }
+    written += strlen(jukebox->method_name) + 1;
+    written += strlen(jukebox->decoder_name) + 1;
 
     unsigned char* buffer;
-    int written;
+    int bcount;
 
     // write jukebox-specific header
-    f.write((char*)&size_head, sizeof(size_head));
-    if (f.fail()) {
+    if (fwrite(&size_head, sizeof(size_head), 1, stream) != 1) {
         return -1;
     }
     buffer = new unsigned char[size_head];
-    written = musly_jukebox_tobin(jukebox, buffer, 1, 0, 0);
-    if ((written < 0) || !f.write((char*)buffer, written)) {
+    written += (bcount = musly_jukebox_tobin(jukebox, buffer, 1, 0, 0));
+    if ((bcount < 0) || (int)fwrite(buffer, 1, bcount, stream) != bcount) {
         delete[] buffer;
         return -1;
     }
@@ -443,11 +443,14 @@ musly_jukebox_tofile(
     // write jukebox-specific track information
     // write in chunks of about 64 KiB
     const int num_tracks = musly_jukebox_trackcount(jukebox);
+    if (num_tracks < 0) {
+        return -1;
+    }
     const int batchsize = std::min(std::max(64<<10 / size_track, 1), num_tracks);
     buffer = new unsigned char[size_track * batchsize];
     for (int i = 0; i < num_tracks; i += batchsize) {
-        written = musly_jukebox_tobin(jukebox, buffer, 0, batchsize, i);
-        if ((written < 0) || !f.write((char*)buffer, written)) {
+        written += (bcount = musly_jukebox_tobin(jukebox, buffer, 0, batchsize, i));
+        if ((bcount < 0) || (int)fwrite(buffer, 1, bcount, stream) != bcount) {
             delete[] buffer;
             return -1;
         }
@@ -455,49 +458,49 @@ musly_jukebox_tofile(
     delete[] buffer;
 
     // return total bytes written
-    return f.tellp();
+    return written;
 }
 
 musly_jukebox*
-musly_jukebox_fromfile(
-        const char* filename) {
-    // open file
-    std::ifstream f(filename, std::ios::binary);
-    if (f.fail()) {
-        return NULL;
-    }
+musly_jukebox_fromstream(
+        FILE* stream) {
+    struct {
+        bool operator() (FILE* stream, std::string& str) {
+            std::ostringstream oss;
+            while (int c = fgetc(stream)) {
+                if (c == EOF) return false;
+                oss << (char)(c);
+            }
+            str = oss.str();
+            return true;
+        }
+    } readstr;  // local function to read null-terminated string
 
     // read musly version and platform information
     std::string version;
-    std::getline(f, version, '\0');
-    if (f.fail() || (version.compare(MUSLY_VERSION) != 0)) {
+    if (!readstr(stream, version) || version.compare(MUSLY_VERSION) != 0) {
         MINILOG(logERROR) << "File was written with musly version " << version
                 << ", expected " << MUSLY_VERSION;
         return NULL;
     }
     uint8_t intsize;
-    f.read((char*)&intsize, sizeof(intsize));
-    if (f.fail() || (intsize != sizeof(int))) {
+    if (fread(&intsize, sizeof(intsize), 1, stream) != 1 ||
+            intsize != sizeof(int)) {
         MINILOG(logERROR) << "File was written with integer size " << intsize
                 << ", expected " << sizeof(int);
         return NULL;
     }
     uint32_t byteorder;
-    f.read((char*)&byteorder, sizeof(byteorder));
-    if (f.fail() || (byteorder != (uint32_t)0x01020304)) {
+    if (fread(&byteorder, sizeof(byteorder), 1, stream) != 1 ||
+            byteorder != (uint32_t)0x01020304) {
         MINILOG(logERROR) << "File was written with different byte order";
         return NULL;
     }
 
     // read general jukebox information
     std::string method;
-    std::getline(f, method, '\0');
-    if (f.fail()) {
-        return NULL;
-    }
     std::string decoder;
-    std::getline(f, decoder, '\0');
-    if (f.fail()) {
+    if (!readstr(stream, method) || !readstr(stream, decoder)) {
         return NULL;
     }
 
@@ -511,14 +514,14 @@ musly_jukebox_fromfile(
 
     // read jukebox-specific header
     int size_head;
-    f.read((char*)&size_head, sizeof(size_head));
-    if (f.fail()) {
+    if (fread(&size_head, sizeof(size_head), 1, stream) != 1) {
         musly_jukebox_poweroff(jukebox);
         return NULL;
     }
     buffer = new unsigned char[size_head];
-    if (!f.read((char*)buffer, size_head) ||
-            (musly_jukebox_frombin(jukebox, buffer, 1, 0) < 0)) {
+    int expected_tracks;
+    if ((int)fread(buffer, 1, size_head, stream) != size_head ||
+            (expected_tracks = musly_jukebox_frombin(jukebox, buffer, 1, 0)) < 0) {
         musly_jukebox_poweroff(jukebox);
         delete[] buffer;
         return NULL;
@@ -532,32 +535,44 @@ musly_jukebox_fromfile(
         musly_jukebox_poweroff(jukebox);
         return NULL;
     }
-    const int batchsize = std::max(64<<10 / size_track, 1);
+    const int batchsize = std::min(std::max(64<<10 / size_track, 1), expected_tracks);
     buffer = new unsigned char[batchsize * size_track];
-    while (1) {
-        f.read((char*)buffer, batchsize * size_track);
-        if (f.gcount() == 0) {
-            break;
-        }
-        if (f.gcount() % size_track) {
-            // bytes read not divisible by track information size,
-            // the file must be wrong
+    while (expected_tracks) {
+        int read = std::min(expected_tracks, batchsize);
+        if ((int)fread(buffer, size_track, read, stream) != read ||
+                musly_jukebox_frombin(jukebox, buffer, 0, read) < 0) {
             musly_jukebox_poweroff(jukebox);
             delete[] buffer;
             return NULL;
         }
-        if (musly_jukebox_frombin(jukebox, buffer, 0, f.gcount() / size_track) < 0) {
-            musly_jukebox_poweroff(jukebox);
-            delete[] buffer;
-            return NULL;
-        }
-        if (f.gcount() < batchsize * size_track) {
-            break;
-        }
+        expected_tracks -= read;
     }
     delete[] buffer;
 
     return jukebox;
+}
+
+int
+musly_jukebox_tofile(
+        musly_jukebox* jukebox,
+        const char* filename) {
+    if (FILE* f = fopen(filename, "wb")) {
+        int result = musly_jukebox_tostream(jukebox, f);
+        fclose(f);
+        return result;
+    }
+    return -1;
+}
+
+musly_jukebox*
+musly_jukebox_fromfile(
+        const char* filename) {
+    if (FILE* f = fopen(filename, "rb")) {
+        musly_jukebox* result = musly_jukebox_fromstream(f);
+        fclose(f);
+        return result;
+    }
+    return NULL;
 }
 
 musly_track*
