@@ -11,6 +11,7 @@
  */
 
 #include <arpa/inet.h>
+#include <algorithm>
 #include <vector>
 #include <sstream>
 #include <cstdio>
@@ -705,7 +706,6 @@ musly_track_analyze_pcm(
     }
 }
 
-
 int
 musly_track_analyze_audiofile(
         musly_jukebox* jukebox,
@@ -735,3 +735,90 @@ musly_track_analyze_audiofile(
     return 0;
 }
 
+typedef std::pair<float, musly_trackid> knn;
+struct knn_comp {
+    bool operator()(knn const& lhs, knn const& rhs) {
+        return lhs.first < rhs.first;
+    }
+} knn_comp;
+
+int
+musly_findmin(
+        const float* values,
+        const musly_trackid* ids,
+        int count,
+        float* min_values,
+        musly_trackid* min_ids,
+        int min_count,
+        int ordered) {
+
+    // Check given arguments
+    if (!values) {
+        return -1;
+    }
+    if (min_count > count) {
+        min_count = count;
+    }
+    if (!min_count) {
+        return 0;
+    }
+    if (!min_values && !min_ids) {
+        return -1;
+    }
+
+    // Find the top `min_count` items by iterating over `values` and
+    // possibly `ids` and collecting the best items in a heap
+    // TODO: Depending on `count`, `min_count` and `ordered`,
+    // std::partial_sort() or std::nth_element() may be faster.
+    std::vector<knn> heap(0);
+    heap.reserve(min_count);
+
+    if (ids) {
+        // Fill heap with first `min_count` (value, id) pairs
+        for (int i = 0; i < min_count; i++) {
+            heap.push_back(std::make_pair(values[i], ids[i]));
+            std::push_heap(heap.begin(), heap.end(), knn_comp);
+        }
+        // Update heap as needed
+        for (int i = min_count; i < count; i++) {
+            if (values[i] < heap.front().first) {
+                std::pop_heap(heap.begin(), heap.end(), knn_comp);
+                heap.back() = std::make_pair(values[i], ids[i]);
+                std::push_heap(heap.begin(), heap.end(), knn_comp);
+            }
+        }
+    }
+    else {
+        // Fill heap with first `min_count` (value, index) pairs
+        for (int i = 0; i < min_count; i++) {
+            heap.push_back(std::make_pair(values[i], (musly_trackid)i));
+            std::push_heap(heap.begin(), heap.end(), knn_comp);
+        }
+        // Update heap as needed
+        for (int i = min_count; i < count; i++) {
+            if (values[i] < heap.front().first) {
+                std::pop_heap(heap.begin(), heap.end(), knn_comp);
+                heap.back() = std::make_pair(values[i], (musly_trackid)i);
+                std::push_heap(heap.begin(), heap.end(), knn_comp);
+            }
+        }
+    }
+
+    if (ordered) {
+        // transform into sorted list
+        std::sort_heap(heap.begin(), heap.end(), knn_comp);
+    }
+
+    // Copy out the results
+    if (min_values) {
+        for (int i = 0; i < min_count; i++) {
+            min_values[i] = heap[i].first;
+        }
+    }
+    if (min_ids) {
+        for (int i = 0; i < min_count; i++) {
+            min_ids[i] = heap[i].second;
+        }
+    }
+    return min_count;
+}
