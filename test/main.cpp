@@ -12,9 +12,12 @@
 #define _USE_MATH_DEFINES
 #include <iostream>
 #include <cstdlib>
+#include <cstdio>
 #include <ctime>
 #include <cmath>
 #include <algorithm>
+
+#define MUSLY_SUPPORT_STDIO
 #include "musly/musly.h"
 #include "tools.h"
 #include "idpool.h"
@@ -312,11 +315,12 @@ void test_method(std::string method) {
     }
 
     // We export and import the jukebox state to/from a file
-    char *tmpfile = tmpnam(NULL);
-    REQUIRE( "exported jukebox state", musly_jukebox_tofile(box, tmpfile) > 0 );
+    FILE *tempfile = tmpfile();
+    REQUIRE( "exported jukebox state", musly_jukebox_tostream(box, tempfile) > 0 );
     musly_jukebox* box2;
-    REQUIRE( "imported jukebox state", (box2 = musly_jukebox_fromfile(tmpfile)));
-    remove(tmpfile);
+    rewind(tempfile);
+    REQUIRE( "imported jukebox state", (box2 = musly_jukebox_fromstream(tempfile)));
+    fclose(tempfile);
 
     // We check whether the re-imported jukebox is consistent with the original one
     REQUIRE( "max seen 1040 (imported jukebox)", musly_jukebox_maxtrackid(box2) == 1040 );
