@@ -11,6 +11,7 @@
  */
 
 
+#include <cstdio>
 #include <iostream>
 #include <fstream>
 #include <algorithm>
@@ -18,6 +19,7 @@
 #include <map>
 #include <Eigen/Core>
 
+#define MUSLY_SUPPORT_STDIO
 #include "musly/musly.h"
 
 #include "tools.h"
@@ -113,6 +115,29 @@ read_collectionfile(
     return count;
 }
 
+bool read_jukebox(std::string &filename, musly_jukebox** jukebox, int* last_reinit) {
+    std::cout << "Reading jukebox file: " << filename << std::endl;
+    if (FILE* f = fopen(filename.c_str(), "rb")) {
+        *jukebox = musly_jukebox_fromstream(f);
+        if (*jukebox && fread(last_reinit, sizeof(*last_reinit), 1, f) != 1) {
+            *last_reinit = 0;
+        }
+        fclose(f);
+        return (*jukebox != NULL);
+    }
+    return false;
+}
+
+bool write_jukebox(std::string &filename, musly_jukebox* jukebox, int last_reinit) {
+    std::cout << "Writing jukebox file: " << filename << std::endl;
+    if (FILE* f = fopen(filename.c_str(), "wb")) {
+        bool result = (musly_jukebox_tostream(jukebox, f) > 0)
+                && (fwrite(&last_reinit, sizeof(last_reinit), 1, f) == 1);
+        fclose(f);
+        return result;
+    }
+    return false;
+}
 
 void
 tracks_add(collection_file& cf, std::string directory_or_file, std::string extension) {
@@ -726,10 +751,10 @@ main(int argc, char *argv[])
 
         // if a jukebox state file was given, try to read it
         std::string jukebox_file = po.get_option_str("j");
+        int last_reinit = 0;
         if (!jukebox_file.empty()) {
-            std::cout << "Reading jukebox file: " << jukebox_file << std::endl;
-            musly_jukebox* mj2 = musly_jukebox_fromfile(jukebox_file.c_str());
-            if (!mj2) {
+            musly_jukebox* mj2 = NULL;
+            if (!read_jukebox(jukebox_file, &mj2, &last_reinit)) {
                 std::cout << "Reading failed.";
             }
             else if (strcmp(mj2->method_name, mj->method_name)) {
@@ -737,22 +762,38 @@ main(int argc, char *argv[])
                         << "', but collection file is for method '"
                         << mj->method_name << "'.";
             }
-            else if (track_count != musly_jukebox_trackcount(mj2)) {
+            else if (track_count < musly_jukebox_trackcount(mj2)) {
                 std::cout << "Jukebox file is for " << musly_jukebox_trackcount(mj2)
                         << " tracks, but collection file has " << track_count
-                        << " tracks.";
-                // note: If the collection file has more tracks than the
-                // jukebox, we could just add the new tracks to the existing
-                // jukebox instead of discarding it. If the jukebox size has
-                // changed by more than, say, 10%, we should reinitialize the
-                // jukebox, though. As we currently do not record the size of
-                // the jukebox at its last reinitialization, it's safer to
-                // just reinitialize it whenever it has changed.
+                        << " tracks only.";
             }
-            else {
-                // everything is fine, use loaded jukebox
+            else if (track_count == musly_jukebox_trackcount(mj2)) {
+                // everything is fine, use loaded jukebox directly
                 musly_jukebox_poweroff(mj);
                 mj = mj2;
+            }
+            else if (track_count > (int)(last_reinit * 1.1f)) {
+                std::cout << "Jukebox file was initialized for " << last_reinit
+                        << " tracks, but collection file has " << track_count
+                        << " tracks (an increase of over 10%).";
+            }
+            else {
+                int num_new = track_count - musly_jukebox_trackcount(mj2);
+                std::cout << "Jukebox file has " << num_new <<
+                        " track(s) less than collection; updating..." << std::endl;
+                musly_trackid* trackids = new musly_trackid[num_new];
+                if (musly_jukebox_addtracks(mj2,
+                        tracks.data() + track_count - num_new,
+                        trackids, num_new, true) < 0) {
+                    std::cout << "Updating jukebox failed." << std::endl;
+                }
+                else {
+                    // updating went fine, use loaded jukebox
+                    musly_jukebox_poweroff(mj);
+                    mj = mj2;
+                    // and write updated jukebox
+                    write_jukebox(jukebox_file, mj, last_reinit);
+                }
             }
             if (mj != mj2) {
                 std::cout << std::endl << "Initializing new jukebox..." << std::endl;
@@ -772,10 +813,7 @@ main(int argc, char *argv[])
             }
             else if (!jukebox_file.empty()) {
                 // if a jukebox state file was given, update it
-                std::cout << "Writing jukebox file: " << jukebox_file << std::endl;
-                if (musly_jukebox_tofile(mj, jukebox_file.c_str()) == -1) {
-                    std::cout << "Could not write jukebox file." << std::endl;
-                }
+                write_jukebox(jukebox_file, mj, track_count);
             }
         }
 
