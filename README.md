@@ -43,7 +43,8 @@ additions:
     in `ccmake`), the musly command line client and library are built with
     OpenMP support. The command line client parallelizes several computations.
 -   `musly_jukebox_binsize()`, `musly_jukebox_tobin()`,
-    `musly_jukebox_frombin()`, `musly_jukebox_tofile()` and
+    `musly_jukebox_frombin()`, `musly_jukebox_tostream()`,
+    `musly_jukebox_fromstream()`, `musly_jukebox_tofile()` and
     `musly_jukebox_fromfile()` are added to the API, allowing to serialize
     and restore the internal state of a jukebox influenced by calls to
     `musly_jukebox_setmusicstyle()`, `musly_jukebox_addtracks()` and
