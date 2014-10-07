@@ -753,7 +753,7 @@ musly_track_analyze_pcm(
  * Suggested value: 30.
  * \param[in] excerpt_start The starting position in seconds of the excerpt to
  * decode. If zero, decoding starts at the beginning. If negative, the excerpt
- * is centered in the file, but starts at <tt>-excerpt_start<tt> the latest.
+ * is centered in the file, but starts at <tt>-excerpt_start</tt> the latest.
  * If positive and <tt>excerpt_start + excerpt_length</tt> exceeds the file
  * length, then the excerpt is taken from the end of the file.
  * Suggested value: -48.
