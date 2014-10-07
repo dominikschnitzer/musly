@@ -172,6 +172,77 @@ public:
     virtual int
     get_maxtrackid() = 0;
 
+    /**
+     *
+     */
+    virtual int
+    get_trackids(
+            musly_trackid* trackids) = 0;
+
+    /**
+     * Writes metadata about the jukebox state into a binary buffer.
+     *
+     * \param buffer The buffer to write to, or <tt>NULL</tt> to query the
+     * required buffer size.
+     * \returns The number of bytes written to the buffer, or the number of
+     * bytes that would have been written if \p buffer is <tt>NULL</tt>, or
+     * -1 in case of an error.
+     */
+    virtual int
+    serialize_metadata(
+            unsigned char* buffer);
+
+    /**
+     * Writes the jukebox state for registered tracks into a binary buffer.
+     *
+     * \param buffer The buffer to write to, or <tt>NULL</tt> to query the
+     * required buffer size assuming that the state for \p num_tracks tracks
+     * will be written.
+     * \param num_tracks The number of registered tracks to write the jukebox
+     * state for.
+     * \param skip_tracks The number of tracks to skip.
+     * \returns The number of bytes written to the buffer, or the number of
+     * bytes that would be needed to export the state for \o num_tracks
+     * tracks if \p buffer is <tt>NULL</tt>, or -1 in case of an error.
+     *
+     * \note If buffer is not <tt>NULL</tt>, <tt>num_tracks + skip_tracks</tt>
+     * must not be greater than get_trackcount().
+     */
+    virtual int
+    serialize_trackdata(
+            unsigned char* buffer,
+            int num_tracks,
+            int skip_tracks = 0);
+
+    /**
+     * Initiates restoring the jukebox state from a binary buffer.
+     *
+     * \param buffer The buffer to read from.
+     * \returns The total number of track states expected to be restored via
+     * deserialize_trackdata() for this jukebox, or -1 in case of an error.
+     *
+     * \note The number of bytes read is the same that was written by
+     * serialize_metadata(). It depends on the internal state of the jukebox
+     * that was serialized.
+     */
+    virtual int
+    deserialize_metadata(
+            unsigned char* buffer);
+
+    /**
+     * Restores the jukebox state for registered tracks from a binary buffer.
+     *
+     * \param buffer The buffer to read from.
+     * \param num_tracks The number of track states to read and restore.
+     * \returns The number of track states restored, or -1 in case of an error.
+     *
+     * \note The number of bytes read is <tt>serialize_trackdata(NULL, num_tracks, 0)</tt>
+     */
+    virtual int
+    deserialize_trackdata(
+            unsigned char* buffer,
+            int num_tracks);
+
 };
 
 /** A macro to facilitating registering a method class with musly. This macro

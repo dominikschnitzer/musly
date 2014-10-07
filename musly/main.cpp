@@ -11,6 +11,7 @@
  */
 
 
+#include <cstdio>
 #include <iostream>
 #include <fstream>
 #include <algorithm>
@@ -18,6 +19,7 @@
 #include <map>
 #include <Eigen/Core>
 
+#define MUSLY_SUPPORT_STDIO
 #include "musly/musly.h"
 
 #include "tools.h"
@@ -113,17 +115,113 @@ read_collectionfile(
     return count;
 }
 
+bool read_jukebox(std::string &filename, musly_jukebox** jukebox, int* last_reinit) {
+    std::cout << "Reading jukebox file: " << filename << std::endl;
+    if (FILE* f = fopen(filename.c_str(), "rb")) {
+        *jukebox = musly_jukebox_fromstream(f);
+        if (*jukebox && fread(last_reinit, sizeof(*last_reinit), 1, f) != 1) {
+            *last_reinit = 0;
+        }
+        fclose(f);
+        return (*jukebox != NULL);
+    }
+    return false;
+}
+
+bool write_jukebox(std::string &filename, musly_jukebox* jukebox, int last_reinit) {
+    std::cout << "Writing jukebox file: " << filename << std::endl;
+    if (FILE* f = fopen(filename.c_str(), "wb")) {
+        bool result = (musly_jukebox_tostream(jukebox, f) > 0)
+                && (fwrite(&last_reinit, sizeof(last_reinit), 1, f) == 1);
+        fclose(f);
+        return result;
+    }
+    return false;
+}
 
 void
-tracks_free(
-        std::vector<musly_track*>& tracks)
-{
-    // free the tracks
-    for (int i = 0; i < (int)tracks.size(); i++) {
-        musly_track* mti = tracks[i];
-        musly_track_free(mti);
+tracks_add(collection_file& cf, std::string directory_or_file, std::string extension) {
+    fileiterator fi(directory_or_file, extension);
+    std::string afile;
+    if (!fi.get_nextfilename(afile)) {
+        std::cout << "No files found while scanning: " <<
+                directory_or_file << std::endl;
+    }
+    else {
+        int buffersize = musly_track_binsize(mj);
+#ifdef _OPENMP
+        // collect all file names in a vector first
+        std::vector<std::string> files;
+        do {
+            files.push_back(afile);
+        } while (fi.get_nextfilename(afile));
+        #pragma omp parallel if (files.size() > 1)
+#endif
+        {
+        unsigned char* buffer =
+                new unsigned char[buffersize];
+        musly_track* mt = musly_track_alloc(mj);
+#ifdef _OPENMP
+        // do a parallel for loop over the collected file names
+        // use a dynamic schedule because computation may differ per file
+        #pragma omp for schedule(dynamic)
+        for (int i = 0; i < (int)files.size(); i++) {
+            // set file to files[i] for the loop body
+            std::string& file = files[i];
+#else
+        // do a while loop over the fileiterator
+        int i = 0;
+        do {
+            // set file to our existing afile for the loop body
+            std::string& file = afile;
+#endif
+            if (cf.contains_track(file)) {
+#ifdef _OPENMP
+                #pragma omp critical
+#endif
+                {
+                std::cout << "Skipping already analyzed [" << i+1 << "]: "
+                        << limit_string(file, 60) << std::endl;
+                }  // pragma omp critical
+                continue;
+            }
+#ifndef _OPENMP
+            std::cout << "Analyzing [" << i+1 << "]: "
+                    << limit_string(file, 60) << std::flush;
+#endif
+            int ret = musly_track_analyze_audiofile(mj, file.c_str(), 30, -48, mt);
+#ifdef _OPENMP
+            #pragma omp critical
+            {
+            std::cout << "Analyzing [" << i+1 << "]: "
+                    << limit_string(file, 60);
+#endif
+            if (ret == 0) {
+                int serialized_buffersize =
+                        musly_track_tobin(mj, mt, buffer);
+                if (serialized_buffersize == buffersize) {
+                    cf.append_track(file, buffer, buffersize);
+                    std::cout << " - [OK]" << std::endl;
+                } else {
+                    std::cout << " - [FAILED]." << std::endl;
+                }
+
+            } else {
+                std::cout << " - [FAILED]." << std::endl;
+            }
+#ifdef _OPENMP
+            }  // pragma omp critical
+        }  // for loop
+#else
+            i++;
+        } while (fi.get_nextfilename(afile));
+#endif
+        delete[] buffer;
+        musly_track_free(mt);
+        }  // pragma omp parallel
     }
 }
+
 
 bool
 tracks_initialize(
@@ -163,6 +261,18 @@ tracks_initialize(
     }
 
     return true;
+}
+
+
+void
+tracks_free(
+        std::vector<musly_track*>& tracks)
+{
+    // free the tracks
+    for (int i = 0; i < (int)tracks.size(); i++) {
+        musly_track* mti = tracks[i];
+        musly_track_free(mti);
+    }
 }
 
 
@@ -560,99 +670,6 @@ main(int argc, char *argv[])
         // indicate error
         ret = 1;
 
-    // -a: add a song to the collection
-    } else if (po.get_action() == "a") {
-
-        // read the collection file in quiet ('q') mode
-        int track_count = read_collectionfile(cf, 'q');
-        if (track_count < 0) {
-            // the error message was already displayed. just quit here.
-            musly_jukebox_poweroff(mj);
-            return ret;
-        }
-        std::cout << "Read " << track_count << " musly tracks." << std::endl;
-
-        // search for new files and analyze them
-        fileiterator fi(po.get_option_str("a"), po.get_option_str("x"));
-        std::string afile;
-        if (!fi.get_nextfilename(afile)) {
-            std::cout << "No files found while scanning: " <<
-                    po.get_option_str("a") << std::endl;
-        }
-        else {
-            int buffersize = musly_track_binsize(mj);
-#ifdef _OPENMP
-            // collect all file names in a vector first
-            std::vector<std::string> files;
-            do {
-                files.push_back(afile);
-            } while (fi.get_nextfilename(afile));
-            #pragma omp parallel if (files.size() > 1)
-#endif
-            {
-            unsigned char* buffer =
-                    new unsigned char[buffersize];
-            musly_track* mt = musly_track_alloc(mj);
-#ifdef _OPENMP
-            // do a parallel for loop over the collected file names
-            // use a dynamic schedule because computation may differ per file
-            #pragma omp for schedule(dynamic)
-            for (int i = 0; i < (int)files.size(); i++) {
-                // set file to files[i] for the loop body
-                std::string& file = files[i];
-#else
-            // do a while loop over the fileiterator
-            int i = 0;
-            do {
-                // set file to our existing afile for the loop body
-                std::string& file = afile;
-#endif
-                if (cf.contains_track(file)) {
-#ifdef _OPENMP
-                    #pragma omp critical
-#endif
-                    {
-                    std::cout << "Skipping already analyzed [" << i+1 << "]: "
-                            << limit_string(file, 60) << std::endl;
-                    }  // pragma omp critical
-                    continue;
-                }
-#ifndef _OPENMP
-                std::cout << "Analyzing [" << i+1 << "]: "
-                        << limit_string(file, 60) << std::flush;
-#endif
-                int ret = musly_track_analyze_audiofile(mj, file.c_str(), 30, -48, mt);
-#ifdef _OPENMP
-                #pragma omp critical
-                {
-                std::cout << "Analyzing [" << i+1 << "]: "
-                        << limit_string(file, 60);
-#endif
-                if (ret == 0) {
-                    int serialized_buffersize =
-                            musly_track_tobin(mj, mt, buffer);
-                    if (serialized_buffersize == buffersize) {
-                        cf.append_track(file, buffer, buffersize);
-                        std::cout << " - [OK]" << std::endl;
-                    } else {
-                        std::cout << " - [FAILED]." << std::endl;
-                    }
-
-                } else {
-                    std::cout << " - [FAILED]." << std::endl;
-                }
-#ifdef _OPENMP
-                }  // pragma omp critical
-            }  // for loop
-#else
-                i++;
-            } while (fi.get_nextfilename(afile));
-#endif
-            delete[] buffer;
-            musly_track_free(mt);
-            }  // pragma omp parallel
-        }
-
     // -n: new collection file
     } else if (po.get_action() == "n") {
         // the selected method
@@ -684,65 +701,20 @@ main(int argc, char *argv[])
             std::cout << "failed." << std::endl;
         }
 
-    // -e: evaluation
-    } else if (po.get_action() == "e") {
+    // -a: add one or more songs to the collection
+    } else if (po.get_action() == "a") {
 
-        // read collection file to memory
-        std::vector<musly_track*> tracks;
-        std::vector<std::string> tracks_files;
-        int track_count = read_collectionfile(cf, 't', &tracks, &tracks_files);
+        // read the collection file in quiet ('q') mode
+        int track_count = read_collectionfile(cf, 'q');
         if (track_count < 0) {
-            std::cerr << "Reading the collection failed." << std::endl;
+            // the error message was already displayed. just quit here.
             musly_jukebox_poweroff(mj);
-            return -1;
+            return ret;
         }
-        std::cout << "Loaded " << track_count << " musly tracks to memory."
-                << std::endl;
+        std::cout << "Read " << track_count << " musly tracks." << std::endl;
 
-        // initialize all loaded tracks
-        std::cout << "Initializing collection..." << std::endl;
-        if (!tracks_initialize(tracks)) {
-            std::cerr << "Initialization failed! Aborting" << std::endl;
-            tracks_free(tracks);
-            musly_jukebox_poweroff(mj);
-            return -1;
-        }
-
-        // do we need an artist filter
-        int f = po.get_option_int("f");
-        std::vector<int> artists;
-        std::map<int, std::string> artist_ids;
-        if (f >= 0) {
-            field_from_strings(tracks_files, f, artist_ids, artists);
-            std::cout << "Artist filter active (-f)." << std::endl
-                    << "Found " << artist_ids.size() << " artists."
-                    << std::endl;
-        }
-
-        // get the position of the genre in the path
-        int e = po.get_option_int("e");
-        std::vector<int> genres;
-        std::map<int, std::string> genre_ids;
-        field_from_strings(tracks_files, e, genre_ids, genres);
-        std::cout << "Found " << genre_ids.size() << " genres." << std::endl;
-
-        int k = po.get_option_int("k");
-        std::cout << "k-NN Genre classification (k=" << k << "): "
-                << cf.get_file() << std::endl;
-
-        std::cout << "Evaluating collection..." << std::endl;
-        Eigen::MatrixXi genre_confusion = evaluate_collection(tracks,
-                genres, genre_ids.size(), artists, artist_ids.size(), k);
-
-        std::cout << "Genre Confusion matrix:" << std::endl;
-        std::cout << genre_confusion << std::endl;
-        std::cout << "Correctly classified: " << genre_confusion.diagonal().sum()
-                << "/" << genre_confusion.sum() << " (" <<
-                ((float)genre_confusion.diagonal().sum()/
-                        (float)genre_confusion.sum())*100.0 << "%)"<< std::endl;
-
-        tracks_free(tracks);
-
+        // search for new files, analyze and add them
+        tracks_add(cf, po.get_option_str("a"), po.get_option_str("x"));
 
     // -l: list files in collection file
     } else if (po.get_action() == "l") {
@@ -760,98 +732,183 @@ main(int argc, char *argv[])
             ret = -1;
         }
 
-    // -m: write a MIREX full similarity matrix to the given file
-    // -s: write a MIREX sparse similarity matrix to the given file
-    } else if (po.get_action() == "m" || po.get_action() == "s") {
-        std::string file = po.get_option_str(po.get_action());
+    } else {
+        // For everything else, we need a filled jukebox.
+        // We will read the collection file to memory and either initialize a
+        // jukebox and register all tracks, or load a jukebox state from disk.
 
         // read collection file to memory
         std::vector<musly_track*> tracks;
         std::vector<std::string> tracks_files;
         int track_count = read_collectionfile(cf, 't', &tracks, &tracks_files);
         if (track_count < 0) {
-            ret = -1;
+            std::cerr << "Reading the collection failed." << std::endl;
+            musly_jukebox_poweroff(mj);
+            return -1;
         }
         std::cout << "Loaded " << track_count << " musly tracks to memory."
                 << std::endl;
 
-        std::cout << "Initializing collection..." << std::endl;
-        // initialize all loaded tracks
-        if (!tracks_initialize(tracks)) {
-            std::cerr << "Initialization failed! Aborting" << std::endl;
-            tracks_free(tracks);
-            musly_jukebox_poweroff(mj);
-            return -1;
+        // if a jukebox state file was given, try to read it
+        std::string jukebox_file = po.get_option_str("j");
+        int last_reinit = 0;
+        if (!jukebox_file.empty()) {
+            musly_jukebox* mj2 = NULL;
+            if (!read_jukebox(jukebox_file, &mj2, &last_reinit)) {
+                std::cout << "Reading failed.";
+            }
+            else if (strcmp(mj2->method_name, mj->method_name)) {
+                std::cout << "Jukebox file is for method '" << mj2->method_name
+                        << "', but collection file is for method '"
+                        << mj->method_name << "'.";
+            }
+            else if (track_count < musly_jukebox_trackcount(mj2)) {
+                std::cout << "Jukebox file is for " << musly_jukebox_trackcount(mj2)
+                        << " tracks, but collection file has " << track_count
+                        << " tracks only.";
+            }
+            else if (track_count == musly_jukebox_trackcount(mj2)) {
+                // everything is fine, use loaded jukebox directly
+                musly_jukebox_poweroff(mj);
+                mj = mj2;
+            }
+            else if (track_count > (int)(last_reinit * 1.1f)) {
+                std::cout << "Jukebox file was initialized for " << last_reinit
+                        << " tracks, but collection file has " << track_count
+                        << " tracks (an increase of over 10%).";
+            }
+            else {
+                int num_new = track_count - musly_jukebox_trackcount(mj2);
+                std::cout << "Jukebox file has " << num_new <<
+                        " track(s) less than collection; updating..." << std::endl;
+                musly_trackid* trackids = new musly_trackid[num_new];
+                if (musly_jukebox_addtracks(mj2,
+                        tracks.data() + track_count - num_new,
+                        trackids, num_new, true) < 0) {
+                    std::cout << "Updating jukebox failed." << std::endl;
+                }
+                else {
+                    // updating went fine, use loaded jukebox
+                    musly_jukebox_poweroff(mj);
+                    mj = mj2;
+                    // and write updated jukebox
+                    write_jukebox(jukebox_file, mj, last_reinit);
+                }
+            }
+            if (mj != mj2) {
+                std::cout << std::endl << "Initializing new jukebox..." << std::endl;
+            }
+        }
+        else {
+            std::cout << "Initializing jukebox..." << std::endl;
         }
 
-        // compute a similarity matrix and write MIREX formatted to the
-        // given file
-        std::cout << "Computing and writing similarity matrix to: " << file
-                << std::endl;
-        if (po.get_action() == "m") {
-            std::cout << "Note: no neighbor guessing is applied here!" << std::endl;
-            ret = write_mirex_full(tracks, tracks_files, file, cf.get_method());
-        } else {
+        if (!musly_jukebox_trackcount(mj)) {
+            // initialize all loaded tracks
+            if (!tracks_initialize(tracks)) {
+                std::cerr << "Initialization failed! Aborting" << std::endl;
+                tracks_free(tracks);
+                musly_jukebox_poweroff(mj);
+                return -1;
+            }
+            else if (!jukebox_file.empty()) {
+                // if a jukebox state file was given, update it
+                write_jukebox(jukebox_file, mj, track_count);
+            }
+        }
+
+        // -e: evaluation
+        if (po.get_action() == "e") {
+
+            // do we need an artist filter
+            int f = po.get_option_int("f");
+            std::vector<int> artists;
+            std::map<int, std::string> artist_ids;
+            if (f >= 0) {
+                field_from_strings(tracks_files, f, artist_ids, artists);
+                std::cout << "Artist filter active (-f)." << std::endl
+                        << "Found " << artist_ids.size() << " artists."
+                        << std::endl;
+            }
+
+            // get the position of the genre in the path
+            int e = po.get_option_int("e");
+            std::vector<int> genres;
+            std::map<int, std::string> genre_ids;
+            field_from_strings(tracks_files, e, genre_ids, genres);
+            std::cout << "Found " << genre_ids.size() << " genres." << std::endl;
+
             int k = po.get_option_int("k");
-            ret = write_mirex_sparse(tracks, tracks_files, file, cf.get_method(), k);
-        }
-        if (ret == 0) {
-            std::cout << "Success." << std::endl;
-        } else {
-            std::cerr << "Failed to open file for writing." << std::endl;
-        }
+            std::cout << "k-NN Genre classification (k=" << k << "): "
+                    << cf.get_file() << std::endl;
 
-        // free the tracks
-        tracks_free(tracks);
-    } else if (po.get_action() == "p") {
-        std::string seed_file = po.get_option_str("p");
+            std::cout << "Evaluating collection..." << std::endl;
+            Eigen::MatrixXi genre_confusion = evaluate_collection(tracks,
+                    genres, genre_ids.size(), artists, artist_ids.size(), k);
 
-        // read collection file to memory
-        std::vector<musly_track*> tracks;
-        std::vector<std::string> tracks_files;
-        int track_count = read_collectionfile(cf, 't', &tracks, &tracks_files);
-        if (track_count < 0) {
-            ret = -1;
-        }
-        std::cout << "Loaded " << track_count << " musly tracks to memory."
-                << std::endl;
+            std::cout << "Genre Confusion matrix:" << std::endl;
+            std::cout << genre_confusion << std::endl;
+            std::cout << "Correctly classified: " << genre_confusion.diagonal().sum()
+                    << "/" << genre_confusion.sum() << " (" <<
+                    ((float)genre_confusion.diagonal().sum()/
+                            (float)genre_confusion.sum())*100.0 << "%)"<< std::endl;
 
-        std::cout << "Initializing collection..." << std::endl;
-        // initialize all loaded tracks
-        if (!tracks_initialize(tracks)) {
-            std::cerr << "Initialization failed! Aborting" << std::endl;
-            tracks_free(tracks);
-            musly_jukebox_poweroff(mj);
-            return -1;
-        }
 
-        std::vector<std::string>::iterator it = std::find(
-                tracks_files.begin(), tracks_files.end(), seed_file);
-        if (it == tracks_files.end()) {
-            std::cerr << "File not found in collection! Aborting." << std::endl;
-            tracks_free(tracks);
-            musly_jukebox_poweroff(mj);
-            return -1;
-        }
+        // -m: write a MIREX full similarity matrix to the given file
+        // -s: write a MIREX sparse similarity matrix to the given file
+        } else if (po.get_action() == "m" || po.get_action() == "s") {
+            std::string file = po.get_option_str(po.get_action());
 
-        // compute a single playlist
-        int k = po.get_option_int("k");
-        std::cout << "Computing the k=" << k << " most similar tracks to: "
-                << seed_file << std::endl;
-        std::vector<musly_trackid> trackids(tracks.size());
-        for (int i = 0; i < (int)trackids.size(); i++) {
-            trackids[i] = i;
-        }
-        musly_trackid seed = std::distance(tracks_files.begin(), it);
-        std::string pl = compute_playlist(tracks, trackids, tracks_files,
-                seed, k);
-        if (pl == "") {
-            std::cerr << "Failed to compute similar tracks for given file."
+            // compute a similarity matrix and write MIREX formatted to the
+            // given file
+            std::cout << "Computing and writing similarity matrix to: " << file
                     << std::endl;
-        } else {
-            std::cout << pl;
+            if (po.get_action() == "m") {
+                std::cout << "Note: no neighbor guessing is applied here!" << std::endl;
+                ret = write_mirex_full(tracks, tracks_files, file, cf.get_method());
+            } else {
+                int k = po.get_option_int("k");
+                ret = write_mirex_sparse(tracks, tracks_files, file, cf.get_method(), k);
+            }
+            if (ret == 0) {
+                std::cout << "Success." << std::endl;
+            } else {
+                std::cerr << "Failed to open file for writing." << std::endl;
+            }
+
+        // -p: compute and display a playlist for a single seed track
+        } else if (po.get_action() == "p") {
+            std::string seed_file = po.get_option_str("p");
+
+            std::vector<std::string>::iterator it = std::find(
+                    tracks_files.begin(), tracks_files.end(), seed_file);
+            if (it == tracks_files.end()) {
+                std::cerr << "File not found in collection! Aborting." << std::endl;
+                tracks_free(tracks);
+                musly_jukebox_poweroff(mj);
+                return -1;
+            }
+
+            // compute a single playlist
+            int k = po.get_option_int("k");
+            std::cout << "Computing the k=" << k << " most similar tracks to: "
+                    << seed_file << std::endl;
+            std::vector<musly_trackid> trackids(tracks.size());
+            for (int i = 0; i < (int)trackids.size(); i++) {
+                trackids[i] = i;
+            }
+            musly_trackid seed = std::distance(tracks_files.begin(), it);
+            std::string pl = compute_playlist(tracks, trackids, tracks_files,
+                    seed, k);
+            if (pl == "") {
+                std::cerr << "Failed to compute similar tracks for given file."
+                        << std::endl;
+            } else {
+                std::cout << pl;
+            }
         }
 
+        // cleanup
         tracks_free(tracks);
     }
 

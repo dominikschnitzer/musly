@@ -105,10 +105,33 @@ public:
     virtual int
     get_maxtrackid();
 
+    virtual int
+    get_trackids(
+            musly_trackid* trackids);
+
     virtual void
     swapped_positions(
             int pos_a,
             int pos_b);
+
+    virtual int
+    serialize_metadata(
+            unsigned char* buffer);
+
+    virtual int
+    deserialize_metadata(
+            unsigned char* buffer);
+
+    virtual int
+    serialize_trackdata(
+            unsigned char* buffer,
+            int num_tracks,
+            int skip_tracks = 0);
+
+    virtual int
+    deserialize_trackdata(
+            unsigned char* buffer,
+            int num_tracks);
 
 };
 

@@ -28,6 +28,7 @@ programoptions::programoptions(int argc, char *argv[],
         program_name(argv[0])
 {
     optionstr["c"] = default_collection;
+    optionstr["j"] = "";
     optionstr["n"] = "";
     optionstr["x"] = "";
     std::stringstream kstr;
@@ -45,7 +46,7 @@ programoptions::programoptions(int argc, char *argv[],
     opterr = 0;
     while (1) {
 
-        int c = getopt(argc, argv, "v:ihc:a:x:Ee:f:Nn:k:ldm:s:p:");
+        int c = getopt(argc, argv, "v:ihc:Jj:a:x:Ee:f:Nn:k:ldm:s:p:");
         if (c == -1) {
             break;
         }
@@ -87,6 +88,7 @@ programoptions::programoptions(int argc, char *argv[],
         case 'v':
         case 'x':
         case 'c':
+        case 'j':
         case 'k':
         case 'f':
             if (optarg) {
@@ -94,7 +96,9 @@ programoptions::programoptions(int argc, char *argv[],
                 copt = (char)(c);
                 optionstr[copt] = optarg;
             }
-
+            break;
+        case 'J':
+            optionstr["j"] = "*";
             break;
 
         // errors
@@ -106,6 +110,11 @@ programoptions::programoptions(int argc, char *argv[],
     }
     if (optind < argc) {
         action = "error";
+    }
+
+    // handle -J
+    if (optionstr["j"] == "*") {
+        optionstr["j"] = optionstr["c"] + ".jbox";
     }
 
     // show help if no action given
@@ -157,9 +166,13 @@ cout << "  -h           this help screen." << endl;
 cout << "  -v 0-5       set the libmusly debug level: (0: none, 5: trace)." << endl;
 cout << "               DEFAULT: " << default_debuglevel << endl;
 cout << "  -i           information about the music similarity library" << endl;
-cout << "  -c COLL      set the file to write the music similarity features and" << endl
-     << "               to use for computing similarities." << endl
+cout << "  -c COLL      set the file to write the music similarity features to" << endl
+     << "               and to use for computing similarities." << endl
      << "               DEFAULT: " << default_collection << endl;
+cout << "  -j JBOX | -J set the file to write the jukebox state to, to speed up" << endl
+     << "               repeated calls of '-p', '-e', '-E', '-m', or '-s'." << endl
+     << "               Use -J to set it to COLL.jbox." << endl
+     << "               DEFAULT: Do not store the jukebox state on disk." << endl;
 cout << "  -k NUM       set number of similar songs per item when computing" << endl
      << "               playlists ('-p'), sparse distance matrices ('-s')" << endl
      << "               or when evaluating the collection ('-e')." << endl

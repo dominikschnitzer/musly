@@ -78,14 +78,30 @@ mutualproximity::set_normfacts(
     Eigen::VectorXd sim_mu = sim.cast<double>().array() - mu;
     double std = (sim_mu.transpose() * sim_mu);
     std /= (static_cast<double>(sim.size()) - 1.0);
+    set_normfacts(position, mu, sqrt(std));
+}
 
+void
+mutualproximity::set_normfacts(
+        int position,
+        float mu,
+        float std) {
     // allocate space if needed
     // (ideally, this has already been taken care of by append_normfacts)
     if (position >= (int)norm_facts.size()) {
         norm_facts.resize(position+1);
     }
     norm_facts[position].mu = mu;
-    norm_facts[position].std = sqrt(std);
+    norm_facts[position].std = std;
+}
+
+void
+mutualproximity::get_normfacts(
+        int position,
+        float* mu,
+        float* std) {
+    *mu = norm_facts[position].mu;
+    *std = norm_facts[position].std;
 }
 
 void

@@ -185,6 +185,74 @@ mandelellis::get_maxtrackid() {
     return idpool.get_max_seen();
 }
 
+int
+mandelellis::get_trackids(
+        musly_trackid* trackids) {
+    idpool.export_ids(0, idpool.get_size(), trackids);
+    return idpool.get_size();
+}
+
+int
+mandelellis::serialize_metadata(
+        unsigned char* buffer) {
+    if (buffer) {
+        // number of registered tracks
+        *(int*)(buffer) = idpool.get_size();
+        buffer += sizeof(int);
+
+        // largest seen track id
+        *(musly_trackid*)(buffer) = idpool.get_max_seen();
+        buffer += sizeof(musly_trackid);
+    }
+    return sizeof(int) + sizeof(musly_trackid);
+}
+
+int
+mandelellis::deserialize_metadata(
+        unsigned char* buffer) {
+    // number of registered tracks
+    int expected_tracks = *(int*)(buffer);
+    buffer += sizeof(int);
+
+    // largest seen track id
+    musly_trackid max_seen = *(musly_trackid*)(buffer);
+    buffer += sizeof(musly_trackid);
+    idpool.add_ids(&max_seen, 1);
+    idpool.remove_ids(&max_seen, 1);
+
+    return expected_tracks;
+}
+
+int
+mandelellis::serialize_trackdata(
+        unsigned char* buffer,
+        int num_tracks,
+        int skip_tracks) {
+    if ((num_tracks < 0) || (skip_tracks < 0)) {
+        return -1;
+    }
+    if (buffer) {
+        if (num_tracks + skip_tracks > idpool.get_size()) {
+            return -1;
+        }
+        idpool.export_ids(skip_tracks, skip_tracks + num_tracks,
+                (musly_trackid*)buffer);
+    }
+    return num_tracks * sizeof(musly_trackid);
+}
+
+int
+mandelellis::deserialize_trackdata(
+        unsigned char* buffer,
+        int num_tracks) {
+    if (num_tracks < 0) {
+        return -1;
+    }
+    if (num_tracks) {
+        idpool.add_ids((musly_trackid*)buffer, num_tracks);
+    }
+    return num_tracks;
+}
 
 } /* namespace methods */
 } /* namespace musly */

@@ -33,6 +33,10 @@ similarity measures. It is our reference implementation.
 
 #include <musly/musly_types.h>
 
+#ifdef MUSLY_SUPPORT_STDIO
+#include <stdio.h>  // to define FILE*
+#endif
+
 #ifdef WIN32
   /** \hideinitializer */
   #define MUSLY_EXPORT __declspec(dllexport)
@@ -258,6 +262,22 @@ musly_jukebox_maxtrackid(
         musly_jukebox* jukebox);
 
 
+/** Returns the trackids of all tracks currently registered with the the Musly
+ * jukebox. Use musly_jukebox_trackcount() to ask how many trackids will be
+ * returned.
+ *
+ * \param[in] jukebox the Musly jukebox to query
+ * \param[out] trackids the ids of all registered tracks
+ * \return the number of track ids written, or -1 in case of an error
+ *
+ * \sa musly_jukebox_trackcount()
+ */
+MUSLY_EXPORT int
+musly_jukebox_gettrackids(
+        musly_jukebox* jukebox,
+        musly_trackid* trackids);
+
+
 /** Computes the similarity between a seed track and a list of other music
  * tracks. To compute similarities between two music tracks the following
  * steps have to been taken:
@@ -370,6 +390,182 @@ musly_jukebox_guessneighbors_filtered(
         int num_limit_to);
 
 
+/**
+ * Returns the size in bytes needed for serializing the jukebox state.
+ *
+ * \param[in] jukebox An initialized Musly jukebox object.
+ * \param[in] header If nonzero, include the size needed for serializing
+ * jukebox metadata. This size is dependent on the similarity measure and
+ * can also depend on the internal jukebox state.
+ * \param[in] num_tracks If greater than zero, include the size needed for
+ * serializing the state of \p num_tracks registered tracks. If negative,
+ * include the size needed for serializing the state of all currently
+ * registered tracks. This size is dependent on the similarity measure only.
+ * \returns The number of bytes needed to store the state information.
+ *
+ * \note This method gives the sizes of internal indices built when calling
+ * musly_jukebox_setmusicstyle() and musly_jukebox_addtracks(). For
+ * the size of musly_track objects, see musly_track_binsize().
+ */
+MUSLY_EXPORT int
+musly_jukebox_binsize(
+        musly_jukebox* jukebox,
+        int header,
+        int num_tracks);
+
+
+/**
+ * Serializes the jukebox state into a byte buffer and returns the number of
+ * bytes written. Call musly_jukebox_binsize() to determine the required
+ * buffer size, and musly_jukebox_frombin() to deserialize a jukebox state.
+ *
+ * \param[in] jukebox An initialized Musly jukebox object.
+ * \param[out] buffer The buffer to write to.
+ * \param[in] header If nonzero, write the jukebox metadata.
+ * \param[in] num_tracks The number of registered tracks to write the jukebox
+ * state for. If negative or too large, writes the state for all except the
+ * first `skip_tracks` registered tracks.
+ * \param[in] skip_tracks The number of tracks to skip. Must be in range
+ * [0, get_trackcount()]. Must be 0 if \p header is nonzero.
+ * \returns The number of bytes written to the buffer, or -1 in case of an
+ * error.
+ *
+ * \note \p skip_tracks allows to serialize the jukebox state in small
+ * portions. Set \p num_tracks to the number of track states you can handle
+ * at once, then call musly_jukebox_tobin() repeatedly in a loop, setting
+ * \p skip_tracks to the number of track states you have already serialized.
+ *
+ * \note This method serializes the internal indices built when calling
+ * musly_jukebox_setmusicstyle() and musly_jukebox_addtracks(). For
+ * serialization of musly_track objects, see musly_track_tobin().
+ *
+ * \sa musly_jukebox_tostream(), musly_jukebox_tofile()
+ */
+MUSLY_EXPORT int
+musly_jukebox_tobin(
+        musly_jukebox* jukebox,
+        unsigned char* buffer,
+        int header,
+        int num_tracks,
+        int skip_tracks);
+
+
+/**
+ * Deserializes the jukebox state from a byte buffer and returns the number of
+ * tracks expected or read. Use this to restore a jukebox state previously
+ * saved with musly_jukebox_tobin().
+ *
+ * \param[in] jukebox An initialized Musly jukebox object. This must have been
+ * initialized with the same music similarity method as the jukebox the state
+ * has been exported from, otherwise behavior is undefined.
+ * \param[in] buffer The byte buffer to read from.
+ * \param[in] header If nonzero, will read and restore the jukebox metadata.
+ * \param[in] num_tracks If greater than zero, will read and restore the state
+ * of \p num_tracks registered tracks. If negative, will read and restore the
+ * state of all registered tracks (only possible if \p header is nonzero).
+ * \returns The number of tracks expected if \p header is nonzero and
+ * \p num_tracks is zero, the number of tracks read if \p num_tracks is
+ * nonzero, or -1 in case of an error.
+ *
+ * \note This method deserializes the internal indices built when calling
+ * musly_jukebox_setmusicstyle() and musly_jukebox_addtracks(). For
+ * deserialization of musly_track objects, see musly_track_frombin().
+ *
+ * \note Data cannot be read on a platform of a different architecture
+ * (integer size or byte order) than it was written with. Trying so results
+ * in unspecified behavior.
+ *
+ * \sa musly_jukebox_fromstream(), musly_jukebox_fromfile()
+ */
+MUSLY_EXPORT int
+musly_jukebox_frombin(
+        musly_jukebox* jukebox,
+        unsigned char* buffer,
+        int header,
+        int num_tracks);
+
+
+#ifdef MUSLY_SUPPORT_STDIO
+/**
+ * Serializes a jukebox state and writes it to a stream.
+ *
+ * \param jukebox An initialized Musly jukebox object.
+ * \param stream The file stream to write to. Must be opened in binary mode. The
+ * data will be written sequentially, not using any seeking operations, so you
+ * can prepend or append data of your own.
+ * \returns The number of bytes written, or -1 in case of an error.
+ *
+ * \note While this is the most efficient way to embed the jukebox state in a
+ * custom file you write, it will only work if libmusly was linked against the
+ * same implementation of the C standard library as your application code. To
+ * use it, define `MUSLY_SUPPORT_STDIO` before including `musly.h`.
+ *
+ * \sa musly_jukebox_fromstream(), musly_jukebox_tofile()
+ */
+MUSLY_EXPORT int
+musly_jukebox_tostream(
+        musly_jukebox* jukebox,
+        FILE* stream);
+
+
+/**
+ * Restores a jukebox from a stream written by musly_jukebox_tostream().
+ *
+ * \param stream The file stream to read from. Must be opened in binary mode.
+ * The data will be read sequentially, not using any seeking operations, so
+ * you can prepend data of your own as long as you position the file pointer
+ * to the beginning of the jukebox state before calling this function.
+ * \returns A reference to an initialized Musly jukebox object, or NULL in
+ * case of an error.
+ *
+ * \note Currently, a stream cannot be read on a platform of a different
+ * architecture (integer size or byte order) than it was written with.
+ * Trying so results in an error; the stream includes platform information.
+ *
+ * \note See the note in musly_jukebox_tostream() for compatibility issues.
+ *
+ * \sa musly_jukebox_tostream()
+ */
+MUSLY_EXPORT musly_jukebox*
+musly_jukebox_fromstream(
+        FILE* stream);
+#endif  // MUSLY_SUPPORT_STDIO
+
+
+/**
+ * Serializes a jukebox state and writes it to a file.
+ *
+ * \param jukebox An initialized Musly jukebox object.
+ * \param filename The name of the file to write to.
+ * \returns The number of bytes written, or -1 in case of an error.
+ *
+ * \sa musly_jukebox_fromfile(), musly_jukebox_tostream()
+ */
+MUSLY_EXPORT int
+musly_jukebox_tofile(
+        musly_jukebox* jukebox,
+        const char* filename);
+
+
+/**
+ * Restores a jukebox from a file written by musly_jukebox_tofile().
+ *
+ * \param filename The name of the file to read from.
+ * \returns A reference to an initialized Musly jukebox object, or NULL in
+ * case of an error.
+ *
+ * \note Currently, a file cannot be read on a platform of a different
+ * architecture (integer size or byte order) than it was written with.
+ * Trying so results in an error; the file includes platform information.
+ *
+ * \note Any additional data in the file following the jukebox state will
+ * be ignored, so you can freely append custom data after writing it.
+ */
+MUSLY_EXPORT musly_jukebox*
+musly_jukebox_fromfile(
+        const char* filename);
+
+
 /** Allocates a musly_track in memory. As the size of a musly_track varies for
  * each music similarity method, an initialized Musly jukebox object reference
  * needs to be passed argument. You need to free the allocated musly_track with
@@ -416,12 +612,13 @@ musly_track_size(
 
 
 /** Returns the buffer size in bytes required to hold a musly_track. To
- * serialize a musly_track for persistent use musly_track_tobin(). The buffer
- * size varies for each music similarity method.
+ * serialize a musly_track for platform-independent usage, call
+ * musly_track_tobin(), otherwise just copy the memory directly.
+ * The size returned is dependent on the music similarity method.
  *
  * \param[in] jukebox A reference to an initialized musly_jukebox object.
  *
- * \returns The required minimum buffer size required to hold a musly_track.
+ * \returns The required buffer size required to hold a musly_track.
  *
  * \sa musly_jukebox_poweron(), musly_track_tobin(), musly_track_frombin().
  */
@@ -442,6 +639,11 @@ musly_track_binsize(
  * \returns The number of bytes written (musly_track_binsize()) in case of
  * success, -1 in case an error occurred.
  *
+ * \note This transforms the musly_track data from host byte order to
+ * network byte order (which is big endian). If you do not need to transmit
+ * the data across platforms, you can directly copy musly_track_binsize() bytes
+ * from \p from_track to \p to_buffer, or not use a buffer at all.
+ *
  * \sa musly_jukebox_poweron(), musly_track_binsize(), musly_track_frombin().
  */
 MUSLY_EXPORT int
@@ -461,6 +663,11 @@ musly_track_tobin(
  *
  * \returns The number of bytes read (musly_track_binsize()) in case of
  * success, -1 in case an error occurred.
+ *
+ * \note This transforms the musly_track data from network byte order (which is
+ * big endian) to host byte order. If you do not need to transmit the data
+ * across platforms, you can directly copy musly_track_binsize() bytes from
+ * \p from_buffer to \p to_track, or not use a buffer at all.
  *
  * \sa musly_jukebox_poweron(), musly_track_binsize(), musly_track_tobin().
  */
