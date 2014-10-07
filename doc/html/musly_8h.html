@@ -161,6 +161,9 @@ Functions</h2></td></tr>
 <tr class="memitem:af78d36e036c5a52ff77a564f9e263259"><td class="memItemLeft" align="right" valign="top"><a class="el" href="musly_8h.html#a69598017d76c3d22e9f5a897afae1932">MUSLY_EXPORT</a> int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="musly_8h.html#af78d36e036c5a52ff77a564f9e263259">musly_track_analyze_audiofile</a> (<a class="el" href="structmusly__jukebox.html">musly_jukebox</a> *jukebox, const char *audiofile, float excerpt_length, float excerpt_start, <a class="el" href="musly__types_8h.html#aa584590cd7f056b50b940138d5e7777b">musly_track</a> *track)</td></tr>
 <tr class="memdesc:af78d36e036c5a52ff77a564f9e263259"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute a music similarity model (musly_track) from the audio file.  <a href="#af78d36e036c5a52ff77a564f9e263259">More...</a><br/></td></tr>
 <tr class="separator:af78d36e036c5a52ff77a564f9e263259"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7cee2f92bcf9b04de6fac40c89d2c339"><td class="memItemLeft" align="right" valign="top"><a class="el" href="musly_8h.html#a69598017d76c3d22e9f5a897afae1932">MUSLY_EXPORT</a> int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="musly_8h.html#a7cee2f92bcf9b04de6fac40c89d2c339">musly_findmin</a> (const float *values, const <a class="el" href="musly__types_8h.html#a792054f9e0bc4891cf6e8f4483895f12">musly_trackid</a> *ids, int count, float *min_values, <a class="el" href="musly__types_8h.html#a792054f9e0bc4891cf6e8f4483895f12">musly_trackid</a> *min_ids, int min_count, int ordered)</td></tr>
+<tr class="memdesc:a7cee2f92bcf9b04de6fac40c89d2c339"><td class="mdescLeft">&#160;</td><td class="mdescRight">Utility function to find the smallest items in an unordered list of values.  <a href="#a7cee2f92bcf9b04de6fac40c89d2c339">More...</a><br/></td></tr>
+<tr class="separator:a7cee2f92bcf9b04de6fac40c89d2c339"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a class="anchor" id="a69598017d76c3d22e9f5a897afae1932"></a>
@@ -198,6 +201,78 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a class="anchor" id="a7cee2f92bcf9b04de6fac40c89d2c339"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="musly_8h.html#a69598017d76c3d22e9f5a897afae1932">MUSLY_EXPORT</a> int musly_findmin </td>
+          <td>(</td>
+          <td class="paramtype">const float *&#160;</td>
+          <td class="paramname"><em>values</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="musly__types_8h.html#a792054f9e0bc4891cf6e8f4483895f12">musly_trackid</a> *&#160;</td>
+          <td class="paramname"><em>ids</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float *&#160;</td>
+          <td class="paramname"><em>min_values</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="musly__types_8h.html#a792054f9e0bc4891cf6e8f4483895f12">musly_trackid</a> *&#160;</td>
+          <td class="paramname"><em>min_ids</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>min_count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>ordered</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Utility function to find the smallest items in an unordered list of values. </p>
+<p>This can be used to find the top few tracks in the results of a similarity computation done via one or more <a class="el" href="musly_8h.html#a6dfead82d6ece20a4b80e96b57ebec18" title="Computes the similarity between a seed track and a list of other music tracks. ">musly_jukebox_similarity()</a> calls.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">values</td><td>The array of values to find the smallest items in. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ids</td><td>An array of associated track ids. If NULL, proceeds as if this was set to an array of values from <code>0</code> to <code>count - 1</code>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">count</td><td>The length of <code>values</code> and <code>ids</code> (if given). </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">min_values</td><td>An array to write the <code>min_count</code> smallest values to. If NULL, will not write the values. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">min_ids</td><td>An array to write the associated track ids of the <code>min_count</code> smallest items. If NULL, will not write the track ids. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">min_count</td><td>The number of smallest items to find. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ordered</td><td>If nonzero, <code>min_values</code> and <code>min_ids</code> will be written in ascending order. If zero, they will be unordered (this can be faster).</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The number of items written to <code>min_values</code> and/or <code>min_ids</code>, or -1 in case of an error. </dd></dl>
 
 </div>
 </div>
@@ -1435,7 +1510,7 @@ This method serializes the internal indices built when calling <a class="el" hre
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 7 2014 15:01:01 for Musly by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Oct 7 2014 17:29:54 for Musly by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
