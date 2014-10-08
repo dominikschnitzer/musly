@@ -37,9 +37,14 @@ similarity measures. It is our reference implementation.
 #include <stdio.h>  // to define FILE*
 #endif
 
-#ifdef WIN32
-  /** \hideinitializer */
-  #define MUSLY_EXPORT __declspec(dllexport)
+#if defined(_WIN32) || defined(__CYGWIN__)
+  #ifdef MUSLY_BUILDING_LIBRARY
+    /** \hideinitializer */
+    #define MUSLY_EXPORT __declspec(dllexport)
+  #else
+    /** \hideinitializer */
+    #define MUSLY_EXPORT __declspec(dllimport)
+  #endif
 #else
   /** \hideinitializer */
   #define MUSLY_EXPORT __attribute__ ((visibility("default")))
