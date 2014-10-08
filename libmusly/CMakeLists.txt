@@ -58,6 +58,11 @@ if(BUILD_STATIC)
         PROPERTIES COMPILE_FLAGS "-DBUILD_STATIC")
 endif()
 
+# This defines MUSLY_BUILDING_LIBRARY *only when building as shared library*,
+# allowing us to use __declspec(dllexport) instead of dllimport on Windows.
+set_target_properties(libmusly
+    PROPERTIES DEFINE_SYMBOL MUSLY_BUILDING_LIBRARY)
+
 target_link_libraries(libmusly
     ${LIBMUSLY_LIBS}
     ${LIBAV_LIBRARIES})

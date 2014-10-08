@@ -16,6 +16,13 @@ elseif (CMAKE_BUILD_TYPE STREQUAL "Release")
     add_definitions(-DNDEBUG -O3)
 else ()
     add_definitions(-DNDEBUG -Wall -g -O3)
+endif ()
+
+# On Unix, hide symbols by default (see https://gcc.gnu.org/wiki/Visibility)
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"
+    OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    set(CMAKE_CXX_FLAGS
+        "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
 endif () 
 
 option(BUILD_STATIC "Make a static build of libmusly" OFF)
