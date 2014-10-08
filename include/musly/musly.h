@@ -692,7 +692,7 @@ musly_track_frombin(
  *
  * \sa musly_track_tobin(), musly_track_frombin()
  */
-const char*
+MUSLY_EXPORT const char*
 musly_track_tostr(
         musly_jukebox* jukebox,
         musly_track* from_track);
