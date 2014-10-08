@@ -771,6 +771,37 @@ musly_track_analyze_audiofile(
         float excerpt_start,
         musly_track* track);
 
+
+/** Utility function to find the smallest items in an unordered list of values.
+ * This can be used to find the top few tracks in the results of a similarity
+ * computation done via one or more musly_jukebox_similarity() calls.
+ *
+ * \param[in] values The array of values to find the smallest items in.
+ * \param[in] ids An array of associated track ids. If NULL, proceeds as if
+ * this was set to an array of values from <tt>0</tt> to <tt>count - 1</tt>.
+ * \param[in] count The length of \p values and \p ids (if given).
+ * \param[out] min_values An array to write the \p min_count smallest
+ * values to. If NULL, will not write the values.
+ * \param[out] min_ids An array to write the associated track ids of the
+ * \p min_count smallest items. If NULL, will not write the track ids.
+ * \param[in] min_count The number of smallest items to find.
+ * \param[in] ordered If nonzero, \p min_values and \p min_ids will be written
+ * in ascending order. If zero, they will be unordered (this can be faster).
+ *
+ * \returns The number of items written to \p min_values and/or \p min_ids,
+ * or -1 in case of an error.
+ */
+MUSLY_EXPORT int
+musly_findmin(
+        const float* values,
+        const musly_trackid* ids,
+        int count,
+        float* min_values,
+        musly_trackid* min_ids,
+        int min_count,
+        int ordered);
+
+
 #ifdef __cplusplus
 }
 #endif

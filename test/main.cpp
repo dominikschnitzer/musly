@@ -168,6 +168,46 @@ void test_ordered_idpool() {
 }
 
 
+void test_findmin() {
+    std::cout << "Testing component \"findmin\"..." << std::endl;
+
+    const float values[10] = {0.f, -2.f, 3.5f, 3.6f, 1e10f, -1e10f, 4.f, 5.f, 4.f, 3.3f};
+    const musly_trackid ids[10] = {0, 1, 2, 3, 4, 5, 10, 9, 8, 7};
+    const float true_min_values[5] = {-1e10f, -2.f, 0.f, 3.3f, 3.5f};
+    const musly_trackid true_min_idxs[5] = {5, 1, 0, 9, 2};
+    const musly_trackid true_min_ids[5] = {5, 1, 0, 7, 2};
+    float min_values[5];
+    musly_trackid min_ids[5];
+
+    std::fill(min_values, min_values + 5, 0.0f);
+    std::fill(min_ids, min_ids + 5, 0);
+    REQUIRE( "findmin(values, ids, min_values, min_ids, false)", musly_findmin(values, ids, 10, min_values, min_ids, 5, false) == 5 );
+    std::sort(min_values, min_values + 5);
+    for (int i = 0; i < 5; i++) {
+        REQUIRE( "findmin correct", min_values[i] == true_min_values[i] );
+    }
+    for (int i = 0; i < 5; i++) {
+        REQUIRE( "findmin correct", std::find(min_ids, min_ids + 5, true_min_ids[i]) != (min_ids + 5) );
+    }
+
+    std::fill(min_values, min_values + 5, 0.0f);
+    std::fill(min_ids, min_ids + 5, 0);
+    REQUIRE( "findmin(values, ids, min_values, min_ids, true)", musly_findmin(values, ids, 10, min_values, min_ids, 5, true) == 5 );
+    for (int i = 0; i < 5; i++) {
+        REQUIRE( "findmin correct", min_values[i] == true_min_values[i] );
+        REQUIRE( "findmin correct", min_ids[i] == true_min_ids[i] );
+    }
+
+    std::fill(min_values, min_values + 5, 0.0f);
+    std::fill(min_ids, min_ids + 5, 0);
+    REQUIRE( "findmin(values, NULL, min_values, min_ids, true)", musly_findmin(values, NULL, 10, min_values, min_ids, 5, true) == 5 );
+    for (int i = 0; i < 5; i++) {
+        REQUIRE( "findmin correct", min_values[i] == true_min_values[i] );
+        REQUIRE( "findmin correct", min_ids[i] == true_min_idxs[i] );
+    }
+}
+
+
 void generate_music(float* out, int length, unsigned int seed = 0) {
     if (!seed) {
         seed = time(NULL);
@@ -374,9 +414,10 @@ int main() {
     MiniLog::current_level() = logERROR;
 
     // Unit tests
-    std::cout << "Components to test: unordered_idpool,ordered_idpool" << std::endl;
+    std::cout << "Components to test: unordered_idpool,ordered_idpool,findmin" << std::endl;
     test_unordered_idpool();
     test_ordered_idpool();
+    test_findmin();
     std::cout << std::endl;
 
     // Tests of the full library

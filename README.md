@@ -50,6 +50,7 @@ additions:
     `musly_jukebox_setmusicstyle()`, `musly_jukebox_addtracks()` and
     `musly_jukebox_removetracks()`. The command line client makes use of this
     when given the option -j or -J.
+-   `musly_findmin()` is added to the API.
 
 ### VERSION 0.1 ###
 Released on 30 Jan 2014.
