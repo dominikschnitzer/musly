@@ -12,8 +12,7 @@
 /**
 \mainpage Usage
 
-Using the Musly library interface in your application is straightforward : 0. .
-
+Using the Musly library interface in your application is straightforward:
  1. include the musly.h header in your project
  2. initialize musly: musly_jukebox_poweron()
  3. analyze some music: musly_track_analyze_audiofile()
@@ -37,16 +36,14 @@ similarity measures. It is our reference implementation.
 #include <stdio.h>  // to define FILE*
 #endif
 
+/** \hideinitializer Macro marking the exported symbols of the library */
 #if defined(_WIN32) || defined(__CYGWIN__)
   #ifdef MUSLY_BUILDING_LIBRARY
-    /** \hideinitializer */
     #define MUSLY_EXPORT __declspec(dllexport)
   #else
-    /** \hideinitializer */
     #define MUSLY_EXPORT __declspec(dllimport)
   #endif
 #else
-  /** \hideinitializer */
   #define MUSLY_EXPORT __attribute__ ((visibility("default")))
 #endif
 
@@ -56,7 +53,7 @@ extern "C"
 #endif
 
 /** Return the version of Musly.
- * \returns the version as a null terminated string.
+ * \returns the version as a null terminated string
  */
 MUSLY_EXPORT const char*
 musly_version();
@@ -66,8 +63,8 @@ musly_version();
  * 2 (Warning), 3 (Info), 4 (Debug), 5 (Trace). All output will be sent to
  * stderr.
  *
- * \param[in] level The musly library debug level, if the level is invalid it
- * will be set to the closest valid level.
+ * \param[in] level The musly library debug level; if the level is invalid, it
+ * will be set to the closest valid level
  */
 MUSLY_EXPORT void
 musly_debug(
@@ -78,7 +75,7 @@ musly_debug(
  * a single null terminated string. The methods are separated by a comma (,).
  * Use a method name to power on a Musly jukebox.
  *
- * \returns all available methods
+ * \returns all available music similarity methods
  *
  * \sa musly_jukebox_poweron()
  */
@@ -88,10 +85,10 @@ musly_jukebox_listmethods();
 
 /** Lists all available audio file decoders. The decoders are returned as
  * a single null terminated string. The decoders are separated by a comma (,).
- * Use a decoder name to power on a Musly jukebox musly_jukebox_poweron()
+ * Use a decoder name to power on a Musly jukebox.
  * The decoders are used in musly_track_analyze_audiofile().
  *
- * \returns all available audio file decoders.
+ * \returns all available audio file decoders
  *
  * \sa musly_jukebox_poweron()
  */
@@ -102,9 +99,9 @@ musly_jukebox_listdecoders();
 /** Describe the initialized method. This call describes the used music
  * similarity method of the referenced musly_jukebox in more detail.
  *
- * \param[in] jukebox an initialized reference to a Musly jukebox.
+ * \param[in] jukebox An initialized reference to a Musly jukebox
  * \returns a description of the currently initialized music similarity
- * method as a null terminated string.
+ * method as a null terminated string
  *
  * \sa musly_jukebox_poweron()
  */
@@ -114,24 +111,24 @@ musly_jukebox_aboutmethod(
 
 
 /** Returns a reference to an initialized Musly jukebox object. To initialize
- * Musly you need to specify a music similarity method to use and a decoder.
+ * Musly, you need to specify a music similarity method and decoder to use.
  * You can set both values to 0 (NULL) to initialize the default method and
- * decoder. To list all available music similarity methods use
- * musly_jukebox_listmethods(). To list all available audio file decoders
+ * decoder. To list all available music similarity methods, use
+ * musly_jukebox_listmethods(). To list all available audio file decoders,
  * use musly_jukebox_listdecoders(). If the initialization fails, NULL
  * is returned. To get more information about the initialized music similarity
- * method use musly_jukebox_aboutmethod().
+ * method, use musly_jukebox_aboutmethod().
  *
- * The returned reference is required for almost all subsequent calls to Musly
- * library calls. To add a music track to the jukebox inventory use
- * musly_jukebox_addtracks(). To compute recommendations with the jukebox use
+ * The returned reference is required for almost all subsequent Musly library
+ * calls. To add a music track to the jukebox inventory, use
+ * musly_jukebox_addtracks(). To compute recommendations with the jukebox, use
  * musly_jukebox_similarity(). Note that before adding tracks or computing
  * similarities, the music style needs to be set with
  * musly_jukebox_setmusicstyle().
  *
- * \param[in] method the desired music similarity method.
- * \param[in] decoder the desired decoder to initialize.
- * \returns a reference to an initialized Musly jukebox object.
+ * \param[in] method The desired music similarity method
+ * \param[in] decoder The desired decoder to initialize
+ * \returns a reference to an initialized Musly jukebox object
  *
  * \sa musly_jukebox_poweroff(), musly_jukebox_addtracks(),
  * musly_jukebox_setmusicstyle(), musly_jukebox_similarity()
@@ -147,7 +144,7 @@ musly_jukebox_poweron(
  * musly_track_alloc() need to be freed separately. The referenced Musly
  * jukebox object is invalidated by this call.
  *
- * \param[in] jukebox the Musly jukebox to deinitialize.
+ * \param[in] jukebox The Musly jukebox to deinitialize
  *
  * \sa musly_jukebox_poweron()
  */
@@ -156,13 +153,15 @@ musly_jukebox_poweroff(
         musly_jukebox* jukebox);
 
 
-/** Initialize the jukebox music style. To properly use the similarity function
- * it is necessary to give the algorithms a hint about the music we are working
- * with. Do this by passing a random sample of the tracks you want to analyze.
- * As a rule of thumb use a maximum of 1000 randomly selected tracks to set
- * the music style. The tracks are analyzed and copied to internal storage as
- * needed, so you may safely deallocate the given array and tracks after
- * the call.
+/** Initialize the jukebox music style. To properly use the similarity
+ * function, it is necessary to give the algorithms a hint about the music we
+ * are working with. Do this by passing a representative sample of the tracks
+ * you want to compute similarities for: as a rule of thumb, use a maximum
+ * of 1000 randomly selected tracks to set the music style (random selection
+ * is important to get a representative sample; if the sample is biased,
+ * results will be suboptimal). The tracks are analyzed and copied to internal
+ * storage as needed, so you may safely deallocate the given array and tracks
+ * after the call.
  *
  * \note
  * This must be called before adding any tracks to the jukebox. If you change
@@ -170,10 +169,12 @@ musly_jukebox_poweroff(
  * tracks via musly_jukebox_addtracks(), otherwise tracks added after the style
  * change will not be properly compared to tracks added before the change.
  *
- * \param[in] jukebox the Musly jukebox to set the music stlye.
- * \param[in] tracks a random sample array of Musly tracks to use for
- * the initialization.
- * \param[in] num_tracks the number of Musly tracks.
+ * \param[in] jukebox The Musly jukebox to set the music style for
+ * \param[in] tracks A random sample array of Musly tracks to use for
+ * the initialization
+ * \param[in] num_tracks The number of Musly tracks
+ *
+ * \returns 0 on success, -1 on an error
  *
  * \sa musly_jukebox_poweron(), musly_track_analyze_pcm(),
  * musly_track_analyze_audiofile()
@@ -185,25 +186,31 @@ musly_jukebox_setmusicstyle(
         int num_tracks);
 
 
-/** Add tracks to the Musly jukebox. To use the music similarity routines
- * each Musly track has to be added to a jukebox. Internally Musly allocates an
- * initialization vector for each track computed with the tracks passed to
- * musly_jukebox_setmusicstyle().
+/** Register tracks with the Musly jukebox. To use the music similarity
+ * routines, each Musly track has to be registered with a jukebox. Internally,
+ * Musly computes an indexing and normalization vector for each registered
+ * track based on the set of tracks passed to musly_jukebox_setmusicstyle().
  *
- * \param[in] jukebox the Musly jukebox to add the tracks to.
- * \param[in] tracks an array of musly_track objects to add to the jukebox.
- * \param[in,out] trackids the track identifiers for the tracks, either
- * read or written depending on the \p generate_ids parameter.
- * \param[in] num_tracks the length of the \p tracks and \p trackids array.
+ * \param[in] jukebox The Musly jukebox to add the tracks to
+ * \param[in] tracks An array of musly_track objects to add to the jukebox
+ * \param[in,out] trackids The track identifiers for the tracks, either
+ * read or written depending on the \p generate_ids parameter
+ * \param[in] num_tracks The length of the \p tracks and \p trackids array
  * \param[in] generate_ids controls whether ids are to be generated
- * automatically or given by the caller.
+ * automatically or given by the caller:
  * If nonzero, Musly will assign sequential identifiers starting from
  * <tt>musly_jukebox_maxtrackid(jukebox) + 1</tt> and write the ids to
  * \p trackids. If zero, Musly will assign the ids given in \p trackids,
  * replacing existing tracks for ids already used by the jukebox.
  *
- * \returns 0 on success -1 on an error. When an error is returned no
+ * \returns 0 on success, -1 on an error. When an error is returned, no
  * track was added to Musly.
+ *
+ * \note The tracks themselves are not stored in the jukebox, just some
+ * information needed to provide musly_jukebox_guessneighbors() and to
+ * improve musly_jukebox_similarity(). This design allows Musly to compute
+ * recommendations for collections too large to fit all tracks into memory
+ * at once.
  *
  * \sa musly_jukebox_removetracks(), musly_jukebox_trackcount(),
  * musly_jukebox_setmusicstyle(), musly_jukebox_similarity()
@@ -217,14 +224,14 @@ musly_jukebox_addtracks(
         int generate_ids);
 
 
-/** Remove tracks from the Musly jukebox.
+/** Deregister tracks from the Musly jukebox.
  *
- * \param[in] jukebox the Musly jukebox to remove the tracks from.
- * \param[in] trackids the track identifiers of the tracks to remove,
- * unknown identifiers will be silently ignored.
- * \param[in] num_tracks the length of the \p trackids array.
+ * \param[in] jukebox The Musly jukebox to remove the tracks from
+ * \param[in] trackids The track identifiers of the tracks to remove,
+ * unknown identifiers will be silently ignored
+ * \param[in] num_tracks The length of the \p trackids array
  *
- * \returns 0 on success -1 on an error.
+ * \returns 0 on success, -1 on an error
  *
  * \sa musly_jukebox_addtracks(), musly_jukebox_trackcount()
  */
@@ -239,7 +246,7 @@ musly_jukebox_removetracks(
  * Along with musly_jukebox_maxtrackid(), this can be used for versioning the
  * state of a jukebox.
  *
- * \param[in] jukebox the Musly jukebox to query
+ * \param[in] jukebox The Musly jukebox to query
  * \returns the number of tracks currently registered with \p jukebox, or -1
  * on an error
  *
@@ -257,8 +264,8 @@ musly_jukebox_trackcount(
  * number that will never decrease in the lifetime of a jukebox, provided that
  * musly_jukebox_maxtrackid() always increases when adding a track.
  *
- * \param[in] jukebox the Musly jukebox to query
- * \return the largest trackid seen by \p jukebox, or -1 if it has not seen any
+ * \param[in] jukebox The Musly jukebox to query
+ * \returns the largest trackid seen by \p jukebox, -1 if it has not seen any
  *
  * \sa musly_jukebox_addtracks(), musly_jukebox_removetracks()
  */
@@ -271,9 +278,9 @@ musly_jukebox_maxtrackid(
  * jukebox. Use musly_jukebox_trackcount() to ask how many trackids will be
  * returned.
  *
- * \param[in] jukebox the Musly jukebox to query
- * \param[out] trackids the ids of all registered tracks
- * \return the number of track ids written, or -1 in case of an error
+ * \param[in] jukebox The Musly jukebox to query
+ * \param[out] trackids The ids of all registered tracks
+ * \returns the number of track ids written, or -1 in case of an error
  *
  * \sa musly_jukebox_trackcount()
  */
@@ -284,33 +291,43 @@ musly_jukebox_gettrackids(
 
 
 /** Computes the similarity between a seed track and a list of other music
- * tracks. To compute similarities between two music tracks the following
+ * tracks. To compute similarities between two music tracks, the following
  * steps have to been taken:
  *
- *  - initialize a musly_jukebox object with: musly_jukebox_poweron()
+ *  - initialize a musly_jukebox object: musly_jukebox_poweron()
  *  - analyze audio files, e.g. with musly_track_analyze_audiofile()
- *  - set the music style of the jukebox by using a small random sample of
+ *  - set the music style of the jukebox by using a representative sample of
  *    the audio tracks analyzed: musly_jukebox_setmusicstyle()
- *  - add the audio tracks to the musly_jukebox: musly_jukebox_addtracks()
- *  - use this function to compute similarities.
+ *  - register the audio tracks with the jukebox: musly_jukebox_addtracks()
+ *  - (optionally) find good candidate tracks: musly_jukebox_guessneighbors()
+ *  - use this function to compute similarities (in one go or in batches)
+ *  - (optionally) find the most similar tracks: musly_findmin()
  *
- * \param[in] jukebox The Musly jukebox to use.
+ * \param[in] jukebox An initialized Musly jukebox object with tracks added
+ * through musly_jukebox_addtracks()
  * \param[in] seed_track The seed track to compute similarities to
  * \param[in] seed_trackid The id of the seed track as returned by
- * musly_jukebox_addtracks().
+ * or given to musly_jukebox_addtracks()
  * \param[in] tracks An array of musly_track objects to compute the
- * similarities to.
- * \param[in] trackids An array of musly_trackids corresponding to the tracks
- * array. The musly_trackids are returned after adding them to the
- * musly_jukebox
- * \param[in] num_tracks the size of the tracks and trackids arrays
- * \param[out] similarities a preallocated float array to hold the computed
- * similarities.
- * \returns 0 on success and -1 on an error.
+ * similarities to
+ * \param[in] trackids An array of musly_trackids corresponding to the
+ * \p tracks array, as returned by or given to musly_jukebox_addtracks()
+ * \param[in] num_tracks The size of the \p tracks,  \p trackids and
+ * \p similarities arrays
+ * \param[out] similarities A preallocated float array to write the computed
+ * similarities to
+ * \returns 0 on success, -1 on an error
+ *
+ * \note This needs both the musly_trackids the tracks were registered with
+ * in musly_jukebox_addtracks() and the musly_track objects themselves, as
+ * those are not stored in the jukebox. This design allows to compute
+ * similarities for collections too large to fit all tracks into memory at
+ * once, by calling musly_jukebox_similarity() repeatedly with \p tracks and
+ * \p trackids set to subsets of the collection loaded in small batches.
  *
  * \sa musly_jukebox_poweron(), musly_track_analyze_audiofile(),
  * musly_track_analyze_pcm(), musly_jukebox_setmusicstyle(),
- * musly_jukebox_addtracks()
+ * musly_jukebox_addtracks(), musly_findmin()
  */
 MUSLY_EXPORT int
 musly_jukebox_similarity(
@@ -328,8 +345,8 @@ musly_jukebox_similarity(
  * way to pre-filter the whole jukebox collection for possible matches
  * (neighbors) to the query song (seed). The musly_tracks do not have to be
  * loaded to memory to use that call. It operates solely on an index usually
- * built when adding the track to the jukebox (musly_jukebox_addtracks()). A
- * maximum of num_neighbors is written in the neighbors list of track ids.
+ * built when adding the tracks to the jukebox (musly_jukebox_addtracks()). A
+ * maximum of \p num_neighbors track ids is written to the \p neighbors list.
  * The returned neighbors can be used to drastically reduce the number of input
  * tracks (and thus computation time) for musly_jukebox_similarity().
  * If the method is not implemented or all neighbors should be analyzed,
@@ -337,16 +354,16 @@ musly_jukebox_similarity(
  * neighbors and thus as input to musly_jukebox_similarity().
  *
  * \param[in] jukebox An initialized Musly jukebox object with tracks added
- * through musly_jukebox_addtrack().
- * \param[in] seed The seed track id to search for its nearest neighbors.
+ * through musly_jukebox_addtracks()
+ * \param[in] seed The seed track id to search for its nearest neighbors
  * \param[out] neighbors The neighbors will be written to this preallocated
- * array.
+ * array
  * \param[in] num_neighbors The maximum number of neighbors to write to the
- * neighbors array.
- * \returns the number of neighbors found for the given seed trackid (success).
- * -1 is returned on a failure.
+ * \p neighbors array
  *
- * \sa musly_jukebox_similarity(), musly_jukebox_addtrack().
+ * \returns the number of neighbors written to the array, or -1 on an error
+ *
+ * \sa musly_jukebox_similarity(), musly_jukebox_addtracks()
  */
 MUSLY_EXPORT int
 musly_jukebox_guessneighbors(
@@ -371,19 +388,19 @@ musly_jukebox_guessneighbors(
  * lookups and worse locality.
  *
  * \param[in] jukebox An initialized Musly jukebox object with tracks added
- * through musly_jukebox_addtrack().
- * \param[in] seed The seed track id to search for its nearest neighbors.
+ * through musly_jukebox_addtrack()
+ * \param[in] seed The seed track id to search for its nearest neighbors
  * \param[out] neighbors The neighbors will be written to this preallocated
- * array.
+ * array
  * \param[in] num_neighbors The maximum number of neighbors to write to the
- * neighbors array.
+ * neighbors array
  * \param[in] limit_to A list of track ids to limit the search to
- * \param[in] num_limit_to The length of the \p limit_to array. If zero,
- * \p limit_to is ignored and all registered track ids are searched instead.
- * \returns the number of neighbors found for the given seed trackid (success).
- * -1 is returned on a failure.
+ * \param[in] num_limit_to The length of the \p limit_to array; if zero,
+ * \p limit_to is ignored and all registered track ids are searched instead
  *
- * \sa musly_jukebox_guessneighbors(), musly_jukebox_similarity().
+ * \returns the number of neighbors written to the array, or -1 on an error
+ *
+ * \sa musly_jukebox_guessneighbors(), musly_jukebox_similarity()
  */
 MUSLY_EXPORT int
 musly_jukebox_guessneighbors_filtered(
@@ -398,7 +415,7 @@ musly_jukebox_guessneighbors_filtered(
 /**
  * Returns the size in bytes needed for serializing the jukebox state.
  *
- * \param[in] jukebox An initialized Musly jukebox object.
+ * \param[in] jukebox An initialized Musly jukebox object
  * \param[in] header If nonzero, include the size needed for serializing
  * jukebox metadata. This size is dependent on the similarity measure and
  * can also depend on the internal jukebox state.
@@ -406,7 +423,8 @@ musly_jukebox_guessneighbors_filtered(
  * serializing the state of \p num_tracks registered tracks. If negative,
  * include the size needed for serializing the state of all currently
  * registered tracks. This size is dependent on the similarity measure only.
- * \returns The number of bytes needed to store the state information.
+ *
+ * \returns the number of bytes needed to store the state information
  *
  * \note This method gives the sizes of internal indices built when calling
  * musly_jukebox_setmusicstyle() and musly_jukebox_addtracks(). For
@@ -424,16 +442,17 @@ musly_jukebox_binsize(
  * bytes written. Call musly_jukebox_binsize() to determine the required
  * buffer size, and musly_jukebox_frombin() to deserialize a jukebox state.
  *
- * \param[in] jukebox An initialized Musly jukebox object.
- * \param[out] buffer The buffer to write to.
+ * \param[in] jukebox An initialized Musly jukebox object
+ * \param[out] buffer The buffer to write to
  * \param[in] header If nonzero, write the jukebox metadata.
  * \param[in] num_tracks The number of registered tracks to write the jukebox
  * state for. If negative or too large, writes the state for all except the
  * first `skip_tracks` registered tracks.
  * \param[in] skip_tracks The number of tracks to skip. Must be in range
  * [0, get_trackcount()]. Must be 0 if \p header is nonzero.
+ *
  * \returns The number of bytes written to the buffer, or -1 in case of an
- * error.
+ * error
  *
  * \note \p skip_tracks allows to serialize the jukebox state in small
  * portions. Set \p num_tracks to the number of track states you can handle
@@ -463,11 +482,12 @@ musly_jukebox_tobin(
  * \param[in] jukebox An initialized Musly jukebox object. This must have been
  * initialized with the same music similarity method as the jukebox the state
  * has been exported from, otherwise behavior is undefined.
- * \param[in] buffer The byte buffer to read from.
+ * \param[in] buffer The byte buffer to read from
  * \param[in] header If nonzero, will read and restore the jukebox metadata.
  * \param[in] num_tracks If greater than zero, will read and restore the state
  * of \p num_tracks registered tracks. If negative, will read and restore the
  * state of all registered tracks (only possible if \p header is nonzero).
+ *
  * \returns The number of tracks expected if \p header is nonzero and
  * \p num_tracks is zero, the number of tracks read if \p num_tracks is
  * nonzero, or -1 in case of an error.
@@ -494,11 +514,12 @@ musly_jukebox_frombin(
 /**
  * Serializes a jukebox state and writes it to a stream.
  *
- * \param jukebox An initialized Musly jukebox object.
+ * \param jukebox An initialized Musly jukebox object
  * \param stream The file stream to write to. Must be opened in binary mode. The
  * data will be written sequentially, not using any seeking operations, so you
  * can prepend or append data of your own.
- * \returns The number of bytes written, or -1 in case of an error.
+ *
+ * \returns the number of bytes written, or -1 in case of an error
  *
  * \note While this is the most efficient way to embed the jukebox state in a
  * custom file you write, it will only work if libmusly was linked against the
@@ -520,6 +541,7 @@ musly_jukebox_tostream(
  * The data will be read sequentially, not using any seeking operations, so
  * you can prepend data of your own as long as you position the file pointer
  * to the beginning of the jukebox state before calling this function.
+ *
  * \returns A reference to an initialized Musly jukebox object, or NULL in
  * case of an error.
  *
@@ -540,9 +562,10 @@ musly_jukebox_fromstream(
 /**
  * Serializes a jukebox state and writes it to a file.
  *
- * \param jukebox An initialized Musly jukebox object.
- * \param filename The name of the file to write to.
- * \returns The number of bytes written, or -1 in case of an error.
+ * \param jukebox An initialized Musly jukebox object
+ * \param filename The name of the file to write to
+ *
+ * \returns the number of bytes written, or -1 in case of an error
  *
  * \sa musly_jukebox_fromfile(), musly_jukebox_tostream()
  */
@@ -555,9 +578,10 @@ musly_jukebox_tofile(
 /**
  * Restores a jukebox from a file written by musly_jukebox_tofile().
  *
- * \param filename The name of the file to read from.
- * \returns A reference to an initialized Musly jukebox object, or NULL in
- * case of an error.
+ * \param filename The name of the file to read from
+ *
+ * \returns a reference to an initialized Musly jukebox object, or NULL in
+ * case of an error
  *
  * \note Currently, a file cannot be read on a platform of a different
  * architecture (integer size or byte order) than it was written with.
@@ -573,11 +597,12 @@ musly_jukebox_fromfile(
 
 /** Allocates a musly_track in memory. As the size of a musly_track varies for
  * each music similarity method, an initialized Musly jukebox object reference
- * needs to be passed argument. You need to free the allocated musly_track with
- * musly_track_free().
+ * needs to be passed as an argument. You need to free the allocated
+ * musly_track with musly_track_free().
  *
- * \param[in] jukebox A reference to an initialized Musly jukebox object.
- * \returns An allocated musly_track float array.
+ * \param[in] jukebox A reference to an initialized Musly jukebox object
+ *
+ * \returns an allocated musly_track (float array)
  *
  * \sa musly_track_free()
  */
@@ -588,7 +613,7 @@ musly_track_alloc(
 
 /** Frees a musly_track previously allocated with musly_track_alloc().
  *
- * \param[in] track The musly track you want to free.
+ * \param[in] track The musly track you want to free
  *
  * \sa musly_track_alloc()
  */
@@ -621,9 +646,9 @@ musly_track_size(
  * musly_track_tobin(), otherwise just copy the memory directly.
  * The size returned is dependent on the music similarity method.
  *
- * \param[in] jukebox A reference to an initialized musly_jukebox object.
+ * \param[in] jukebox A reference to an initialized musly_jukebox object
  *
- * \returns The required buffer size required to hold a musly_track.
+ * \returns the required buffer size required to hold a musly_track
  *
  * \sa musly_jukebox_poweron(), musly_track_tobin(), musly_track_frombin().
  */
@@ -636,13 +661,13 @@ musly_track_binsize(
  * transmit a musly_track. musly_track_binsize() bytes will be written to
  * to_buffer. To deserialize a buffer use musly_track_frombin().
  *
- * \param[in] jukebox A reference to an initialized musly_jukebox object.
+ * \param[in] jukebox A reference to an initialized musly_jukebox object
  * \param[in] from_track The track to serialize
  * \param[out] to_buffer The buffer receiving the serialized track. The buffer
- * needs to be preallocated with musly_track_binsize() bytes.
+ * needs to be preallocated with at least musly_track_binsize() bytes.
  *
- * \returns The number of bytes written (musly_track_binsize()) in case of
- * success, -1 in case an error occurred.
+ * \returns the number of bytes written (musly_track_binsize()) in case of
+ * success, -1 in case of an error
  *
  * \note This transforms the musly_track data from host byte order to
  * network byte order (which is big endian). If you do not need to transmit
@@ -662,12 +687,12 @@ musly_track_tobin(
  * previously serialized byte buffer (musly_track_tobin()) to a musly_track.
  * From the buffer musly_track_binsize() bytes will be read.
  *
- * \param[in] jukebox A reference to an initialized musly_jukebox object.
- * \param[in] from_buffer the buffer to use for deserialization
- * \param[out] to_track the musyl_track to store the deserialized track.
+ * \param[in] jukebox A reference to an initialized musly_jukebox object
+ * \param[in] from_buffer The buffer to use for deserialization
+ * \param[out] to_track The musly_track to store the deserialized track
  *
- * \returns The number of bytes read (musly_track_binsize()) in case of
- * success, -1 in case an error occurred.
+ * \returns the number of bytes read (musly_track_binsize()) in case of
+ * success, -1 in case of an error
  *
  * \note This transforms the musly_track data from network byte order (which is
  * big endian) to host byte order. If you do not need to transmit the data
@@ -687,13 +712,14 @@ musly_track_frombin(
  * The data is displayed in a flat format. All data structures (matrices,
  * covariance matrices) are exported as vectors. This call can be used to
  * export the feature data for further analysis.
- * Note: This function is not threadsafe!
  *
- * \param[in] jukebox The Musly jukebox to use.
- * \param[in] from_track the musly_track to convert into a string
- * representation.
+ * \note This function is not threadsafe!
  *
- * \returns a constant null terminated string representing from_track.
+ * \param[in] jukebox The Musly jukebox to use
+ * \param[in] from_track The musly_track to convert into a string
+ * representation
+ *
+ * \returns a constant null terminated string representing from_track
  *
  * \sa musly_track_tobin(), musly_track_frombin()
  */
@@ -715,14 +741,14 @@ musly_track_tostr(
  * Depending on the music similarity method, not all of the given signal will
  * be used in the computation, but possibly only the central 60 seconds.
  *
- * \param[in] jukebox A reference to an initialized musly_jukebox object.
+ * \param[in] jukebox A reference to an initialized musly_jukebox object
  * \param[in] mono_22khz_pcm The audio signal to analyze represented as a PCM float
- * array. The audio signal has to be mono and sampled at 22050hz with float
+ * array. The audio signal has to be mono and sampled at 22050 Hz with float
  * values between -1.0 and +1.0.
- * \param[in] length_pcm The length of the input float array.
- * \param[out] track The musly_track to write the music similarity features.
+ * \param[in] length_pcm The length of the input float array
+ * \param[out] track The musly_track to write the music similarity features to
  *
- * \returns 0 on success, -1 on failure.
+ * \returns 0 on success, -1 on failure
  *
  * \sa musly_track_analyze_audiofile(), musly_jukebox_poweron().
  */
@@ -750,7 +776,7 @@ musly_track_analyze_pcm(
  * Generally, it is enough to decode 30 to 60 seconds, and it is advisable to
  * exclude nonrepresentative parts such as the intro and outro of a song.
  *
- * \param[in] jukebox A reference to an initialized musly_jukebox object.
+ * \param[in] jukebox A reference to an initialized musly_jukebox object
  * \param[in] audiofile An audio file. The file will be decoded with the audio
  * decoder.
  * \param[in] excerpt_length The maximum length in seconds of the excerpt to
@@ -762,9 +788,9 @@ musly_track_analyze_pcm(
  * If positive and <tt>excerpt_start + excerpt_length</tt> exceeds the file
  * length, then the excerpt is taken from the end of the file.
  * Suggested value: -48.
- * \param[out] track The musly_track to write the music similarity features.
+ * \param[out] track The musly_track to write the music similarity features to
  *
- * \returns 0 on success, -1 on failure.
+ * \returns 0 on success, -1 on failure
  *
  * \sa musly_track_analyze_audiofile(), musly_jukebox_poweron().
  */
@@ -781,20 +807,20 @@ musly_track_analyze_audiofile(
  * This can be used to find the top few tracks in the results of a similarity
  * computation done via one or more musly_jukebox_similarity() calls.
  *
- * \param[in] values The array of values to find the smallest items in.
+ * \param[in] values The array of values to find the smallest items in
  * \param[in] ids An array of associated track ids. If NULL, proceeds as if
  * this was set to an array of values from <tt>0</tt> to <tt>count - 1</tt>.
- * \param[in] count The length of \p values and \p ids (if given).
+ * \param[in] count The length of \p values and \p ids (if given)
  * \param[out] min_values An array to write the \p min_count smallest
  * values to. If NULL, will not write the values.
  * \param[out] min_ids An array to write the associated track ids of the
  * \p min_count smallest items. If NULL, will not write the track ids.
- * \param[in] min_count The number of smallest items to find.
+ * \param[in] min_count The number of smallest items to find
  * \param[in] ordered If nonzero, \p min_values and \p min_ids will be written
  * in ascending order. If zero, they will be unordered (this can be faster).
  *
- * \returns The number of items written to \p min_values and/or \p min_ids,
- * or -1 in case of an error.
+ * \returns the number of items written to \p min_values and/or \p min_ids,
+ * or -1 in case of an error
  */
 MUSLY_EXPORT int
 musly_findmin(

@@ -61,6 +61,7 @@
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a69598017d76c3d22e9f5a897afae1932"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="musly_8h.html#a69598017d76c3d22e9f5a897afae1932">MUSLY_EXPORT</a></td></tr>
+<tr class="memdesc:a69598017d76c3d22e9f5a897afae1932"><td class="mdescLeft">&#160;</td><td class="mdescRight">Macro marking the exported symbols of the library.  <a href="#a69598017d76c3d22e9f5a897afae1932">More...</a><br/></td></tr>
 <tr class="separator:a69598017d76c3d22e9f5a897afae1932"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
@@ -90,10 +91,10 @@ Functions</h2></td></tr>
 <tr class="memdesc:ab96efc48ff5ce54f49bb20960249cfd6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the jukebox music style.  <a href="#ab96efc48ff5ce54f49bb20960249cfd6">More...</a><br/></td></tr>
 <tr class="separator:ab96efc48ff5ce54f49bb20960249cfd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a69f7fc47f7ceb62673a53cfac06bd750"><td class="memItemLeft" align="right" valign="top"><a class="el" href="musly_8h.html#a69598017d76c3d22e9f5a897afae1932">MUSLY_EXPORT</a> int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750">musly_jukebox_addtracks</a> (<a class="el" href="structmusly__jukebox.html">musly_jukebox</a> *jukebox, <a class="el" href="musly__types_8h.html#aa584590cd7f056b50b940138d5e7777b">musly_track</a> **tracks, <a class="el" href="musly__types_8h.html#a792054f9e0bc4891cf6e8f4483895f12">musly_trackid</a> *trackids, int num_tracks, int generate_ids)</td></tr>
-<tr class="memdesc:a69f7fc47f7ceb62673a53cfac06bd750"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add tracks to the Musly jukebox.  <a href="#a69f7fc47f7ceb62673a53cfac06bd750">More...</a><br/></td></tr>
+<tr class="memdesc:a69f7fc47f7ceb62673a53cfac06bd750"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register tracks with the Musly jukebox.  <a href="#a69f7fc47f7ceb62673a53cfac06bd750">More...</a><br/></td></tr>
 <tr class="separator:a69f7fc47f7ceb62673a53cfac06bd750"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a303866950be1803afaa5ffd47203fdc7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="musly_8h.html#a69598017d76c3d22e9f5a897afae1932">MUSLY_EXPORT</a> int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="musly_8h.html#a303866950be1803afaa5ffd47203fdc7">musly_jukebox_removetracks</a> (<a class="el" href="structmusly__jukebox.html">musly_jukebox</a> *jukebox, <a class="el" href="musly__types_8h.html#a792054f9e0bc4891cf6e8f4483895f12">musly_trackid</a> *trackids, int num_tracks)</td></tr>
-<tr class="memdesc:a303866950be1803afaa5ffd47203fdc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove tracks from the Musly jukebox.  <a href="#a303866950be1803afaa5ffd47203fdc7">More...</a><br/></td></tr>
+<tr class="memdesc:a303866950be1803afaa5ffd47203fdc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deregister tracks from the Musly jukebox.  <a href="#a303866950be1803afaa5ffd47203fdc7">More...</a><br/></td></tr>
 <tr class="separator:a303866950be1803afaa5ffd47203fdc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a340577e576414de1dcacfff8df399201"><td class="memItemLeft" align="right" valign="top"><a class="el" href="musly_8h.html#a69598017d76c3d22e9f5a897afae1932">MUSLY_EXPORT</a> int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="musly_8h.html#a340577e576414de1dcacfff8df399201">musly_jukebox_trackcount</a> (<a class="el" href="structmusly__jukebox.html">musly_jukebox</a> *jukebox)</td></tr>
 <tr class="memdesc:a340577e576414de1dcacfff8df399201"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the number of tracks currently registered with the Musly jukebox.  <a href="#a340577e576414de1dcacfff8df399201">More...</a><br/></td></tr>
@@ -176,6 +177,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Macro marking the exported symbols of the library. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
@@ -197,7 +200,7 @@ Functions</h2></td></tr>
 <p>Valid levels are 0 (Quiet, DEFAULT), 1 (Error), 2 (Warning), 3 (Info), 4 (Debug), 5 (Trace). All output will be sent to stderr.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">level</td><td>The musly library debug level, if the level is invalid it will be set to the closest valid level. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">level</td><td>The musly library debug level; if the level is invalid, it will be set to the closest valid level </td></tr>
   </table>
   </dd>
 </dl>
@@ -262,17 +265,17 @@ Functions</h2></td></tr>
 <p>This can be used to find the top few tracks in the results of a similarity computation done via one or more <a class="el" href="musly_8h.html#a6dfead82d6ece20a4b80e96b57ebec18" title="Computes the similarity between a seed track and a list of other music tracks. ">musly_jukebox_similarity()</a> calls.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">values</td><td>The array of values to find the smallest items in. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">values</td><td>The array of values to find the smallest items in </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">ids</td><td>An array of associated track ids. If NULL, proceeds as if this was set to an array of values from <code>0</code> to <code>count - 1</code>. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">count</td><td>The length of <code>values</code> and <code>ids</code> (if given). </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">count</td><td>The length of <code>values</code> and <code>ids</code> (if given) </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">min_values</td><td>An array to write the <code>min_count</code> smallest values to. If NULL, will not write the values. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">min_ids</td><td>An array to write the associated track ids of the <code>min_count</code> smallest items. If NULL, will not write the track ids. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">min_count</td><td>The number of smallest items to find. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">min_count</td><td>The number of smallest items to find </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">ordered</td><td>If nonzero, <code>min_values</code> and <code>min_ids</code> will be written in ascending order. If zero, they will be unordered (this can be faster).</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The number of items written to <code>min_values</code> and/or <code>min_ids</code>, or -1 in case of an error. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>the number of items written to <code>min_values</code> and/or <code>min_ids</code>, or -1 in case of an error </dd></dl>
 
 </div>
 </div>
@@ -294,11 +297,11 @@ Functions</h2></td></tr>
 <p>This call describes the used music similarity method of the referenced <a class="el" href="structmusly__jukebox.html" title="The Musly base object storing the initialized music similarity method and audio decoder information...">musly_jukebox</a> in more detail.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>an initialized reference to a Musly jukebox. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>An initialized reference to a Musly jukebox </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a description of the currently initialized music similarity method as a null terminated string.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a description of the currently initialized music similarity method as a null terminated string</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a> </dd></dl>
 
 </div>
@@ -345,20 +348,21 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Add tracks to the Musly jukebox. </p>
-<p>To use the music similarity routines each Musly track has to be added to a jukebox. Internally Musly allocates an initialization vector for each track computed with the tracks passed to <a class="el" href="musly_8h.html#ab96efc48ff5ce54f49bb20960249cfd6" title="Initialize the jukebox music style. ">musly_jukebox_setmusicstyle()</a>.</p>
+<p>Register tracks with the Musly jukebox. </p>
+<p>To use the music similarity routines, each Musly track has to be registered with a jukebox. Internally, Musly computes an indexing and normalization vector for each registered track based on the set of tracks passed to <a class="el" href="musly_8h.html#ab96efc48ff5ce54f49bb20960249cfd6" title="Initialize the jukebox music style. ">musly_jukebox_setmusicstyle()</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>the Musly jukebox to add the tracks to. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">tracks</td><td>an array of musly_track objects to add to the jukebox. </td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">trackids</td><td>the track identifiers for the tracks, either read or written depending on the <code>generate_ids</code> parameter. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">num_tracks</td><td>the length of the <code>tracks</code> and <code>trackids</code> array. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">generate_ids</td><td>controls whether ids are to be generated automatically or given by the caller. If nonzero, Musly will assign sequential identifiers starting from <code>musly_jukebox_maxtrackid(jukebox) + 1</code> and write the ids to <code>trackids</code>. If zero, Musly will assign the ids given in <code>trackids</code>, replacing existing tracks for ids already used by the jukebox.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>The Musly jukebox to add the tracks to </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">tracks</td><td>An array of musly_track objects to add to the jukebox </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">trackids</td><td>The track identifiers for the tracks, either read or written depending on the <code>generate_ids</code> parameter </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">num_tracks</td><td>The length of the <code>tracks</code> and <code>trackids</code> array </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">generate_ids</td><td>controls whether ids are to be generated automatically or given by the caller: If nonzero, Musly will assign sequential identifiers starting from <code>musly_jukebox_maxtrackid(jukebox) + 1</code> and write the ids to <code>trackids</code>. If zero, Musly will assign the ids given in <code>trackids</code>, replacing existing tracks for ids already used by the jukebox.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0 on success -1 on an error. When an error is returned no track was added to Musly.</dd></dl>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#a303866950be1803afaa5ffd47203fdc7" title="Remove tracks from the Musly jukebox. ">musly_jukebox_removetracks()</a>, <a class="el" href="musly_8h.html#a340577e576414de1dcacfff8df399201" title="Returns the number of tracks currently registered with the Musly jukebox. ">musly_jukebox_trackcount()</a>, <a class="el" href="musly_8h.html#ab96efc48ff5ce54f49bb20960249cfd6" title="Initialize the jukebox music style. ">musly_jukebox_setmusicstyle()</a>, <a class="el" href="musly_8h.html#a6dfead82d6ece20a4b80e96b57ebec18" title="Computes the similarity between a seed track and a list of other music tracks. ">musly_jukebox_similarity()</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on an error. When an error is returned, no track was added to Musly.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>The tracks themselves are not stored in the jukebox, just some information needed to provide <a class="el" href="musly_8h.html#acf59220004803350f8b2cb1559528f16" title="Tries to guess the most similar neighbors to the given trackid. ">musly_jukebox_guessneighbors()</a> and to improve <a class="el" href="musly_8h.html#a6dfead82d6ece20a4b80e96b57ebec18" title="Computes the similarity between a seed track and a list of other music tracks. ">musly_jukebox_similarity()</a>. This design allows Musly to compute recommendations for collections too large to fit all tracks into memory at once.</dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#a303866950be1803afaa5ffd47203fdc7" title="Deregister tracks from the Musly jukebox. ">musly_jukebox_removetracks()</a>, <a class="el" href="musly_8h.html#a340577e576414de1dcacfff8df399201" title="Returns the number of tracks currently registered with the Musly jukebox. ">musly_jukebox_trackcount()</a>, <a class="el" href="musly_8h.html#ab96efc48ff5ce54f49bb20960249cfd6" title="Initialize the jukebox music style. ">musly_jukebox_setmusicstyle()</a>, <a class="el" href="musly_8h.html#a6dfead82d6ece20a4b80e96b57ebec18" title="Computes the similarity between a seed track and a list of other music tracks. ">musly_jukebox_similarity()</a> </dd></dl>
 
 </div>
 </div>
@@ -395,14 +399,14 @@ Functions</h2></td></tr>
 <p>Returns the size in bytes needed for serializing the jukebox state. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>An initialized Musly jukebox object. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>An initialized Musly jukebox object </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">header</td><td>If nonzero, include the size needed for serializing jukebox metadata. This size is dependent on the similarity measure and can also depend on the internal jukebox state. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">num_tracks</td><td>If greater than zero, include the size needed for serializing the state of <code>num_tracks</code> registered tracks. If negative, include the size needed for serializing the state of all currently registered tracks. This size is dependent on the similarity measure only. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">num_tracks</td><td>If greater than zero, include the size needed for serializing the state of <code>num_tracks</code> registered tracks. If negative, include the size needed for serializing the state of all currently registered tracks. This size is dependent on the similarity measure only.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The number of bytes needed to store the state information.</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>This method gives the sizes of internal indices built when calling <a class="el" href="musly_8h.html#ab96efc48ff5ce54f49bb20960249cfd6" title="Initialize the jukebox music style. ">musly_jukebox_setmusicstyle()</a> and <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Add tracks to the Musly jukebox. ">musly_jukebox_addtracks()</a>. For the size of musly_track objects, see <a class="el" href="musly_8h.html#a498bd23a04bf2232c1a710a024663ffd" title="Returns the buffer size in bytes required to hold a musly_track. ">musly_track_binsize()</a>. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>the number of bytes needed to store the state information</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This method gives the sizes of internal indices built when calling <a class="el" href="musly_8h.html#ab96efc48ff5ce54f49bb20960249cfd6" title="Initialize the jukebox music style. ">musly_jukebox_setmusicstyle()</a> and <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Register tracks with the Musly jukebox. ">musly_jukebox_addtracks()</a>. For the size of musly_track objects, see <a class="el" href="musly_8h.html#a498bd23a04bf2232c1a710a024663ffd" title="Returns the buffer size in bytes required to hold a musly_track. ">musly_track_binsize()</a>. </dd></dl>
 
 </div>
 </div>
@@ -447,14 +451,14 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>An initialized Musly jukebox object. This must have been initialized with the same music similarity method as the jukebox the state has been exported from, otherwise behavior is undefined. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">buffer</td><td>The byte buffer to read from. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">buffer</td><td>The byte buffer to read from </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">header</td><td>If nonzero, will read and restore the jukebox metadata. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">num_tracks</td><td>If greater than zero, will read and restore the state of <code>num_tracks</code> registered tracks. If negative, will read and restore the state of all registered tracks (only possible if <code>header</code> is nonzero). </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">num_tracks</td><td>If greater than zero, will read and restore the state of <code>num_tracks</code> registered tracks. If negative, will read and restore the state of all registered tracks (only possible if <code>header</code> is nonzero).</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The number of tracks expected if <code>header</code> is nonzero and <code>num_tracks</code> is zero, the number of tracks read if <code>num_tracks</code> is nonzero, or -1 in case of an error.</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>This method deserializes the internal indices built when calling <a class="el" href="musly_8h.html#ab96efc48ff5ce54f49bb20960249cfd6" title="Initialize the jukebox music style. ">musly_jukebox_setmusicstyle()</a> and <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Add tracks to the Musly jukebox. ">musly_jukebox_addtracks()</a>. For deserialization of musly_track objects, see <a class="el" href="musly_8h.html#a04026ab777b0fcc516946250257894a2" title="Deserializes a byte buffer to a musly_track. ">musly_track_frombin()</a>.</dd>
+<dl class="section note"><dt>Note</dt><dd>This method deserializes the internal indices built when calling <a class="el" href="musly_8h.html#ab96efc48ff5ce54f49bb20960249cfd6" title="Initialize the jukebox music style. ">musly_jukebox_setmusicstyle()</a> and <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Register tracks with the Musly jukebox. ">musly_jukebox_addtracks()</a>. For deserialization of musly_track objects, see <a class="el" href="musly_8h.html#a04026ab777b0fcc516946250257894a2" title="Deserializes a byte buffer to a musly_track. ">musly_track_frombin()</a>.</dd>
 <dd>
 Data cannot be read on a platform of a different architecture (integer size or byte order) than it was written with. Trying so results in unspecified behavior.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#aee1092a8568af09f067ff3156059e059" title="Restores a jukebox from a stream written by musly_jukebox_tostream(). ">musly_jukebox_fromstream()</a>, <a class="el" href="musly_8h.html#aa92b1caf41994beff66710b2980c678b" title="Restores a jukebox from a file written by musly_jukebox_tofile(). ">musly_jukebox_fromfile()</a> </dd></dl>
@@ -478,11 +482,11 @@ Data cannot be read on a platform of a different architecture (integer size or b
 <p>Restores a jukebox from a file written by <a class="el" href="musly_8h.html#a974e7d23dfaad4939ace6bc8a5d6ea0c" title="Serializes a jukebox state and writes it to a file. ">musly_jukebox_tofile()</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">filename</td><td>The name of the file to read from. </td></tr>
+    <tr><td class="paramname">filename</td><td>The name of the file to read from</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>A reference to an initialized Musly jukebox object, or NULL in case of an error.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a reference to an initialized Musly jukebox object, or NULL in case of an error</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Currently, a file cannot be read on a platform of a different architecture (integer size or byte order) than it was written with. Trying so results in an error; the file includes platform information.</dd>
 <dd>
 Any additional data in the file following the jukebox state will be ignored, so you can freely append custom data after writing it. </dd></dl>
@@ -506,7 +510,7 @@ Any additional data in the file following the jukebox state will be ignored, so 
 <p>Restores a jukebox from a stream written by <a class="el" href="musly_8h.html#a3d0a6d87f6e9296c3798e128efd96261" title="Serializes a jukebox state and writes it to a stream. ">musly_jukebox_tostream()</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">stream</td><td>The file stream to read from. Must be opened in binary mode. The data will be read sequentially, not using any seeking operations, so you can prepend data of your own as long as you position the file pointer to the beginning of the jukebox state before calling this function. </td></tr>
+    <tr><td class="paramname">stream</td><td>The file stream to read from. Must be opened in binary mode. The data will be read sequentially, not using any seeking operations, so you can prepend data of your own as long as you position the file pointer to the beginning of the jukebox state before calling this function.</td></tr>
   </table>
   </dd>
 </dl>
@@ -546,8 +550,8 @@ See the note in <a class="el" href="musly_8h.html#a3d0a6d87f6e9296c3798e128efd96
 <p>Use <a class="el" href="musly_8h.html#a340577e576414de1dcacfff8df399201" title="Returns the number of tracks currently registered with the Musly jukebox. ">musly_jukebox_trackcount()</a> to ask how many trackids will be returned.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>the Musly jukebox to query </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">trackids</td><td>the ids of all registered tracks </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>The Musly jukebox to query </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">trackids</td><td>The ids of all registered tracks </td></tr>
   </table>
   </dd>
 </dl>
@@ -593,18 +597,18 @@ See the note in <a class="el" href="musly_8h.html#a3d0a6d87f6e9296c3798e128efd96
 </div><div class="memdoc">
 
 <p>Tries to guess the most similar neighbors to the given trackid. </p>
-<p>If similarity measures implement this call, it is usually a very efficient way to pre-filter the whole jukebox collection for possible matches (neighbors) to the query song (seed). The musly_tracks do not have to be loaded to memory to use that call. It operates solely on an index usually built when adding the track to the jukebox (<a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Add tracks to the Musly jukebox. ">musly_jukebox_addtracks()</a>). A maximum of num_neighbors is written in the neighbors list of track ids. The returned neighbors can be used to drastically reduce the number of input tracks (and thus computation time) for <a class="el" href="musly_8h.html#a6dfead82d6ece20a4b80e96b57ebec18" title="Computes the similarity between a seed track and a list of other music tracks. ">musly_jukebox_similarity()</a>. If the method is not implemented or all neighbors should be analyzed, -1 is returned. In that case consider all musly_tracks as possible nearest neighbors and thus as input to <a class="el" href="musly_8h.html#a6dfead82d6ece20a4b80e96b57ebec18" title="Computes the similarity between a seed track and a list of other music tracks. ">musly_jukebox_similarity()</a>.</p>
+<p>If similarity measures implement this call, it is usually a very efficient way to pre-filter the whole jukebox collection for possible matches (neighbors) to the query song (seed). The musly_tracks do not have to be loaded to memory to use that call. It operates solely on an index usually built when adding the tracks to the jukebox (<a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Register tracks with the Musly jukebox. ">musly_jukebox_addtracks()</a>). A maximum of <code>num_neighbors</code> track ids is written to the <code>neighbors</code> list. The returned neighbors can be used to drastically reduce the number of input tracks (and thus computation time) for <a class="el" href="musly_8h.html#a6dfead82d6ece20a4b80e96b57ebec18" title="Computes the similarity between a seed track and a list of other music tracks. ">musly_jukebox_similarity()</a>. If the method is not implemented or all neighbors should be analyzed, -1 is returned. In that case consider all musly_tracks as possible nearest neighbors and thus as input to <a class="el" href="musly_8h.html#a6dfead82d6ece20a4b80e96b57ebec18" title="Computes the similarity between a seed track and a list of other music tracks. ">musly_jukebox_similarity()</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>An initialized Musly jukebox object with tracks added through musly_jukebox_addtrack(). </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">seed</td><td>The seed track id to search for its nearest neighbors. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">neighbors</td><td>The neighbors will be written to this preallocated array. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">num_neighbors</td><td>The maximum number of neighbors to write to the neighbors array. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>An initialized Musly jukebox object with tracks added through <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Register tracks with the Musly jukebox. ">musly_jukebox_addtracks()</a> </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">seed</td><td>The seed track id to search for its nearest neighbors </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">neighbors</td><td>The neighbors will be written to this preallocated array </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">num_neighbors</td><td>The maximum number of neighbors to write to the <code>neighbors</code> array</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>the number of neighbors found for the given seed trackid (success). -1 is returned on a failure.</dd></dl>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#a6dfead82d6ece20a4b80e96b57ebec18" title="Computes the similarity between a seed track and a list of other music tracks. ">musly_jukebox_similarity()</a>, musly_jukebox_addtrack(). </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>the number of neighbors written to the array, or -1 on an error</dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#a6dfead82d6ece20a4b80e96b57ebec18" title="Computes the similarity between a seed track and a list of other music tracks. ">musly_jukebox_similarity()</a>, <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Register tracks with the Musly jukebox. ">musly_jukebox_addtracks()</a> </dd></dl>
 
 </div>
 </div>
@@ -661,17 +665,17 @@ See the note in <a class="el" href="musly_8h.html#a3d0a6d87f6e9296c3798e128efd96
 <dl class="section note"><dt>Note</dt><dd><a class="el" href="musly_8h.html#a11f90d3b99c4d4f08098cff7f41d8e33" title="Tries to guess the most similar neighbors to the given trackid. ">musly_jukebox_guessneighbors_filtered()</a> with <code>num_limit_to</code> set to zero is exactly equivalent to <a class="el" href="musly_8h.html#acf59220004803350f8b2cb1559528f16" title="Tries to guess the most similar neighbors to the given trackid. ">musly_jukebox_guessneighbors()</a>. <a class="el" href="musly_8h.html#a11f90d3b99c4d4f08098cff7f41d8e33" title="Tries to guess the most similar neighbors to the given trackid. ">musly_jukebox_guessneighbors_filtered()</a> with <code>limit_to</code> set to a list of all registered track ids will generally also return the same results as <a class="el" href="musly_8h.html#acf59220004803350f8b2cb1559528f16" title="Tries to guess the most similar neighbors to the given trackid. ">musly_jukebox_guessneighbors()</a>, but may be a lot slower due to additional lookups and worse locality.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>An initialized Musly jukebox object with tracks added through musly_jukebox_addtrack(). </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">seed</td><td>The seed track id to search for its nearest neighbors. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">neighbors</td><td>The neighbors will be written to this preallocated array. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">num_neighbors</td><td>The maximum number of neighbors to write to the neighbors array. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>An initialized Musly jukebox object with tracks added through musly_jukebox_addtrack() </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">seed</td><td>The seed track id to search for its nearest neighbors </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">neighbors</td><td>The neighbors will be written to this preallocated array </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">num_neighbors</td><td>The maximum number of neighbors to write to the neighbors array </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">limit_to</td><td>A list of track ids to limit the search to </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">num_limit_to</td><td>The length of the <code>limit_to</code> array. If zero, <code>limit_to</code> is ignored and all registered track ids are searched instead. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">num_limit_to</td><td>The length of the <code>limit_to</code> array; if zero, <code>limit_to</code> is ignored and all registered track ids are searched instead</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>the number of neighbors found for the given seed trackid (success). -1 is returned on a failure.</dd></dl>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#acf59220004803350f8b2cb1559528f16" title="Tries to guess the most similar neighbors to the given trackid. ">musly_jukebox_guessneighbors()</a>, <a class="el" href="musly_8h.html#a6dfead82d6ece20a4b80e96b57ebec18" title="Computes the similarity between a seed track and a list of other music tracks. ">musly_jukebox_similarity()</a>. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>the number of neighbors written to the array, or -1 on an error</dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#acf59220004803350f8b2cb1559528f16" title="Tries to guess the most similar neighbors to the given trackid. ">musly_jukebox_guessneighbors()</a>, <a class="el" href="musly_8h.html#a6dfead82d6ece20a4b80e96b57ebec18" title="Computes the similarity between a seed track and a list of other music tracks. ">musly_jukebox_similarity()</a> </dd></dl>
 
 </div>
 </div>
@@ -689,8 +693,8 @@ See the note in <a class="el" href="musly_8h.html#a3d0a6d87f6e9296c3798e128efd96
 </div><div class="memdoc">
 
 <p>Lists all available audio file decoders. </p>
-<p>The decoders are returned as a single null terminated string. The decoders are separated by a comma (,). Use a decoder name to power on a Musly jukebox <a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a> The decoders are used in <a class="el" href="musly_8h.html#af78d36e036c5a52ff77a564f9e263259" title="Compute a music similarity model (musly_track) from the audio file. ">musly_track_analyze_audiofile()</a>.</p>
-<dl class="section return"><dt>Returns</dt><dd>all available audio file decoders.</dd></dl>
+<p>The decoders are returned as a single null terminated string. The decoders are separated by a comma (,). Use a decoder name to power on a Musly jukebox. The decoders are used in <a class="el" href="musly_8h.html#af78d36e036c5a52ff77a564f9e263259" title="Compute a music similarity model (musly_track) from the audio file. ">musly_track_analyze_audiofile()</a>.</p>
+<dl class="section return"><dt>Returns</dt><dd>all available audio file decoders</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a> </dd></dl>
 
 </div>
@@ -710,7 +714,7 @@ See the note in <a class="el" href="musly_8h.html#a3d0a6d87f6e9296c3798e128efd96
 
 <p>Lists all available music similarity methods. </p>
 <p>The methods are returned as a single null terminated string. The methods are separated by a comma (,). Use a method name to power on a Musly jukebox.</p>
-<dl class="section return"><dt>Returns</dt><dd>all available methods</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>all available music similarity methods</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a> </dd></dl>
 
 </div>
@@ -733,12 +737,12 @@ See the note in <a class="el" href="musly_8h.html#a3d0a6d87f6e9296c3798e128efd96
 <p>Along with <a class="el" href="musly_8h.html#a340577e576414de1dcacfff8df399201" title="Returns the number of tracks currently registered with the Musly jukebox. ">musly_jukebox_trackcount()</a>, this can be used for versioning the state of a jukebox: <code>(maxtrackid+1).(maxtrackid+1-trackcount)</code> is a two-element version number that will never decrease in the lifetime of a jukebox, provided that <a class="el" href="musly_8h.html#a2c653b4ea8349785cd437cce3a8cf99f" title="Returns the largest track identifier ever registered with the Musly jukebox. ">musly_jukebox_maxtrackid()</a> always increases when adding a track.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>the Musly jukebox to query </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>The Musly jukebox to query </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>the largest trackid seen by <code>jukebox</code>, or -1 if it has not seen any</dd></dl>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Add tracks to the Musly jukebox. ">musly_jukebox_addtracks()</a>, <a class="el" href="musly_8h.html#a303866950be1803afaa5ffd47203fdc7" title="Remove tracks from the Musly jukebox. ">musly_jukebox_removetracks()</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>the largest trackid seen by <code>jukebox</code>, -1 if it has not seen any</dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Register tracks with the Musly jukebox. ">musly_jukebox_addtracks()</a>, <a class="el" href="musly_8h.html#a303866950be1803afaa5ffd47203fdc7" title="Deregister tracks from the Musly jukebox. ">musly_jukebox_removetracks()</a> </dd></dl>
 
 </div>
 </div>
@@ -760,7 +764,7 @@ See the note in <a class="el" href="musly_8h.html#a3d0a6d87f6e9296c3798e128efd96
 <p>The referenced method and decoder objects are freed. Previously allocated Musly tracks allocated with <a class="el" href="musly_8h.html#a6c43fe07d5511b36f012a02bb7963aec" title="Allocates a musly_track in memory. ">musly_track_alloc()</a> need to be freed separately. The referenced Musly jukebox object is invalidated by this call.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>the Musly jukebox to deinitialize.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>The Musly jukebox to deinitialize</td></tr>
   </table>
   </dd>
 </dl>
@@ -793,17 +797,17 @@ See the note in <a class="el" href="musly_8h.html#a3d0a6d87f6e9296c3798e128efd96
 </div><div class="memdoc">
 
 <p>Returns a reference to an initialized Musly jukebox object. </p>
-<p>To initialize Musly you need to specify a music similarity method to use and a decoder. You can set both values to 0 (NULL) to initialize the default method and decoder. To list all available music similarity methods use <a class="el" href="musly_8h.html#a385b39f2ca83a08809329c771a314f2f" title="Lists all available music similarity methods. ">musly_jukebox_listmethods()</a>. To list all available audio file decoders use <a class="el" href="musly_8h.html#aa817bd8fc3b5dd2fb285c6bf9709983b" title="Lists all available audio file decoders. ">musly_jukebox_listdecoders()</a>. If the initialization fails, NULL is returned. To get more information about the initialized music similarity method use <a class="el" href="musly_8h.html#acf76c80478ff84c795cb912eaafb1e46" title="Describe the initialized method. ">musly_jukebox_aboutmethod()</a>.</p>
-<p>The returned reference is required for almost all subsequent calls to Musly library calls. To add a music track to the jukebox inventory use <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Add tracks to the Musly jukebox. ">musly_jukebox_addtracks()</a>. To compute recommendations with the jukebox use <a class="el" href="musly_8h.html#a6dfead82d6ece20a4b80e96b57ebec18" title="Computes the similarity between a seed track and a list of other music tracks. ">musly_jukebox_similarity()</a>. Note that before adding tracks or computing similarities, the music style needs to be set with <a class="el" href="musly_8h.html#ab96efc48ff5ce54f49bb20960249cfd6" title="Initialize the jukebox music style. ">musly_jukebox_setmusicstyle()</a>.</p>
+<p>To initialize Musly, you need to specify a music similarity method and decoder to use. You can set both values to 0 (NULL) to initialize the default method and decoder. To list all available music similarity methods, use <a class="el" href="musly_8h.html#a385b39f2ca83a08809329c771a314f2f" title="Lists all available music similarity methods. ">musly_jukebox_listmethods()</a>. To list all available audio file decoders, use <a class="el" href="musly_8h.html#aa817bd8fc3b5dd2fb285c6bf9709983b" title="Lists all available audio file decoders. ">musly_jukebox_listdecoders()</a>. If the initialization fails, NULL is returned. To get more information about the initialized music similarity method, use <a class="el" href="musly_8h.html#acf76c80478ff84c795cb912eaafb1e46" title="Describe the initialized method. ">musly_jukebox_aboutmethod()</a>.</p>
+<p>The returned reference is required for almost all subsequent Musly library calls. To add a music track to the jukebox inventory, use <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Register tracks with the Musly jukebox. ">musly_jukebox_addtracks()</a>. To compute recommendations with the jukebox, use <a class="el" href="musly_8h.html#a6dfead82d6ece20a4b80e96b57ebec18" title="Computes the similarity between a seed track and a list of other music tracks. ">musly_jukebox_similarity()</a>. Note that before adding tracks or computing similarities, the music style needs to be set with <a class="el" href="musly_8h.html#ab96efc48ff5ce54f49bb20960249cfd6" title="Initialize the jukebox music style. ">musly_jukebox_setmusicstyle()</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">method</td><td>the desired music similarity method. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">decoder</td><td>the desired decoder to initialize. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">method</td><td>The desired music similarity method </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">decoder</td><td>The desired decoder to initialize </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a reference to an initialized Musly jukebox object.</dd></dl>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#a6ecc1b54fdd883b73b8bcfb8e07e5b01" title="Deinitializes the given Musly jukebox. ">musly_jukebox_poweroff()</a>, <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Add tracks to the Musly jukebox. ">musly_jukebox_addtracks()</a>, <a class="el" href="musly_8h.html#ab96efc48ff5ce54f49bb20960249cfd6" title="Initialize the jukebox music style. ">musly_jukebox_setmusicstyle()</a>, <a class="el" href="musly_8h.html#a6dfead82d6ece20a4b80e96b57ebec18" title="Computes the similarity between a seed track and a list of other music tracks. ">musly_jukebox_similarity()</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a reference to an initialized Musly jukebox object</dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#a6ecc1b54fdd883b73b8bcfb8e07e5b01" title="Deinitializes the given Musly jukebox. ">musly_jukebox_poweroff()</a>, <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Register tracks with the Musly jukebox. ">musly_jukebox_addtracks()</a>, <a class="el" href="musly_8h.html#ab96efc48ff5ce54f49bb20960249cfd6" title="Initialize the jukebox music style. ">musly_jukebox_setmusicstyle()</a>, <a class="el" href="musly_8h.html#a6dfead82d6ece20a4b80e96b57ebec18" title="Computes the similarity between a seed track and a list of other music tracks. ">musly_jukebox_similarity()</a> </dd></dl>
 
 </div>
 </div>
@@ -837,17 +841,17 @@ See the note in <a class="el" href="musly_8h.html#a3d0a6d87f6e9296c3798e128efd96
       </table>
 </div><div class="memdoc">
 
-<p>Remove tracks from the Musly jukebox. </p>
+<p>Deregister tracks from the Musly jukebox. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>the Musly jukebox to remove the tracks from. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">trackids</td><td>the track identifiers of the tracks to remove, unknown identifiers will be silently ignored. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">num_tracks</td><td>the length of the <code>trackids</code> array.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>The Musly jukebox to remove the tracks from </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">trackids</td><td>The track identifiers of the tracks to remove, unknown identifiers will be silently ignored </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">num_tracks</td><td>The length of the <code>trackids</code> array</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0 on success -1 on an error.</dd></dl>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Add tracks to the Musly jukebox. ">musly_jukebox_addtracks()</a>, <a class="el" href="musly_8h.html#a340577e576414de1dcacfff8df399201" title="Returns the number of tracks currently registered with the Musly jukebox. ">musly_jukebox_trackcount()</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on an error</dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Register tracks with the Musly jukebox. ">musly_jukebox_addtracks()</a>, <a class="el" href="musly_8h.html#a340577e576414de1dcacfff8df399201" title="Returns the number of tracks currently registered with the Musly jukebox. ">musly_jukebox_trackcount()</a> </dd></dl>
 
 </div>
 </div>
@@ -882,16 +886,17 @@ See the note in <a class="el" href="musly_8h.html#a3d0a6d87f6e9296c3798e128efd96
 </div><div class="memdoc">
 
 <p>Initialize the jukebox music style. </p>
-<p>To properly use the similarity function it is necessary to give the algorithms a hint about the music we are working with. Do this by passing a random sample of the tracks you want to analyze. As a rule of thumb use a maximum of 1000 randomly selected tracks to set the music style. The tracks are analyzed and copied to internal storage as needed, so you may safely deallocate the given array and tracks after the call.</p>
-<dl class="section note"><dt>Note</dt><dd>This must be called before adding any tracks to the jukebox. If you change the music style of a filled jukebox, you need to re-register all existing tracks via <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Add tracks to the Musly jukebox. ">musly_jukebox_addtracks()</a>, otherwise tracks added after the style change will not be properly compared to tracks added before the change.</dd></dl>
+<p>To properly use the similarity function, it is necessary to give the algorithms a hint about the music we are working with. Do this by passing a representative sample of the tracks you want to compute similarities for: as a rule of thumb, use a maximum of 1000 randomly selected tracks to set the music style (random selection is important to get a representative sample; if the sample is biased, results will be suboptimal). The tracks are analyzed and copied to internal storage as needed, so you may safely deallocate the given array and tracks after the call.</p>
+<dl class="section note"><dt>Note</dt><dd>This must be called before adding any tracks to the jukebox. If you change the music style of a filled jukebox, you need to re-register all existing tracks via <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Register tracks with the Musly jukebox. ">musly_jukebox_addtracks()</a>, otherwise tracks added after the style change will not be properly compared to tracks added before the change.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>the Musly jukebox to set the music stlye. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">tracks</td><td>a random sample array of Musly tracks to use for the initialization. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">num_tracks</td><td>the number of Musly tracks.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>The Musly jukebox to set the music style for </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">tracks</td><td>A random sample array of Musly tracks to use for the initialization </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">num_tracks</td><td>The number of Musly tracks</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on an error</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a>, <a class="el" href="musly_8h.html#a9752c9a9adfd5f99454cb31084a717ad" title="Compute a music similarity model (musly_track) from the given PCM signal. ">musly_track_analyze_pcm()</a>, <a class="el" href="musly_8h.html#af78d36e036c5a52ff77a564f9e263259" title="Compute a music similarity model (musly_track) from the audio file. ">musly_track_analyze_audiofile()</a> </dd></dl>
 
 </div>
@@ -951,28 +956,31 @@ See the note in <a class="el" href="musly_8h.html#a3d0a6d87f6e9296c3798e128efd96
 </div><div class="memdoc">
 
 <p>Computes the similarity between a seed track and a list of other music tracks. </p>
-<p>To compute similarities between two music tracks the following steps have to been taken:</p>
+<p>To compute similarities between two music tracks, the following steps have to been taken:</p>
 <ul>
-<li>initialize a <a class="el" href="structmusly__jukebox.html" title="The Musly base object storing the initialized music similarity method and audio decoder information...">musly_jukebox</a> object with: <a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a></li>
+<li>initialize a <a class="el" href="structmusly__jukebox.html" title="The Musly base object storing the initialized music similarity method and audio decoder information...">musly_jukebox</a> object: <a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a></li>
 <li>analyze audio files, e.g. with <a class="el" href="musly_8h.html#af78d36e036c5a52ff77a564f9e263259" title="Compute a music similarity model (musly_track) from the audio file. ">musly_track_analyze_audiofile()</a></li>
-<li>set the music style of the jukebox by using a small random sample of the audio tracks analyzed: <a class="el" href="musly_8h.html#ab96efc48ff5ce54f49bb20960249cfd6" title="Initialize the jukebox music style. ">musly_jukebox_setmusicstyle()</a></li>
-<li>add the audio tracks to the <a class="el" href="structmusly__jukebox.html" title="The Musly base object storing the initialized music similarity method and audio decoder information...">musly_jukebox</a>: <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Add tracks to the Musly jukebox. ">musly_jukebox_addtracks()</a></li>
-<li>use this function to compute similarities.</li>
+<li>set the music style of the jukebox by using a representative sample of the audio tracks analyzed: <a class="el" href="musly_8h.html#ab96efc48ff5ce54f49bb20960249cfd6" title="Initialize the jukebox music style. ">musly_jukebox_setmusicstyle()</a></li>
+<li>register the audio tracks with the jukebox: <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Register tracks with the Musly jukebox. ">musly_jukebox_addtracks()</a></li>
+<li>(optionally) find good candidate tracks: <a class="el" href="musly_8h.html#acf59220004803350f8b2cb1559528f16" title="Tries to guess the most similar neighbors to the given trackid. ">musly_jukebox_guessneighbors()</a></li>
+<li>use this function to compute similarities (in one go or in batches)</li>
+<li>(optionally) find the most similar tracks: <a class="el" href="musly_8h.html#a7cee2f92bcf9b04de6fac40c89d2c339" title="Utility function to find the smallest items in an unordered list of values. ">musly_findmin()</a></li>
 </ul>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>The Musly jukebox to use. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>An initialized Musly jukebox object with tracks added through <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Register tracks with the Musly jukebox. ">musly_jukebox_addtracks()</a> </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">seed_track</td><td>The seed track to compute similarities to </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">seed_trackid</td><td>The id of the seed track as returned by <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Add tracks to the Musly jukebox. ">musly_jukebox_addtracks()</a>. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">tracks</td><td>An array of musly_track objects to compute the similarities to. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">trackids</td><td>An array of musly_trackids corresponding to the tracks array. The musly_trackids are returned after adding them to the <a class="el" href="structmusly__jukebox.html" title="The Musly base object storing the initialized music similarity method and audio decoder information...">musly_jukebox</a> </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">num_tracks</td><td>the size of the tracks and trackids arrays </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">similarities</td><td>a preallocated float array to hold the computed similarities. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">seed_trackid</td><td>The id of the seed track as returned by or given to <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Register tracks with the Musly jukebox. ">musly_jukebox_addtracks()</a> </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">tracks</td><td>An array of musly_track objects to compute the similarities to </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">trackids</td><td>An array of musly_trackids corresponding to the <code>tracks</code> array, as returned by or given to <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Register tracks with the Musly jukebox. ">musly_jukebox_addtracks()</a> </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">num_tracks</td><td>The size of the <code>tracks</code>, <code>trackids</code> and <code>similarities</code> arrays </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">similarities</td><td>A preallocated float array to write the computed similarities to </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0 on success and -1 on an error.</dd></dl>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a>, <a class="el" href="musly_8h.html#af78d36e036c5a52ff77a564f9e263259" title="Compute a music similarity model (musly_track) from the audio file. ">musly_track_analyze_audiofile()</a>, <a class="el" href="musly_8h.html#a9752c9a9adfd5f99454cb31084a717ad" title="Compute a music similarity model (musly_track) from the given PCM signal. ">musly_track_analyze_pcm()</a>, <a class="el" href="musly_8h.html#ab96efc48ff5ce54f49bb20960249cfd6" title="Initialize the jukebox music style. ">musly_jukebox_setmusicstyle()</a>, <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Add tracks to the Musly jukebox. ">musly_jukebox_addtracks()</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on an error</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This needs both the musly_trackids the tracks were registered with in <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Register tracks with the Musly jukebox. ">musly_jukebox_addtracks()</a> and the musly_track objects themselves, as those are not stored in the jukebox. This design allows to compute similarities for collections too large to fit all tracks into memory at once, by calling <a class="el" href="musly_8h.html#a6dfead82d6ece20a4b80e96b57ebec18" title="Computes the similarity between a seed track and a list of other music tracks. ">musly_jukebox_similarity()</a> repeatedly with <code>tracks</code> and <code>trackids</code> set to subsets of the collection loaded in small batches.</dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a>, <a class="el" href="musly_8h.html#af78d36e036c5a52ff77a564f9e263259" title="Compute a music similarity model (musly_track) from the audio file. ">musly_track_analyze_audiofile()</a>, <a class="el" href="musly_8h.html#a9752c9a9adfd5f99454cb31084a717ad" title="Compute a music similarity model (musly_track) from the given PCM signal. ">musly_track_analyze_pcm()</a>, <a class="el" href="musly_8h.html#ab96efc48ff5ce54f49bb20960249cfd6" title="Initialize the jukebox music style. ">musly_jukebox_setmusicstyle()</a>, <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Register tracks with the Musly jukebox. ">musly_jukebox_addtracks()</a>, <a class="el" href="musly_8h.html#a7cee2f92bcf9b04de6fac40c89d2c339" title="Utility function to find the smallest items in an unordered list of values. ">musly_findmin()</a> </dd></dl>
 
 </div>
 </div>
@@ -1022,18 +1030,18 @@ See the note in <a class="el" href="musly_8h.html#a3d0a6d87f6e9296c3798e128efd96
 <p>Call <a class="el" href="musly_8h.html#a3a08a4f5aed5371108c42e800c484317" title="Returns the size in bytes needed for serializing the jukebox state. ">musly_jukebox_binsize()</a> to determine the required buffer size, and <a class="el" href="musly_8h.html#a61ea93157ff2d5c47b9d1424d12d8d08" title="Deserializes the jukebox state from a byte buffer and returns the number of tracks expected or read...">musly_jukebox_frombin()</a> to deserialize a jukebox state.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>An initialized Musly jukebox object. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">buffer</td><td>The buffer to write to. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>An initialized Musly jukebox object </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">buffer</td><td>The buffer to write to </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">header</td><td>If nonzero, write the jukebox metadata. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">num_tracks</td><td>The number of registered tracks to write the jukebox state for. If negative or too large, writes the state for all except the first <code>skip_tracks</code> registered tracks. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">skip_tracks</td><td>The number of tracks to skip. Must be in range [0, get_trackcount()]. Must be 0 if <code>header</code> is nonzero. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">skip_tracks</td><td>The number of tracks to skip. Must be in range [0, get_trackcount()]. Must be 0 if <code>header</code> is nonzero.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The number of bytes written to the buffer, or -1 in case of an error.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The number of bytes written to the buffer, or -1 in case of an error</dd></dl>
 <dl class="section note"><dt>Note</dt><dd><code>skip_tracks</code> allows to serialize the jukebox state in small portions. Set <code>num_tracks</code> to the number of track states you can handle at once, then call <a class="el" href="musly_8h.html#a92f4564deb4149d548af58be73e4ddb9" title="Serializes the jukebox state into a byte buffer and returns the number of bytes written. ">musly_jukebox_tobin()</a> repeatedly in a loop, setting <code>skip_tracks</code> to the number of track states you have already serialized.</dd>
 <dd>
-This method serializes the internal indices built when calling <a class="el" href="musly_8h.html#ab96efc48ff5ce54f49bb20960249cfd6" title="Initialize the jukebox music style. ">musly_jukebox_setmusicstyle()</a> and <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Add tracks to the Musly jukebox. ">musly_jukebox_addtracks()</a>. For serialization of musly_track objects, see <a class="el" href="musly_8h.html#ac86051d740c66e0ebedd58c0f9280717" title="Serializes a musly_track to a byte buffer. ">musly_track_tobin()</a>.</dd></dl>
+This method serializes the internal indices built when calling <a class="el" href="musly_8h.html#ab96efc48ff5ce54f49bb20960249cfd6" title="Initialize the jukebox music style. ">musly_jukebox_setmusicstyle()</a> and <a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Register tracks with the Musly jukebox. ">musly_jukebox_addtracks()</a>. For serialization of musly_track objects, see <a class="el" href="musly_8h.html#ac86051d740c66e0ebedd58c0f9280717" title="Serializes a musly_track to a byte buffer. ">musly_track_tobin()</a>.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#a3d0a6d87f6e9296c3798e128efd96261" title="Serializes a jukebox state and writes it to a stream. ">musly_jukebox_tostream()</a>, <a class="el" href="musly_8h.html#a974e7d23dfaad4939ace6bc8a5d6ea0c" title="Serializes a jukebox state and writes it to a file. ">musly_jukebox_tofile()</a> </dd></dl>
 
 </div>
@@ -1065,12 +1073,12 @@ This method serializes the internal indices built when calling <a class="el" hre
 <p>Serializes a jukebox state and writes it to a file. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">jukebox</td><td>An initialized Musly jukebox object. </td></tr>
-    <tr><td class="paramname">filename</td><td>The name of the file to write to. </td></tr>
+    <tr><td class="paramname">jukebox</td><td>An initialized Musly jukebox object </td></tr>
+    <tr><td class="paramname">filename</td><td>The name of the file to write to</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The number of bytes written, or -1 in case of an error.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>the number of bytes written, or -1 in case of an error</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#aa92b1caf41994beff66710b2980c678b" title="Restores a jukebox from a file written by musly_jukebox_tofile(). ">musly_jukebox_fromfile()</a>, <a class="el" href="musly_8h.html#a3d0a6d87f6e9296c3798e128efd96261" title="Serializes a jukebox state and writes it to a stream. ">musly_jukebox_tostream()</a> </dd></dl>
 
 </div>
@@ -1102,12 +1110,12 @@ This method serializes the internal indices built when calling <a class="el" hre
 <p>Serializes a jukebox state and writes it to a stream. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">jukebox</td><td>An initialized Musly jukebox object. </td></tr>
-    <tr><td class="paramname">stream</td><td>The file stream to write to. Must be opened in binary mode. The data will be written sequentially, not using any seeking operations, so you can prepend or append data of your own. </td></tr>
+    <tr><td class="paramname">jukebox</td><td>An initialized Musly jukebox object </td></tr>
+    <tr><td class="paramname">stream</td><td>The file stream to write to. Must be opened in binary mode. The data will be written sequentially, not using any seeking operations, so you can prepend or append data of your own.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The number of bytes written, or -1 in case of an error.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>the number of bytes written, or -1 in case of an error</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>While this is the most efficient way to embed the jukebox state in a custom file you write, it will only work if libmusly was linked against the same implementation of the C standard library as your application code. To use it, define <code>MUSLY_SUPPORT_STDIO</code> before including <code><a class="el" href="musly_8h.html">musly.h</a></code>.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#aee1092a8568af09f067ff3156059e059" title="Restores a jukebox from a stream written by musly_jukebox_tostream(). ">musly_jukebox_fromstream()</a>, <a class="el" href="musly_8h.html#a974e7d23dfaad4939ace6bc8a5d6ea0c" title="Serializes a jukebox state and writes it to a file. ">musly_jukebox_tofile()</a> </dd></dl>
 
@@ -1131,12 +1139,12 @@ This method serializes the internal indices built when calling <a class="el" hre
 <p>Along with <a class="el" href="musly_8h.html#a2c653b4ea8349785cd437cce3a8cf99f" title="Returns the largest track identifier ever registered with the Musly jukebox. ">musly_jukebox_maxtrackid()</a>, this can be used for versioning the state of a jukebox.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>the Musly jukebox to query </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>The Musly jukebox to query </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the number of tracks currently registered with <code>jukebox</code>, or -1 on an error</dd></dl>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Add tracks to the Musly jukebox. ">musly_jukebox_addtracks()</a>, <a class="el" href="musly_8h.html#a303866950be1803afaa5ffd47203fdc7" title="Remove tracks from the Musly jukebox. ">musly_jukebox_removetracks()</a> </dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#a69f7fc47f7ceb62673a53cfac06bd750" title="Register tracks with the Musly jukebox. ">musly_jukebox_addtracks()</a>, <a class="el" href="musly_8h.html#a303866950be1803afaa5ffd47203fdc7" title="Deregister tracks from the Musly jukebox. ">musly_jukebox_removetracks()</a> </dd></dl>
 
 </div>
 </div>
@@ -1155,14 +1163,14 @@ This method serializes the internal indices built when calling <a class="el" hre
 </div><div class="memdoc">
 
 <p>Allocates a musly_track in memory. </p>
-<p>As the size of a musly_track varies for each music similarity method, an initialized Musly jukebox object reference needs to be passed argument. You need to free the allocated musly_track with <a class="el" href="musly_8h.html#a3de4892f674f845cf4b0fe2f5af77331" title="Frees a musly_track previously allocated with musly_track_alloc(). ">musly_track_free()</a>.</p>
+<p>As the size of a musly_track varies for each music similarity method, an initialized Musly jukebox object reference needs to be passed as an argument. You need to free the allocated musly_track with <a class="el" href="musly_8h.html#a3de4892f674f845cf4b0fe2f5af77331" title="Frees a musly_track previously allocated with musly_track_alloc(). ">musly_track_free()</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>A reference to an initialized Musly jukebox object. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>A reference to an initialized Musly jukebox object</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>An allocated musly_track float array.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>an allocated musly_track (float array)</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#a3de4892f674f845cf4b0fe2f5af77331" title="Frees a musly_track previously allocated with musly_track_alloc(). ">musly_track_free()</a> </dd></dl>
 
 </div>
@@ -1214,15 +1222,15 @@ This method serializes the internal indices built when calling <a class="el" hre
 <dl class="section note"><dt>Note</dt><dd>While you can control which portion of the file will be decoded and passed to <a class="el" href="musly_8h.html#a9752c9a9adfd5f99454cb31084a717ad" title="Compute a music similarity model (musly_track) from the given PCM signal. ">musly_track_analyze_pcm()</a>, it depends on the music similarity measure whether the full excerpt is going to be used to build the similarity model. Generally, it is enough to decode 30 to 60 seconds, and it is advisable to exclude nonrepresentative parts such as the intro and outro of a song.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>A reference to an initialized <a class="el" href="structmusly__jukebox.html" title="The Musly base object storing the initialized music similarity method and audio decoder information...">musly_jukebox</a> object. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>A reference to an initialized <a class="el" href="structmusly__jukebox.html" title="The Musly base object storing the initialized music similarity method and audio decoder information...">musly_jukebox</a> object </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">audiofile</td><td>An audio file. The file will be decoded with the audio decoder. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">excerpt_length</td><td>The maximum length in seconds of the excerpt to decode. If zero or greater than the file length, decodes the whole file. Suggested value: 30. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">excerpt_start</td><td>The starting position in seconds of the excerpt to decode. If zero, decoding starts at the beginning. If negative, the excerpt is centered in the file, but starts at <code>-excerpt_start</code> the latest. If positive and <code>excerpt_start + excerpt_length</code> exceeds the file length, then the excerpt is taken from the end of the file. Suggested value: -48. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">track</td><td>The musly_track to write the music similarity features.</td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">track</td><td>The musly_track to write the music similarity features to</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#af78d36e036c5a52ff77a564f9e263259" title="Compute a music similarity model (musly_track) from the audio file. ">musly_track_analyze_audiofile()</a>, <a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a>. </dd></dl>
 
 </div>
@@ -1268,14 +1276,14 @@ This method serializes the internal indices built when calling <a class="el" hre
 <dl class="section note"><dt>Note</dt><dd>Depending on the music similarity method, not all of the given signal will be used in the computation, but possibly only the central 60 seconds.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>A reference to an initialized <a class="el" href="structmusly__jukebox.html" title="The Musly base object storing the initialized music similarity method and audio decoder information...">musly_jukebox</a> object. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">mono_22khz_pcm</td><td>The audio signal to analyze represented as a PCM float array. The audio signal has to be mono and sampled at 22050hz with float values between -1.0 and +1.0. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">length_pcm</td><td>The length of the input float array. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">track</td><td>The musly_track to write the music similarity features.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>A reference to an initialized <a class="el" href="structmusly__jukebox.html" title="The Musly base object storing the initialized music similarity method and audio decoder information...">musly_jukebox</a> object </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">mono_22khz_pcm</td><td>The audio signal to analyze represented as a PCM float array. The audio signal has to be mono and sampled at 22050 Hz with float values between -1.0 and +1.0. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">length_pcm</td><td>The length of the input float array </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">track</td><td>The musly_track to write the music similarity features to</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#af78d36e036c5a52ff77a564f9e263259" title="Compute a music similarity model (musly_track) from the audio file. ">musly_track_analyze_audiofile()</a>, <a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a>. </dd></dl>
 
 </div>
@@ -1298,11 +1306,11 @@ This method serializes the internal indices built when calling <a class="el" hre
 <p>To serialize a musly_track for platform-independent usage, call <a class="el" href="musly_8h.html#ac86051d740c66e0ebedd58c0f9280717" title="Serializes a musly_track to a byte buffer. ">musly_track_tobin()</a>, otherwise just copy the memory directly. The size returned is dependent on the music similarity method.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>A reference to an initialized <a class="el" href="structmusly__jukebox.html" title="The Musly base object storing the initialized music similarity method and audio decoder information...">musly_jukebox</a> object.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>A reference to an initialized <a class="el" href="structmusly__jukebox.html" title="The Musly base object storing the initialized music similarity method and audio decoder information...">musly_jukebox</a> object</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The required buffer size required to hold a musly_track.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>the required buffer size required to hold a musly_track</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a>, <a class="el" href="musly_8h.html#ac86051d740c66e0ebedd58c0f9280717" title="Serializes a musly_track to a byte buffer. ">musly_track_tobin()</a>, <a class="el" href="musly_8h.html#a04026ab777b0fcc516946250257894a2" title="Deserializes a byte buffer to a musly_track. ">musly_track_frombin()</a>. </dd></dl>
 
 </div>
@@ -1324,7 +1332,7 @@ This method serializes the internal indices built when calling <a class="el" hre
 <p>Frees a musly_track previously allocated with <a class="el" href="musly_8h.html#a6c43fe07d5511b36f012a02bb7963aec" title="Allocates a musly_track in memory. ">musly_track_alloc()</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">track</td><td>The musly track you want to free.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">track</td><td>The musly track you want to free</td></tr>
   </table>
   </dd>
 </dl>
@@ -1366,13 +1374,13 @@ This method serializes the internal indices built when calling <a class="el" hre
 <p>Use this method re-transform a previously serialized byte buffer (<a class="el" href="musly_8h.html#ac86051d740c66e0ebedd58c0f9280717" title="Serializes a musly_track to a byte buffer. ">musly_track_tobin()</a>) to a musly_track. From the buffer <a class="el" href="musly_8h.html#a498bd23a04bf2232c1a710a024663ffd" title="Returns the buffer size in bytes required to hold a musly_track. ">musly_track_binsize()</a> bytes will be read.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>A reference to an initialized <a class="el" href="structmusly__jukebox.html" title="The Musly base object storing the initialized music similarity method and audio decoder information...">musly_jukebox</a> object. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">from_buffer</td><td>the buffer to use for deserialization </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">to_track</td><td>the musyl_track to store the deserialized track.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>A reference to an initialized <a class="el" href="structmusly__jukebox.html" title="The Musly base object storing the initialized music similarity method and audio decoder information...">musly_jukebox</a> object </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">from_buffer</td><td>The buffer to use for deserialization </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">to_track</td><td>The musly_track to store the deserialized track</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The number of bytes read (<a class="el" href="musly_8h.html#a498bd23a04bf2232c1a710a024663ffd" title="Returns the buffer size in bytes required to hold a musly_track. ">musly_track_binsize()</a>) in case of success, -1 in case an error occurred.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>the number of bytes read (<a class="el" href="musly_8h.html#a498bd23a04bf2232c1a710a024663ffd" title="Returns the buffer size in bytes required to hold a musly_track. ">musly_track_binsize()</a>) in case of success, -1 in case of an error</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This transforms the musly_track data from network byte order (which is big endian) to host byte order. If you do not need to transmit the data across platforms, you can directly copy <a class="el" href="musly_8h.html#a498bd23a04bf2232c1a710a024663ffd" title="Returns the buffer size in bytes required to hold a musly_track. ">musly_track_binsize()</a> bytes from <code>from_buffer</code> to <code>to_track</code>, or not use a buffer at all.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a>, <a class="el" href="musly_8h.html#a498bd23a04bf2232c1a710a024663ffd" title="Returns the buffer size in bytes required to hold a musly_track. ">musly_track_binsize()</a>, <a class="el" href="musly_8h.html#ac86051d740c66e0ebedd58c0f9280717" title="Serializes a musly_track to a byte buffer. ">musly_track_tobin()</a>. </dd></dl>
 
@@ -1439,13 +1447,13 @@ This method serializes the internal indices built when calling <a class="el" hre
 <p>Use this method to store or transmit a musly_track. <a class="el" href="musly_8h.html#a498bd23a04bf2232c1a710a024663ffd" title="Returns the buffer size in bytes required to hold a musly_track. ">musly_track_binsize()</a> bytes will be written to to_buffer. To deserialize a buffer use <a class="el" href="musly_8h.html#a04026ab777b0fcc516946250257894a2" title="Deserializes a byte buffer to a musly_track. ">musly_track_frombin()</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>A reference to an initialized <a class="el" href="structmusly__jukebox.html" title="The Musly base object storing the initialized music similarity method and audio decoder information...">musly_jukebox</a> object. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>A reference to an initialized <a class="el" href="structmusly__jukebox.html" title="The Musly base object storing the initialized music similarity method and audio decoder information...">musly_jukebox</a> object </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">from_track</td><td>The track to serialize </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">to_buffer</td><td>The buffer receiving the serialized track. The buffer needs to be preallocated with <a class="el" href="musly_8h.html#a498bd23a04bf2232c1a710a024663ffd" title="Returns the buffer size in bytes required to hold a musly_track. ">musly_track_binsize()</a> bytes.</td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">to_buffer</td><td>The buffer receiving the serialized track. The buffer needs to be preallocated with at least <a class="el" href="musly_8h.html#a498bd23a04bf2232c1a710a024663ffd" title="Returns the buffer size in bytes required to hold a musly_track. ">musly_track_binsize()</a> bytes.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The number of bytes written (<a class="el" href="musly_8h.html#a498bd23a04bf2232c1a710a024663ffd" title="Returns the buffer size in bytes required to hold a musly_track. ">musly_track_binsize()</a>) in case of success, -1 in case an error occurred.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>the number of bytes written (<a class="el" href="musly_8h.html#a498bd23a04bf2232c1a710a024663ffd" title="Returns the buffer size in bytes required to hold a musly_track. ">musly_track_binsize()</a>) in case of success, -1 in case of an error</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This transforms the musly_track data from host byte order to network byte order (which is big endian). If you do not need to transmit the data across platforms, you can directly copy <a class="el" href="musly_8h.html#a498bd23a04bf2232c1a710a024663ffd" title="Returns the buffer size in bytes required to hold a musly_track. ">musly_track_binsize()</a> bytes from <code>from_track</code> to <code>to_buffer</code>, or not use a buffer at all.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#aef82aafb34364236f29c1378d9493a4b" title="Returns a reference to an initialized Musly jukebox object. ">musly_jukebox_poweron()</a>, <a class="el" href="musly_8h.html#a498bd23a04bf2232c1a710a024663ffd" title="Returns the buffer size in bytes required to hold a musly_track. ">musly_track_binsize()</a>, <a class="el" href="musly_8h.html#a04026ab777b0fcc516946250257894a2" title="Deserializes a byte buffer to a musly_track. ">musly_track_frombin()</a>. </dd></dl>
 
@@ -1476,15 +1484,16 @@ This method serializes the internal indices built when calling <a class="el" hre
 </div><div class="memdoc">
 
 <p>This function displays a string representation of the given musly_track. </p>
-<p>The data is displayed in a flat format. All data structures (matrices, covariance matrices) are exported as vectors. This call can be used to export the feature data for further analysis. Note: This function is not threadsafe!</p>
+<p>The data is displayed in a flat format. All data structures (matrices, covariance matrices) are exported as vectors. This call can be used to export the feature data for further analysis.</p>
+<dl class="section note"><dt>Note</dt><dd>This function is not threadsafe!</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>The Musly jukebox to use. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">from_track</td><td>the musly_track to convert into a string representation.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">jukebox</td><td>The Musly jukebox to use </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">from_track</td><td>The musly_track to convert into a string representation</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a constant null terminated string representing from_track.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a constant null terminated string representing from_track</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="musly_8h.html#ac86051d740c66e0ebedd58c0f9280717" title="Serializes a musly_track to a byte buffer. ">musly_track_tobin()</a>, <a class="el" href="musly_8h.html#a04026ab777b0fcc516946250257894a2" title="Deserializes a byte buffer to a musly_track. ">musly_track_frombin()</a> </dd></dl>
 
 </div>
@@ -1503,14 +1512,14 @@ This method serializes the internal indices built when calling <a class="el" hre
 </div><div class="memdoc">
 
 <p>Return the version of Musly. </p>
-<dl class="section return"><dt>Returns</dt><dd>the version as a null terminated string. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>the version as a null terminated string </dd></dl>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Oct 8 2014 11:30:09 for Musly by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 8 2014 14:04:50 for Musly by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
