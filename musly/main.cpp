@@ -368,7 +368,7 @@ compute_similarity(
         std::vector<musly_track*>& alltracks,
         std::vector<musly_trackid>& alltrackids)
 {
-    int guess_len = (int)(alltracks.size()*0.1);
+    int guess_len = std::max(k, (int)(alltracks.size()*0.1));
     std::vector<musly_trackid> guess_ids(guess_len);
     guess_len = musly_jukebox_guessneighbors(mj, seed,
             guess_ids.data(), guess_len);
