@@ -683,7 +683,10 @@ main(int argc, char *argv[])
         }
 
         // check if we can initialize a new collection file
-        cf.open("wb");
+        if (!cf.open("wb")) {
+            std::cerr << "Cannot create collection file: " << cf.get_file() << std::endl;
+            return 1;
+        }
 
         std::cout << "Initialized music similarity method: " << mj->method_name
                 << std::endl;
