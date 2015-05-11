@@ -165,7 +165,7 @@ mutualproximity::normalize(
         }
 
         float d = sim[i];
-        if (isnan(d)) {
+        if (std::isnan(d)) {
            continue;
         }
 

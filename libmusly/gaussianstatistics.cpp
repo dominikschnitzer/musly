@@ -176,7 +176,7 @@ gaussian_statistics::jensenshannon(
         idx_ii += d - i;
     }
 
-    if (isnan(jsd) || isinf(jsd)) {
+    if (std::isnan(jsd) || std::isinf(jsd)) {
         return std::numeric_limits<float>::max();
     }
 
@@ -236,7 +236,7 @@ gaussian_statistics::symmetric_kullbackleibler(
         skld += tmp1 * tmp.mu[i];
     }
 
-    if (isnan(skld) || isinf(skld)) {
+    if (std::isnan(skld) || std::isinf(skld)) {
         return std::numeric_limits<float>::max();
     }
 
