@@ -10,7 +10,13 @@
  * with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
+#include <winsock2.h>
+typedef u_long uint32_t;
+typedef unsigned char uint8_t;
+#else
 #include <arpa/inet.h>
+#endif
 #include <algorithm>
 #include <vector>
 #include <sstream>

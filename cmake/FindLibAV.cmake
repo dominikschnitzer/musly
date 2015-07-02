@@ -22,6 +22,7 @@
 #
 #
 # Copyright (c) 2013 Sergiu Dotenco
+# Changed 2015 by Jan Schlüter: https://bitbucket.org/sergiu/libav-cmake/issue/2
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -126,7 +127,7 @@ IF (LIBAV_AVCONV_EXECUTABLE)
     OUTPUT_VARIABLE _LIBAV_AVCONV_OUTPUT ERROR_QUIET)
 
   STRING (REGEX REPLACE
-    ".*avconv(\\s+version)?[ \t]+([0-9]+(\\.[0-9]+(\\.[0-9]+)?)?).*" "\\2"
+    ".*avconv(\\s+version)?[ \t]+v?([0-9]+(\\.[0-9]+(\\.[0-9]+)?)?).*" "\\2"
     LIBAV_VERSION "${_LIBAV_AVCONV_OUTPUT}")
   STRING (REGEX REPLACE "([0-9]+)\\.([0-9]+)(\\.([0-9]+))?" "\\1"
     LIBAV_VERSION_MAJOR "${LIBAV_VERSION}")

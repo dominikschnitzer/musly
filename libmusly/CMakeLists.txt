@@ -66,6 +66,10 @@ set_target_properties(libmusly
 target_link_libraries(libmusly
     ${LIBMUSLY_LIBS}
     ${LIBAV_LIBRARIES})
+if(WIN32 OR MINGW)
+    # link against winsock2 for ntohl() and htonl()
+    target_link_libraries(libmusly ws2_32)
+endif()
 
 set_target_properties(libmusly
     PROPERTIES PREFIX "")

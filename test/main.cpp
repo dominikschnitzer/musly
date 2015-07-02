@@ -21,7 +21,6 @@
 #include "musly/musly.h"
 #include "tools.h"
 #include "idpool.h"
-#include "minilog.h"
 
 /** poor man's test framework */
 int FAILED = 0;
@@ -217,8 +216,8 @@ void generate_music(float* out, int length, unsigned int seed = 0) {
     // Create a signal by adding up some sine waves
     std::fill(out, &out[length], 0.0f);
     for (int i = 5 + rand() % 20; i >= 0; i--) {
-        int len = length / 10 + rand() % (length / 10);
-        int start = rand() % (length - len);
+        int len = length / 10 + (length / 10) / (float)(RAND_MAX) * rand();
+        int start = (length - len) / (float)(RAND_MAX) * rand();
         float basefreq = 100 + 1000.0f * pow(rand() / (float)(RAND_MAX), 2);
         float baseamp = 0.1f + 0.9f * rand() / (float)(RAND_MAX);
         float tremolosize = std::abs(baseamp - 0.5f) * rand() / (float)(RAND_MAX);
@@ -267,7 +266,7 @@ void test_method(std::string method) {
     // We generate some tracks to play with
     float* song = new float[22050 * 30];
     for (int i = 0; i < 100; i++) {
-        generate_music(song, 22050 * 30, 42*i);
+        generate_music(song, 22050 * 30, 42*i + 1);
         REQUIRE( "analyzed song", musly_track_analyze_pcm(box, song, 22050*30, tracks[i]) == 0);
     }
     delete[] song;
@@ -355,6 +354,7 @@ void test_method(std::string method) {
     }
 
     // We export and import the jukebox state to/from a file
+    // XXX: tmpfile() requires administrator privileges on Windows 7+
     FILE *tempfile = tmpfile();
     REQUIRE( "exported jukebox state", musly_jukebox_tostream(box, tempfile) > 0 );
     musly_jukebox* box2;
@@ -411,7 +411,7 @@ void test_method(std::string method) {
 
 
 int main() {
-    MiniLog::current_level() = logERROR;
+    musly_debug(1);  // set verbosity level to logERROR
 
     // Unit tests
     std::cout << "Components to test: unordered_idpool,ordered_idpool,findmin" << std::endl;

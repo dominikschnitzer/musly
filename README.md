@@ -2,7 +2,7 @@ Musly
 =====
 
 (c) 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
-and      2014, Jan Schlüter <jan.schlueter@ofai.at>
+and 2014-2015, Jan Schlüter <jan.schlueter@ofai.at>
 
 Musly is a program and library for high performance audio music similarity
 computation. Musly only uses the audio signal when computing similarities!
@@ -77,14 +77,42 @@ similarity measures visit <http://www.musly.org>.
 
 ## Installation ##
 
-Musly uses the CMake build system. On Ubuntu, you can install it by running
-`sudo apt-get install cmake`. Furthermore, Musly depends on Eigen 3 and
-libav 0.8 or above. On Ubuntu, these can be installed with:
-`sudo apt-get install libeigen3-dev libavcodec-dev libavformat-dev libavutil-dev`
+Musly uses the CMake build system, and depends on Eigen 3 and libav 0.8 or
+above.
+
+### Ubuntu prerequisites ###
+
+On Ubuntu, all requirements can be installed with:
+`sudo apt-get install cmake libeigen3-dev libavcodec-dev libavformat-dev libavutil-dev`
+
+### Windows prerequisites ###
+
+For Windows, the easiest way seems to be to use MSYS2. Install it and launch
+the "MinGW-w64 Win64 Shell" from the start menu (*not* the "MSYS2 Shell"),
+then run:
+
+```bash
+# Update repository information
+pacman -Sy
+# Install prerequisites
+pacman -S mingw-w64-x86_64-{gcc,cmake-git,pkgconf,eigen3} make wget p7zip
+# Download and install precompiled libav libraries
+wget https://builds.libav.org/windows/release-lgpl/libav-8x6_64-w64-mingw32-11.2.7z
+7z x libav-8x6_64-w64-mingw32-11.2.7z
+cp -a libav-8x6_64-w64-mingw32-11.2/usr/* /usr
+rm -rf libav-8x6_64-w64-mingw32-11.2*
+# Download and extract latest musly snapshot from git
+wget https://github.com/dominikschnitzer/musly/archive/master.zip
+7z x master.zip
+cd musly-master
+```
+
+### Compilation ###
 
 To compile Musly, it is good practice to create an empty directory to build in.
 This can be placed inside your Musly source tree. Assuming you are in the source
-tree, run the following commands to build and install Musly:
+tree, run the following commands to build and install Musly (**Note**: For
+Windows, add `-G"MSYS Makefiles"` to both of the `cmake` lines below):
 
 ```bash
 mkdir -p build && cd build  # create and switch into build directory
@@ -98,6 +126,7 @@ To perform a self-test of the library, optionally run (still inside `build`):
 ```bash
 cmake -DBUILD_TEST=ON ..
 make
+# cp -a libmusly/*.dll libmusly/*/*.dll test/  # required for Windows only
 ctest -V
 ```
 
