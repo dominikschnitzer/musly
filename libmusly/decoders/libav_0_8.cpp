@@ -231,9 +231,12 @@ libav_0_8::decodeto_22050hz_mono_float(
                 (excerpt_length > 0 ? (excerpt_start + excerpt_length) : file_length);
 
         // try to skip to requested position in stream
+        // (Note: without AVSEEK_FLAG_BACKWARD, some MP3s cause libav to skip
+        // to a position where it sees mono MP1 frames, causing a segmentation
+        // fault when trying to access frame->data[i] for i > 0 further below)
         if ((excerpt_start > 0) and (av_seek_frame(fmtx, audio_stream_idx,
                     excerpt_start * st->time_base.den / st->time_base.num,
-                    AVSEEK_FLAG_ANY) >= 0)) {
+                    AVSEEK_FLAG_BACKWARD || AVSEEK_FLAG_ANY) >= 0)) {
             // skipping went fine: decode only what's needed
             decode_samples = excerpt_length * decx->sample_rate;
             excerpt_start = 0;
