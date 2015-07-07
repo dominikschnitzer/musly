@@ -273,98 +273,112 @@ libav_0_8::decodeto_22050hz_mono_float(
     // excerpt_start tells us up to how many seconds to cut from the beginning.
 
     // read packets
+    const int channels = decx->channels;
+    const int sample_rate = decx->sample_rate;
     float* buffer = NULL;
     int buffersize = 0;
     std::vector<float> decoded_pcm;
     int subsequent_errors = 0;
     const int subsequent_errors_max = 20;
-    while (((decode_samples == 0) || ((int)decoded_pcm.size() < decode_samples))
-            && (av_read_frame(fmtx, &pkt) >= 0))
+    while ((decode_samples == 0) || ((int)decoded_pcm.size() < decode_samples))
     {
-        // use only audio frames
-        if (pkt.stream_index == audio_stream_idx) {
-            uint8_t* data = pkt.data;
-            int size = pkt.size;
-            while (pkt.size > 0) {
+        // skip all frames that are not part of the audio stream, and spurious
+        // frames possibly found after seeking (wrong channels / sample_rate)
+        while (((avret = av_read_frame(fmtx, &pkt)) >= 0)
+               && ((pkt.stream_index != audio_stream_idx) ||
+                   (decx->channels != channels) ||
+                   (decx->sample_rate != sample_rate)))
+        {
+            av_free_packet(&pkt);
+            MINILOG(logTRACE) << "Skipping frame...";
+        }
+        if (avret < 0) {
+            // stop decoding if av_read_frame() failed
+            av_free_packet(&pkt);
+            break;
+        }
 
-                // try to decode a frame
-                avcodec_get_frame_defaults(frame);
+        uint8_t* data = pkt.data;
+        int size = pkt.size;
+        while (pkt.size > 0) {
 
-                int len = avcodec_decode_audio4(decx, frame, &got_frame, &pkt);
-                if (len < 0) {
-                    MINILOG(logWARNING) << "Error decoding an audio frame";
+            // try to decode a frame
+            avcodec_get_frame_defaults(frame);
 
-                    // allow some frames to fail
-                    if (subsequent_errors < subsequent_errors_max) {
-                        subsequent_errors++;
-                        break;
-                    }
+            int len = avcodec_decode_audio4(decx, frame, &got_frame, &pkt);
+            if (len < 0) {
+                MINILOG(logWARNING) << "Error decoding an audio frame";
 
-                    // if too many frames failed decoding, abort
-                    MINILOG(logERROR) << "Too many errors, aborting.";
-                    av_free(frame);
-                    av_free_packet(&pkt);
-                    avformat_close_input(&fmtx);
+                // allow some frames to fail
+                if (subsequent_errors < subsequent_errors_max) {
+                    subsequent_errors++;
+                    break;
+                }
+
+                // if too many frames failed decoding, abort
+                MINILOG(logERROR) << "Too many errors, aborting.";
+                av_free(frame);
+                av_free_packet(&pkt);
+                avformat_close_input(&fmtx);
+                if (buffer) {
+                    delete[] buffer;
+                }
+                return std::vector<float>(0);
+            } else {
+                subsequent_errors = 0;
+            }
+
+            // if we got a frame
+            if (got_frame) {
+                // do we need to increase the buffer size?
+                int input_samples = frame->nb_samples*decx->channels;
+                if (input_samples > buffersize) {
                     if (buffer) {
                         delete[] buffer;
                     }
-                    return std::vector<float>(0);
-                } else {
-                    subsequent_errors = 0;
+                    buffer = new float[input_samples];
+                    buffersize = input_samples;
                 }
 
-                // if we got a frame
-                if (got_frame) {
-                    // do we need to increase the buffer size?
-                    int input_samples = frame->nb_samples*decx->channels;
-                    if (input_samples > buffersize) {
+                // convert samples to float
+                // If we have planar samples (num_planes > 1), the channels
+                // are stored in separate frame->data[i] arrays and we
+                // convert to interleaved samples on the way.
+                for (int i = 0; i < num_planes; i++) {
+                    if (samples_tofloat(buffer + i, frame->data[i],
+                            output_stride, input_stride,
+                            decx->sample_fmt,
+                            input_samples / num_planes) < 0) {
+                        MINILOG(logERROR) << "Strange sample format. Abort.";
+
+                        av_free(frame);
+                        av_free_packet(&pkt);
+                        avformat_close_input(&fmtx);
                         if (buffer) {
                             delete[] buffer;
                         }
-                        buffer = new float[input_samples];
-                        buffersize = input_samples;
+                        return decoded_pcm;
                     }
-
-                    // convert samples to float
-                    // If we have planar samples (num_planes > 1), the channels
-                    // are stored in separate frame->data[i] arrays and we
-                    // convert to interleaved samples on the way.
-                    for (int i = 0; i < num_planes; i++) {
-                        if (samples_tofloat(buffer + i, frame->data[i],
-                                output_stride, input_stride,
-                                decx->sample_fmt,
-                                input_samples / num_planes) < 0) {
-                            MINILOG(logERROR) << "Strange sample format. Abort.";
-
-                            av_free(frame);
-                            av_free_packet(&pkt);
-                            avformat_close_input(&fmtx);
-                            if (buffer) {
-                                delete[] buffer;
-                            }
-                            return decoded_pcm;
-                        }
-                    }
-
-                    // inplace downmix to mono, if required
-                    if (decx->channels == 2) {
-                        for (int i = 0; i < frame->nb_samples; i++) {
-                            buffer[i] = (buffer[i*2] + buffer[i*2+1]) / 2.0f;
-                        }
-                    }
-
-                    // store raw pcm data
-                    decoded_pcm.insert(decoded_pcm.end(), buffer,
-                            buffer+frame->nb_samples);
                 }
 
-                // consume the packet
-                pkt.data += len;
-                pkt.size -= len;
+                // inplace downmix to mono, if required
+                if (decx->channels == 2) {
+                    for (int i = 0; i < frame->nb_samples; i++) {
+                        buffer[i] = (buffer[i*2] + buffer[i*2+1]) / 2.0f;
+                    }
+                }
+
+                // store raw pcm data
+                decoded_pcm.insert(decoded_pcm.end(), buffer,
+                        buffer+frame->nb_samples);
             }
-            pkt.data = data;
-            pkt.size = size;
+
+            // consume the packet
+            pkt.data += len;
+            pkt.size -= len;
         }
+        pkt.data = data;
+        pkt.size = size;
 
         av_free_packet(&pkt);
     }
