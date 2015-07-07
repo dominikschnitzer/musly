@@ -17,6 +17,11 @@
 #include <cmath>
 #include <algorithm>
 
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32)
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
+
 #define MUSLY_SUPPORT_STDIO
 #include "musly/musly.h"
 #include "tools.h"
@@ -354,13 +359,27 @@ void test_method(std::string method) {
     }
 
     // We export and import the jukebox state to/from a file
-    // XXX: tmpfile() requires administrator privileges on Windows 7+
+#if !defined(WIN32) && !defined(_WIN32) && !defined(__WIN32)
     FILE *tempfile = tmpfile();
+#else
+    // On Windows, tmpfile() tries to create a file in C:\, requiring
+    // administrator privileges. We use the official temp directory instead.
+    DWORD tempdirlen = GetTempPath(0, NULL);
+    char* tempdir = new char[tempdirlen + 1];
+    GetTempPath(tempdirlen, tempdir);
+    char* tempfn = new char[MAX_PATH];
+    GetTempFileName(tempdir, "mus", 0, tempfn);
+    FILE *tempfile = fopen(tempfn, "w+bTD");  // binary, temporary, delete-on-close
+#endif
     REQUIRE( "exported jukebox state", musly_jukebox_tostream(box, tempfile) > 0 );
     musly_jukebox* box2;
     rewind(tempfile);
     REQUIRE( "imported jukebox state", (box2 = musly_jukebox_fromstream(tempfile)));
     fclose(tempfile);
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32)
+    delete[] tempfn;
+    delete[] tempdir;
+#endif
 
     // We check whether the re-imported jukebox is consistent with the original one
     REQUIRE( "max seen 1040 (imported jukebox)", musly_jukebox_maxtrackid(box2) == 1040 );
