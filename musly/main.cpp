@@ -372,6 +372,7 @@ compute_similarity(
     std::vector<musly_trackid> guess_ids(guess_len);
     guess_len = musly_jukebox_guessneighbors(mj, seed,
             guess_ids.data(), guess_len);
+    guess_ids.resize(guess_len);
 
     std::vector<similarity_knn> knn_sim;
     std::vector<float> similarities;
@@ -512,6 +513,7 @@ compute_playlist(
     if (track_idx.size() == 0) {
         return "";
     }
+    k = (int)(track_idx.size());
 
     // write playlist
     std::ostringstream pl;
