@@ -372,7 +372,7 @@ compute_similarity(
     std::vector<musly_trackid> guess_ids(guess_len);
     guess_len = musly_jukebox_guessneighbors(mj, seed,
             guess_ids.data(), guess_len);
-    guess_ids.resize(guess_len);
+    guess_ids.resize(std::max(guess_len, 0));
 
     std::vector<similarity_knn> knn_sim;
     std::vector<float> similarities;
