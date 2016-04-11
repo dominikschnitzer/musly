@@ -519,7 +519,9 @@ compute_playlist(
     std::ostringstream pl;
     for (int i = 0; i < k; i++) {
         int j = track_idx[i].first;
-        pl << tracks_files[j] << std::endl;
+        float s = track_idx[i].second;
+
+        pl << "track-id: " << j << ", track-similarity: " << s << ", track-origin: " << tracks_files[j] << std::endl;
     }
 
     return pl.str();
