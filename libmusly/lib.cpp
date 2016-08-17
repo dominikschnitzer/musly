@@ -192,8 +192,7 @@ musly_jukebox_addtracks(
 {
     if (jukebox && jukebox->method) {
         musly::method* m = reinterpret_cast<musly::method*>(jukebox->method);
-        m->add_tracks(tracks, trackids, length, (generate_ids != 0));
-        return 0;
+        return m->add_tracks(tracks, trackids, length, (generate_ids != 0));
     } else {
         return -1;
     }

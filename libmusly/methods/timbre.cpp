@@ -198,12 +198,15 @@ timbre::set_musicstyle(
     return mp.set_normtracks(tracks, length);
 }
 
-void
+int
 timbre::add_tracks(
         musly_track** tracks,
         musly_trackid* trackids,
         int length,
         bool generate_ids) {
+    if (mp.get_normtracks()->size() == 0) {
+        return -1;  // not initialized, cannot add tracks
+    }
     int num_new;
     if (generate_ids) {
         idpool.generate_ids(trackids, length);
@@ -222,6 +225,7 @@ timbre::add_tracks(
 
         mp.set_normfacts(pos + i, sim);
     }
+    return 0;
 }
 
 void
