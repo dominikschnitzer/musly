@@ -27,7 +27,7 @@ extern "C" {
 
 #include "minilog.h"
 #include "resampler.h"
-#include "libav_0_8.h"
+#include "libav.h"
 
 // We define some macros to be compatible to different libav versions
 // without spreading #if and #else all over the place.
@@ -50,16 +50,16 @@ extern "C" {
 namespace musly {
 namespace decoders {
 
-MUSLY_DECODER_REGIMPL(libav_0_8, 0);
+MUSLY_DECODER_REGIMPL(libav, 0);
 
-libav_0_8::libav_0_8()
+libav::libav()
 {
     av_register_all();
     avcodec_register_all();
 }
 
 int
-libav_0_8::samples_tofloat(
+libav::samples_tofloat(
         void* const out,
         const void* const in,
         const int out_stride,
@@ -116,7 +116,7 @@ void libav_log_callback(void *ptr, int level, const char *fmt, va_list vargs)
 }
 
 std::vector<float>
-libav_0_8::decodeto_22050hz_mono_float(
+libav::decodeto_22050hz_mono_float(
         const std::string& file,
         float excerpt_length,
         float excerpt_start)
