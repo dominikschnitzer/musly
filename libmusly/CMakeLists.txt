@@ -2,7 +2,7 @@
 # Process with cmake to create your desired buildfiles.
 
 # (c) 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
-#          2014, Jan Schlueter <jan.schlueter@ofai.at>
+#     2014-2016, Jan Schlueter <jan.schlueter@ofai.at>
 
 add_subdirectory(
     libresample)
