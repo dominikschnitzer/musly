@@ -2,7 +2,7 @@
 # Process with cmake to create your desired buildfiles.
 
 # (c) 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
-#          2014, Jan Schlueter <jan.schlueter@ofai.at>
+#     2014-2016, Jan Schlueter <jan.schlueter@ofai.at>
 
 add_subdirectory(
     libresample)
@@ -17,7 +17,7 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/external")
 endif()
 
 if(EXISTS "${LIBAV_INCLUDE_DIRS}/libavutil/channel_layout.h")
-    set_source_files_properties(decoders/libav_0_8.cpp
+    set_source_files_properties(decoders/libav.cpp
         PROPERTIES COMPILE_FLAGS "-DHAVE_AVUTIL_CHANNEL_LAYOUT")
 endif()
 
@@ -38,7 +38,7 @@ add_library(libmusly
     kissfft/kiss_fftr.c
     methods/mandelellis.cpp
     methods/timbre.cpp
-    decoders/libav_0_8.cpp
+    decoders/libav.cpp
     resampler.cpp
     plugins.cpp
     method.cpp
