@@ -1,6 +1,6 @@
 /**
  * Copyright 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
- *                2014, Jan Schlueter <jan.schlueter@ofai.at>
+ *           2014-2016, Jan Schlueter <jan.schlueter@ofai.at>
  *
  * This file is part of Musly, a program for high performance music
  * similarity computation: http://www.musly.org/.
@@ -10,8 +10,8 @@
  * with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef MUSLY_DECODERS_LIBAV_0_8_H_
-#define MUSLY_DECODERS_LIBAV_0_8_H_
+#ifndef MUSLY_DECODERS_LIBAV_H_
+#define MUSLY_DECODERS_LIBAV_H_
 
 extern "C" {
     #include <libavcodec/avcodec.h>
@@ -22,10 +22,10 @@ extern "C" {
 namespace musly {
 namespace decoders {
 
-class libav_0_8 :
+class libav :
     public musly::decoder
 {
-    MUSLY_DECODER_REGCLASS(libav_0_8);
+    MUSLY_DECODER_REGCLASS(libav);
 
 private:
     int
@@ -38,7 +38,7 @@ private:
             int len);
 
 public:
-    libav_0_8();
+    libav();
 
     virtual std::vector<float>
     decodeto_22050hz_mono_float(
@@ -49,4 +49,4 @@ public:
 
 } /* namespace decoders */
 } /* namespace musly */
-#endif /* MUSLY_DECODERS_LIBAV_0_8_H_ */
+#endif /* MUSLY_DECODERS_LIBAV_H_ */

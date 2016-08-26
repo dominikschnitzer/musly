@@ -1,6 +1,6 @@
 /**
  * Copyright 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
- *                2014, Jan Schlueter <jan.schlueter@ofai.at>
+ *           2014-2016, Jan Schlueter <jan.schlueter@ofai.at>
  *
  * This file is part of Musly, a program for high performance music
  * similarity computation: http://www.musly.org/.
@@ -623,7 +623,7 @@ main(int argc, char *argv[])
     std::cout << "Version: " << musly_version() << std::endl;
     std::cout << "(c) 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>"
             << std::endl
-            <<   "         2014, Jan Schlüter <jan.schlueter@ofai.at>"
+            <<   "    2014-2016, Jan Schlüter <jan.schlueter@ofai.at>"
             << std::endl << std::endl;
 
     // Check if we compiled any music similarity methods
