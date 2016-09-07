@@ -87,7 +87,7 @@ public:
             musly_track** tracks,
             int length);
 
-    virtual void
+    virtual int
     add_tracks(
             musly_track** tracks,
             musly_trackid* trackids,

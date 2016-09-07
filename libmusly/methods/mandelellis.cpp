@@ -154,7 +154,7 @@ mandelellis::similarity(
     return 0;
 }
 
-void
+int
 mandelellis::add_tracks(
         musly_track** tracks,
         musly_trackid* trackids,
@@ -166,6 +166,7 @@ mandelellis::add_tracks(
     else {
         idpool.add_ids(trackids, length);
     }
+    return 0;
 }
 
 void
