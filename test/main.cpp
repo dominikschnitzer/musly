@@ -15,6 +15,7 @@
 #include <cstdio>
 #include <ctime>
 #include <cmath>
+#include <vector>
 #include <algorithm>
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32)
@@ -255,14 +256,20 @@ void test_method(std::string method) {
     for (int i = 0; i < 100; i++) {
         tracks[i] = musly_track_alloc(box);
     }
+    std::vector<musly_trackid> filter_ids;
     float similarities[100];
     float similarities2[100];
     int num_neighbors_guessed;
+    int num_neighbors_guessed_flt;
     musly_trackid candidates[20];
     musly_trackid candidates2[20];
+    musly_trackid candidates_flt[20];
+    musly_trackid candidates2_flt[20];
     for (int i = 0; i < 20; i++) {
         candidates[i] = 0;
         candidates2[i] = 0;
+        candidates_flt[i] = 0;
+        candidates2_flt[i] = 0;
     }
 
     // First, we create a jukebox
@@ -296,10 +303,24 @@ void test_method(std::string method) {
     REQUIRE( "track count 90", musly_jukebox_trackcount(box) == 90);
     REQUIRE( "max seen 1000", musly_jukebox_maxtrackid(box) == 1000);
 
+    // We collect all ids divisible by 5, to use for filtered search
+    for (int i = 0; i < 90; i++) {
+        if (trackids[i] % 5 == 0) {
+            filter_ids.push_back(trackids[i]);
+        }
+    }
+
     // We check whether similarity and candidate computation work
     REQUIRE( "computed similarities", musly_jukebox_similarity(box, tracks[42], trackids[42], tracks, trackids, 90, similarities) == 0 );
     num_neighbors_guessed = musly_jukebox_guessneighbors(box, trackids[30], candidates, 20);
     REQUIRE( "guessed neighbors", (num_neighbors_guessed == -1) || (num_neighbors_guessed == 20) );
+    num_neighbors_guessed_flt = musly_jukebox_guessneighbors_filtered(box, trackids[30], candidates_flt, filter_ids.size() / 2, &filter_ids[0], filter_ids.size());
+    REQUIRE( "guessed filtered neighbors", (num_neighbors_guessed_flt == -1) || (num_neighbors_guessed_flt == (int) filter_ids.size() / 2) );
+    if (num_neighbors_guessed_flt > 0) {
+        for (int i = 0; i < num_neighbors_guessed_flt; i++) {
+            REQUIRE( "correctly filtered neighbors", candidates_flt[i] % 5 == 0);
+        }
+    }
 
     // We check whether they even work deterministically (they should)
     REQUIRE( "re-computed similarities", musly_jukebox_similarity(box, tracks[42], trackids[42], tracks, trackids, 90, similarities2) == 0 );
@@ -310,6 +331,12 @@ void test_method(std::string method) {
     if (num_neighbors_guessed > 0) {
         for (int i = 0; i < num_neighbors_guessed; i++) {
             REQUIRE( "consistent neighbor candidates", candidates[i] == candidates2[i] );
+        }
+    }
+    REQUIRE( "re-guessed filtered neighbors", musly_jukebox_guessneighbors_filtered(box, trackids[30], candidates2_flt, filter_ids.size() / 2, &filter_ids[0], filter_ids.size()) == num_neighbors_guessed_flt);
+    if (num_neighbors_guessed_flt > 0) {
+        for (int i = 0; i < num_neighbors_guessed_flt; i++) {
+            REQUIRE( "consistent filtered neighbor candidates", candidates_flt[i] == candidates2_flt[i] );
         }
     }
 
@@ -335,6 +362,12 @@ void test_method(std::string method) {
     for (int i = 0; i < 30; i++) {
         REQUIRE( "generated track ids", trackids[i] == 1011 + i );
     }
+    // We modify filter_ids to account for the changed trackids
+    for (int i = 0; i < (int) filter_ids.size(); i++) {
+        if (filter_ids[i] < 30) {
+            filter_ids[i] += 1011;
+        }
+    }
 
     // We check whether similarity and candidate computation yield the same results as before
     REQUIRE( "re-computed similarities", musly_jukebox_similarity(box, tracks[42], trackids[42], tracks, trackids, 90, similarities2) == 0 );
@@ -355,6 +388,22 @@ void test_method(std::string method) {
         std::sort(candidates2, candidates2 + num_neighbors_guessed);
         for (int i = 0; i < num_neighbors_guessed; i++) {
             REQUIRE( "consistent neighbor candidates", candidates[i] == candidates2[i] );
+        }
+    }
+    REQUIRE( "re-guessed filtered neighbors", musly_jukebox_guessneighbors_filtered(box, trackids[30], candidates2_flt, filter_ids.size() / 2, &filter_ids[0], filter_ids.size()) == num_neighbors_guessed_flt);
+    if (num_neighbors_guessed_flt > 0) {
+        // the ids of the first 30 tracks have changed; we need to adapt `candidates_flt`
+        for (int i = 0; i < num_neighbors_guessed_flt; i++) {
+            if (candidates_flt[i] < 30) {
+                candidates_flt[i] += 1011;
+            }
+        }
+        // candidates are not required to be returned in a particular order,
+        // so if the internal jukebox index has changed, the order may change
+        std::sort(candidates_flt, candidates_flt + num_neighbors_guessed_flt);
+        std::sort(candidates2_flt, candidates2_flt + num_neighbors_guessed_flt);
+        for (int i = 0; i < num_neighbors_guessed_flt; i++) {
+            REQUIRE( "consistent filtered neighbor candidates", candidates_flt[i] == candidates2_flt[i] );
         }
     }
 
@@ -392,6 +441,13 @@ void test_method(std::string method) {
         std::sort(candidates2, candidates2 + num_neighbors_guessed);
         for (int i = 0; i < num_neighbors_guessed; i++) {
             REQUIRE( "consistent neighbor candidates", candidates[i] == candidates2[i] );
+        }
+    }
+    REQUIRE( "guessed filtered neighbors (imported jukebox)", musly_jukebox_guessneighbors_filtered(box2, trackids[30], candidates2_flt, filter_ids.size() / 2, &filter_ids[0], filter_ids.size()) == num_neighbors_guessed_flt);
+    if (num_neighbors_guessed_flt > 0) {
+        std::sort(candidates2_flt, candidates2_flt + num_neighbors_guessed_flt);
+        for (int i = 0; i < num_neighbors_guessed_flt; i++) {
+            REQUIRE( "consistent filtered neighbor candidates", candidates_flt[i] == candidates2_flt[i] );
         }
     }
 
