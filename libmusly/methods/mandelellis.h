@@ -80,7 +80,7 @@ public:
             int length,
             float* similarities);
 
-    virtual void
+    virtual int
     add_tracks(
             musly_track** tracks,
             musly_trackid* trackids,
