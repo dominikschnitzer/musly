@@ -23,6 +23,7 @@
 #
 # Copyright (c) 2013 Sergiu Dotenco
 # Changed 2015 by Jan Schlüter: https://bitbucket.org/sergiu/libav-cmake/issue/2
+# Changed 2016 by Jan Schlüter: support both ffmpeg and libav
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -117,36 +118,46 @@ ENDIF (DEFINED _LIBAV_MISSING_COMPONENTS AND _LIBAV_CHECK_COMPONENTS)
 
 # Determine library's version
 
-FIND_PROGRAM (LIBAV_AVCONV_EXECUTABLE NAMES avconv
-  HINTS ${LIBAV_ROOT_DIR}
-  PATH_SUFFIXES bin
-  DOC "avconv executable")
+FOREACH(_CMD_NAME ffmpeg avconv)
+  FIND_PROGRAM (LIBAV_EXECUTABLE NAMES ${_CMD_NAME}
+    HINTS ${LIBAV_ROOT_DIR}
+    PATH_SUFFIXES bin
+    DOC "ffmpeg or avconv executable")
 
-IF (LIBAV_AVCONV_EXECUTABLE)
-  EXECUTE_PROCESS (COMMAND ${LIBAV_AVCONV_EXECUTABLE} -version
-    OUTPUT_VARIABLE _LIBAV_AVCONV_OUTPUT ERROR_QUIET)
+  IF (LIBAV_EXECUTABLE)
+    EXECUTE_PROCESS (COMMAND ${LIBAV_EXECUTABLE} -version
+      OUTPUT_VARIABLE _LIBAV_EXECUTABLE_OUTPUT ERROR_QUIET)
 
-  STRING (REGEX REPLACE
-    ".*avconv(\\s+version)?[ \t]+v?([0-9]+(\\.[0-9]+(\\.[0-9]+)?)?).*" "\\2"
-    LIBAV_VERSION "${_LIBAV_AVCONV_OUTPUT}")
-  STRING (REGEX REPLACE "([0-9]+)\\.([0-9]+)(\\.([0-9]+))?" "\\1"
-    LIBAV_VERSION_MAJOR "${LIBAV_VERSION}")
-  STRING (REGEX REPLACE "([0-9]+)\\.([0-9]+)(\\.([0-9]+))?" "\\2"
-    LIBAV_VERSION_MINOR "${LIBAV_VERSION}")
+    STRING (REGEX REPLACE
+      ".*${_CMD_NAME}([ \t]+version)?[ \t]+v?([0-9.]*).*" "\\2"
+      LIBAV_VERSION "${_LIBAV_EXECUTABLE_OUTPUT}")
 
-  IF ("${LIBAV_VERSION}" MATCHES "^([0-9]+)\\.([0-9]+)\\.([0-9]+)$")
-    STRING (REGEX REPLACE "([0-9]+)\\.([0-9]+)(\\.([0-9]+))?" "\\3"
-      LIBAV_VERSION_PATCH "${LIBAV_VERSION}")
-    SET (LIBAV_VERSION_COMPONENTS 3)
-  ELSEIF ("${LIBAV_VERSION}" MATCHES "^([0-9]+)\\.([0-9]+)\\.([0-9]+)$")
-    SET (LIBAV_VERSION_COMPONENTS 2)
-  ELSEIF ("${LIBAV_VERSION}" MATCHES "^([0-9]+)$")
-    # mostly developer/alpha/beta versions
-    SET (LIBAV_VERSION_COMPONENTS 2)
-    SET (LIBAV_VERSION_MINOR 0)
-    SET (LIBAV_VERSION "${LIBAV_VERSION}.0")
-  ENDIF ("${LIBAV_VERSION}" MATCHES "^([0-9]+)\\.([0-9]+)\\.([0-9]+)$")
-ENDIF (LIBAV_AVCONV_EXECUTABLE)
+    IF (LIBAV_VERSION)
+      STRING (REGEX REPLACE "([0-9]+)\\.([0-9]+)(\\.([0-9]+))?" "\\1"
+        LIBAV_VERSION_MAJOR "${LIBAV_VERSION}")
+      STRING (REGEX REPLACE "([0-9]+)\\.([0-9]+)(\\.([0-9]+))?" "\\2"
+        LIBAV_VERSION_MINOR "${LIBAV_VERSION}")
+
+      IF ("${LIBAV_VERSION}" MATCHES "^([0-9]+)\\.([0-9]+)\\.([0-9]+)$")
+        STRING (REGEX REPLACE "([0-9]+)\\.([0-9]+)(\\.([0-9]+))?" "\\3"
+          LIBAV_VERSION_PATCH "${LIBAV_VERSION}")
+        SET (LIBAV_VERSION_COMPONENTS 3)
+      ELSEIF ("${LIBAV_VERSION}" MATCHES "^([0-9]+)\\.([0-9]+)$")
+        SET (LIBAV_VERSION_COMPONENTS 2)
+      ELSEIF ("${LIBAV_VERSION}" MATCHES "^([0-9]+)$")
+        # mostly developer/alpha/beta versions
+        SET (LIBAV_VERSION_COMPONENTS 2)
+        SET (LIBAV_VERSION_MINOR 0)
+        SET (LIBAV_VERSION "${LIBAV_VERSION}.0")
+      ENDIF ("${LIBAV_VERSION}" MATCHES "^([0-9]+)\\.([0-9]+)\\.([0-9]+)$")
+    ELSE (LIBAV_VERSION)
+      # clear variable if empty, can trap version check otherwise
+      UNSET (LIBAV_VERSION)
+    ENDIF (LIBAV_VERSION)
+
+    BREAK()
+  ENDIF (LIBAV_EXECUTABLE)
+ENDFOREACH(_CMD_NAME)
 
 IF (WIN32)
   FIND_PROGRAM (LIB_EXECUTABLE NAMES lib
