@@ -2,7 +2,7 @@ Musly
 =====
 
 (c) 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
-and 2014-2015, Jan Schlüter <jan.schlueter@ofai.at>
+and 2014-2016, Jan Schlüter <jan.schlueter@ofai.at>
 
 Musly is a program and library for high performance audio music similarity
 computation. Musly only uses the audio signal when computing similarities!
@@ -77,8 +77,8 @@ similarity measures visit <http://www.musly.org>.
 
 ## Installation ##
 
-Musly uses the CMake build system, and depends on Eigen 3 and libav 0.8 or
-above.
+Musly uses the CMake build system, and depends on Eigen 3 and ffmpeg or libav
+0.8 or above.
 
 ### Ubuntu prerequisites ###
 
@@ -96,11 +96,15 @@ then run:
 pacman -Sy
 # Install prerequisites
 pacman -S mingw-w64-x86_64-{gcc,cmake-git,pkgconf,eigen3} make wget p7zip
-# Download and install precompiled libav libraries
-wget https://builds.libav.org/windows/release-lgpl/libav-8x6_64-w64-mingw32-11.2.7z
-7z x libav-8x6_64-w64-mingw32-11.2.7z
-cp -a libav-8x6_64-w64-mingw32-11.2/usr/* /usr
-rm -rf libav-8x6_64-w64-mingw32-11.2*
+# Download and install precompiled ffmpeg libraries
+wget https://ffmpeg.zeranoe.com/builds/win64/dev/ffmpeg-latest-win64-dev.7z
+wget https://ffmpeg.zeranoe.com/builds/win64/shared/ffmpeg-latest-win64-shared.7z
+7z x ffmpeg-latest-win64-dev.7z
+7z x ffmpeg-latest-win64-shared.7z
+mv ffmpeg-latest-win64-dev/include/* /usr/include
+mv ffmpeg-latest-win64-dev/lib/* /usr/lib
+mv ffmpeg-latest-win64-shared/bin/* /usr/bin
+rm -rf ffmpeg-latest-win64-*
 # Download and extract latest musly snapshot from git
 wget https://github.com/dominikschnitzer/musly/archive/master.zip
 7z x master.zip
