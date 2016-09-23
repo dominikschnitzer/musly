@@ -34,7 +34,11 @@ extern "C" {
 #if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(55, 45, 101)
 #define AV_FRAME_ALLOC avcodec_alloc_frame
 #define AV_FRAME_UNREF avcodec_get_frame_defaults
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(54, 28, 0)
+#define AV_FRAME_FREE(X) av_free(*(X))
+#else
 #define AV_FRAME_FREE avcodec_free_frame
+#endif
 #else
 #define AV_FRAME_ALLOC av_frame_alloc
 #define AV_FRAME_UNREF av_frame_unref
