@@ -12,6 +12,10 @@ add_executable(selftest
     main.cpp)
 
 target_link_libraries(selftest
-    libmusly)
+    libmusly
+    avcodec
+    avformat
+    z
+    pthread)
 
 add_test(NAME selftest COMMAND selftest)
