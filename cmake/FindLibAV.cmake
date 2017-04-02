@@ -24,6 +24,7 @@
 # Copyright (c) 2013 Sergiu Dotenco
 # Changed 2015 by Jan Schlüter: https://bitbucket.org/sergiu/libav-cmake/issue/2
 # Changed 2016 by Jan Schlüter: support both ffmpeg and libav
+# Changed 2017 by Sergey Smirnov: support architecture-specific include dirs
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -227,7 +228,8 @@ IF (NOT _LIBAV_CHECK_COMPONENTS)
  SET (_LIBAV_FPHSA_ADDITIONAL_ARGS HANDLE_COMPONENTS)
 ENDIF (NOT _LIBAV_CHECK_COMPONENTS)
 
-FIND_PACKAGE_HANDLE_STANDARD_ARGS (LibAV REQUIRED_VARS LIBAV_ROOT_DIR
-  LIBAV_INCLUDE_DIR ${_LIBAV_MISSING_LIBRARIES} VERSION_VAR LIBAV_VERSION
+FIND_PACKAGE_HANDLE_STANDARD_ARGS (LibAV
+  REQUIRED_VARS LIBAV_INCLUDE_DIR ${_LIBAV_MISSING_LIBRARIES}
+  VERSION_VAR LIBAV_VERSION
   ${_LIBAV_FPHSA_ADDITIONAL_ARGS})
 
