@@ -173,8 +173,9 @@ libav::decodeto_22050hz_mono_float(
     AVStream *st = fmtx->streams[audio_stream_idx];
 
     // find a decoder for the stream
-#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(57, 5, 0)
-    // old libav version: stream has a codec context we can use
+#if (LIBAVCODEC_VERSION_INT < AV_VERSION_INT(57, 14, 0)) || ((LIBAVCODEC_VERSION_MICRO >= 100) && (LIBAVCODEC_VERSION_INT < AV_VERSION_INT(57, 33, 100)))
+    // old libav version (libavcodec < 57.14 for libav, < 57.33 for ffmpeg):
+    // stream has a codec context we can use
     AVCodecContext *decx = st->codec;
     #define AVCODEC_FREE_CONTEXT(x)
 #else
@@ -195,7 +196,7 @@ libav::decodeto_22050hz_mono_float(
         avformat_close_input(&fmtx);
         return std::vector<float>(0);
     }
-    #if LIBAVFORMAT_VERSION_MICRO >= 100
+    #if LIBAVCODEC_VERSION_MICRO >= 100
     // only available in ffmpeg
     av_codec_set_pkt_timebase(decx, st->time_base);
     #endif
