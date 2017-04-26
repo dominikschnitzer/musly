@@ -149,14 +149,14 @@ mutualproximity::normalize(
         int length,
         float* sim)
 {
-    if (seed_position >= (int)norm_facts.size()) {
+    if (seed_position < 0 || seed_position >= (int)norm_facts.size()) {
         return -1;
     }
     float seed_mu = norm_facts[seed_position].mu;
     float seed_std = norm_facts[seed_position].std;
     for (int i = 0; i < length; i++) {
         int pos = other_positions[i];
-        if (pos >= (int)norm_facts.size()) {
+        if (pos < 0 || pos >= (int)norm_facts.size()) {
             return -1;
         }
         if (pos == seed_position) {

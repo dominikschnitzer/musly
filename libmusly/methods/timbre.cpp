@@ -181,10 +181,10 @@ timbre::similarity(
         other_positions[i] = idpool.position_of(trackids[i]);
     }
     // - call mp.normalize with these positions
-    mp.normalize(seed_position, other_positions, length, similarities);
+    int res = mp.normalize(seed_position, other_positions, length, similarities);
     delete[] other_positions;
 
-    return 0;
+    return res;
 }
 
 int
