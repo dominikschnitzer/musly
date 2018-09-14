@@ -30,6 +30,11 @@ fileiterator::fileiterator(const std::string& path,
 {
     current_dir = path;
 
+    // Remove eventual trailing '/' in path (it will we added later)
+    while (current_dir.length() > 1 and current_dir.back() == '/') {
+        current_dir = current_dir.substr(0,current_dir.size()-1);  
+    }
+
     // set scan extension
     if (extension.length() > 0) {
         search_ext = "." + extension;
