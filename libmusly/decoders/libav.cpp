@@ -58,8 +58,12 @@ MUSLY_DECODER_REGIMPL(libav, 0);
 
 libav::libav()
 {
+#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(58, 9, 100)
     av_register_all();
+#endif
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(58, 9, 100)
     avcodec_register_all();
+#endif
 }
 
 int
@@ -197,8 +201,10 @@ libav::decodeto_22050hz_mono_float(
         return std::vector<float>(0);
     }
     #if LIBAVCODEC_VERSION_MICRO >= 100
-    // only available in ffmpeg
+    #if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(58,3,102)
+    // only available in ffmpeg, deprecated after 58
     av_codec_set_pkt_timebase(decx, st->time_base);
+    #endif
     #endif
     #define AVCODEC_FREE_CONTEXT(x) avcodec_free_context(x)
 #endif
@@ -359,8 +365,31 @@ libav::decodeto_22050hz_mono_float(
             // try to decode a frame
             AV_FRAME_UNREF(frame);
 
-            int len = avcodec_decode_audio4(decx, frame, &got_frame, &pkt);
+            int len = 0;
+            got_frame = 0;
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(57, 48, 101)
+            len = avcodec_decode_audio4(decx, frame, &got_frame, &pkt);
             if (len < 0) {
+                avret = AVERROR(EINVAL);
+            }
+#else
+            avret = avcodec_receive_frame(decx, frame);
+            if (avret == 0) {
+                got_frame = 1;
+            }
+            if (avret == AVERROR(EAGAIN)) {
+                avret = 0;
+            }
+            if (avret == 0) {
+                avret = avcodec_send_packet(decx, &pkt);
+                if (avret == 0) {
+                    len = pkt.size;
+                } else if (avret == AVERROR(EAGAIN)) {
+                    avret = 0;
+                }
+            }
+#endif
+            if (avret < 0) {
                 MINILOG(logWARNING) << "Error decoding an audio frame";
 
                 // allow some frames to fail
