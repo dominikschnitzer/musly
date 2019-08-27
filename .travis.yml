@@ -5,6 +5,9 @@ matrix:
           dist: bionic
           compiler: gcc
         
+before_install:
+  - sudo apt-get install -y libeigen3-dev
+
 script: 
     - mkdir -p build
     - cd build
