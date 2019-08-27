@@ -1,0 +1,32 @@
+language: cpp
+matrix:
+    include:
+        - name: "GCC (7.4) on Ubuntu 18.04"
+          os: linux
+          dist: bionic
+          compiler: gcc
+
+        - name: "GCC (5.4) on Ubuntu 16.04"
+          os: linux
+          dist: xenial
+          compiler: gcc
+
+        - name: "Clang (7.0) on Ubuntu 18.04"
+          os: linux
+          dist: bionic
+          compiler: clang
+
+script:
+    - mkdir -p build
+    - cd build
+    - cmake ..
+    - make -j
+
+addons:
+    apt:
+        update: true
+        packages:
+            - libeigen3-dev
+            - libavcodec-dev
+            - libavformat-dev
+            - libavutil-dev
