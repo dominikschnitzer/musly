@@ -1,29 +1,22 @@
 language: cpp
 matrix:
     include:
-        # GCC (9.1) on Ubuntu 18.04
-        - os: linux
-          dist: bionic
-          env:
-            - BUILD_ENV="CC=gcc-9 && CXX=g++-9"
-
-        # GCC (7.4) on Ubuntu 18.04
-        - os: linux
+        - name: "GCC (7.4) on Ubuntu 18.04"
+          os: linux
           dist: bionic
           compiler: gcc
 
-        # GCC (5.4) on Ubuntu 16.04
-        - os: linux
+        - name: "GCC (5.4) on Ubuntu 16.04"
+          os: linux
           dist: xenial
           compiler: gcc
 
-        # Clang (7.0) on Ubuntu 18.04
-        - os: linux
+        - name: "Clang (7.0) on Ubuntu 18.04"
+          os: linux
           dist: bionic
           compiler: clang
 
 script:
-    - eval "${BUILD_ENV}"
     - mkdir -p build
     - cd build
     - cmake ..
@@ -32,11 +25,8 @@ script:
 addons:
     apt:
         update: true
-        sources:
-            - ubuntu-toolchain-r-test
         packages:
             - libeigen3-dev
             - libavcodec-dev
             - libavformat-dev
             - libavutil-dev
-            - g++-9
