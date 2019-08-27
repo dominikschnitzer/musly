@@ -1,0 +1,12 @@
+language: cpp
+matrix:
+    include:
+        - os: linux
+          dist: bionic
+          compiler: gcc
+        
+script: 
+    - mkdir -p build
+    - cd build
+    - cmake ..
+    - make -j
