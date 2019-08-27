@@ -3,7 +3,9 @@ matrix:
     include:
         - os: linux
           dist: bionic
-          compiler: gcc
+          compiler:
+            - gcc
+            - clang
           addons:
               apt:
                 update: true
@@ -18,4 +20,3 @@ script:
     - cd build
     - cmake ..
     - make -j
-
