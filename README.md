@@ -16,7 +16,7 @@ The source code is released under the MPL 2.0 see the file <musly/COPYING>
   <https://github.com/dominikschnitzer/musly/issues>
 * Documentation is found in the local <musly/doc> directory and on the main
   website.
-
+* Build status: [![Build Status](https://travis-ci.org/dominikschnitzer/musly.svg?branch=master)](https://travis-ci.org/dominikschnitzer/musly)
 
 ## Version History ##
 
