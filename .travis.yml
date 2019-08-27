@@ -6,9 +6,19 @@ matrix:
           dist: bionic
           compiler: gcc
 
-        # Clang on Ubuntu 18.04
+        # Clang (7.0) on Ubuntu 18.04
         - os: linux
           dist: bionic
+          compiler: clang
+
+        # GCC on Ubuntu 16.04
+        - os: linux
+          dist: xenial
+          compiler: gcc
+
+        # Clang on Ubuntu 16.04
+        - os: linux
+          dist: xenial
           compiler: clang
         
 script: 
