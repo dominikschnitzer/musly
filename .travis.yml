@@ -7,7 +7,11 @@ matrix:
           addons:
               apt:
                 update: true
-                packages: libeigen3-dev
+                packages:
+                    - libeigen3-dev
+                    - libavcodec-dev
+                    - libavformat-dev
+                    - libavutil-dev
         
 script: 
     - mkdir -p build
