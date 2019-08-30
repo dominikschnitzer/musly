@@ -73,6 +73,8 @@ add_library(libresample STATIC
     ${LIBRESAMPLE_C}
     ${LIBRESAMPLE_H}
 )
+target_include_directories(libresample PRIVATE
+    ${CMAKE_CURRENT_BINARY_DIR}/libresample)
 if (MSVC)
     # libresample does not compile with warning level>1
     target_compile_options(libresample PRIVATE
