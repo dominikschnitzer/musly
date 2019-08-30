@@ -75,8 +75,8 @@ minilog_get_timestr()
     }
 
     char result[MAX_LEN*2] = {0};
-    static DWORD first = GetTickCount();
-    sprintf(result, "%s.%03ld", buffer, (long)(GetTickCount() - first) % 1000);
+    static ULONGLONG first = GetTickCount64();
+    sprintf(result, "%s.%03lld", buffer, (LONGLONG)(GetTickCount64() - first) % 1000);
 
     return result;
 }
