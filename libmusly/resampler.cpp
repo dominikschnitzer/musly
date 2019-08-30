@@ -9,8 +9,9 @@
  * with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "resampler.h"
+#include <algorithm>
 
+#include "resampler.h"
 #include "minilog.h"
 
 namespace musly {

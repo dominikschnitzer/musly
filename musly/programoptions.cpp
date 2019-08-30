@@ -9,7 +9,11 @@
  * with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <unistd.h>
+#ifdef _WIN32
+    #include <io.h>
+#else
+    #include <unistd.h>
+#endif
 #include <getopt.h>
 #include <iostream>
 #include <sstream>
