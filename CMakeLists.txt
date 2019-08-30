@@ -34,7 +34,7 @@ if (MSVC)
     set(PREFER_STATIC ON)
 else()
     # lots of warnings and all warnings as errors
-    add_compile_options(-Wall
+    add_compile_options(-Wall -Werror
         $<$<COMPILE_LANGUAGE:CXX>:-Wextra>
         $<$<COMPILE_LANGUAGE:CXX>:-pedantic>)
     # On Unix, hide symbols by default (see https://gcc.gnu.org/wiki/Visibility)
