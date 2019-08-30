@@ -143,6 +143,11 @@ target_include_directories(libmusly
     ${EIGEN3_INCLUDE_DIR}
     ${LIBAV_INCLUDE_DIRS}
 )
+if (MSVC)
+    # Disable warnings for MSBuild from external libraries
+    target_compile_options(libmusly PRIVATE
+	    /wd4244)
+endif()
 
 source_group("libmusly" FILES
     ${LIBMUSLY_CPP}

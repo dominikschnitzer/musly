@@ -13,6 +13,7 @@ add_definitions(-DMUSLY_VERSION="${MUSLY_VERSION}")
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 if (MSVC)
+    # Ninja uses those flags on Windows, MSBuild ignores them
     if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.14)
         add_compile_options(/experimental:external /external:W0)
         set(CMAKE_INCLUDE_SYSTEM_FLAG_CXX "/external:I")
