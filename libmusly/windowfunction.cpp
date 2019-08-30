@@ -19,8 +19,8 @@ namespace musly {
 Eigen::VectorXf windowfunction::hann(
         int window_size)
 {
-    int N = window_size - 1;
-    Eigen::VectorXf n = Eigen::VectorXf::LinSpaced(window_size, 0, N);
+    float N = window_size - 1.f;
+    Eigen::VectorXf n = Eigen::VectorXf::LinSpaced(window_size, 0.f, N);
     Eigen::VectorXf w = 0.5f * (1.0f - (2.0f*M_PI*n/N).array().cos());
     return w;
 }

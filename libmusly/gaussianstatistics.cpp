@@ -75,7 +75,7 @@ gaussian_statistics::estimate_gaussian(
 
     // Add Gaussian noise to the data to avoid singular covariance matrices
     // in case the input data was silence.
-    covar.diagonal().array() += 1e-4;
+    covar.diagonal().array() += 1e-4f;
     if (g.covar) {
         int idx_ij = 0;
         for (int i = 0; i < d; i++) {

@@ -47,7 +47,6 @@ programoptions::programoptions(int argc, char *argv[],
         all_methods += "," + methods[i];
     }
 
-    opterr = 0;
     while (1) {
 
         int c = getopt(argc, argv, "v:ihc:Jj:a:x:Ee:f:Nn:k:ldm:s:p:");

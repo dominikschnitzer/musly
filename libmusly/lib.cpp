@@ -12,8 +12,6 @@
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
 #include <winsock2.h>
-typedef u_long uint32_t;
-typedef unsigned char uint8_t;
 #else
 #include <arpa/inet.h>
 #endif
@@ -737,7 +735,6 @@ musly_track_analyze_audiofile(
     } else {
         return -1;
     }
-    return 0;
 }
 
 typedef std::pair<float, musly_trackid> knn;

@@ -62,7 +62,7 @@ method::track_tostr(
     // TODO: Use and reuse a string buffer
     trackstr = "";
     int offs = 0;
-    int buffer_size = 256;
+    const int buffer_size = 256;
     char buffer[buffer_size];
     for (int i = 0; i < (int)track_field_name.size(); i++) {
         trackstr += track_field_name[i] + ":";
