@@ -361,7 +361,7 @@ struct similarity_comp {
 
 std::vector<similarity_knn>
 compute_similarity(
-        musly_jukebox* mj,
+        musly_jukebox* local_mj,
         int k,
         std::vector<int>& artists,
         musly_trackid seed,
@@ -370,7 +370,7 @@ compute_similarity(
 {
     int guess_len = std::max(k, (int)(alltracks.size()*0.1));
     std::vector<musly_trackid> guess_ids(guess_len);
-    guess_len = musly_jukebox_guessneighbors(mj, seed,
+    guess_len = musly_jukebox_guessneighbors(local_mj, seed,
             guess_ids.data(), guess_len);
     guess_ids.resize(std::max(guess_len, 0));
 
@@ -381,7 +381,7 @@ compute_similarity(
     // need to compute the full similarity
     if (guess_len <= 0) {
         similarities.resize(alltracks.size());
-        int ret = musly_jukebox_similarity(mj,
+        int ret = musly_jukebox_similarity(local_mj,
                 alltracks[seed], seed, alltracks.data(),
                 alltrackids.data(), static_cast<int>(alltrackids.size()), similarities.data());
         if (ret != 0) {
@@ -396,7 +396,7 @@ compute_similarity(
            guess_tracks[i] = alltracks[guess_ids[i]];
         }
         similarities.resize(guess_ids.size());
-        int ret = musly_jukebox_similarity(mj,
+        int ret = musly_jukebox_similarity(local_mj,
                 alltracks[seed], seed, guess_tracks.data(),
                 guess_ids.data(), static_cast<int>(guess_ids.size()), similarities.data());
         if (ret != 0) {
@@ -481,9 +481,9 @@ write_mirex_sparse(
 #endif
         // write to file
         f << tracks_files[i];
-        for (int i = 0; i < k; i++) {
-            int j = track_idx[i].first;
-            f << "\t" << tracks_files[j] << "," << track_idx[i].second;
+        for (int l = 0; l < k; l++) {
+            int j = track_idx[l].first;
+            f << "\t" << tracks_files[j] << "," << track_idx[l].second;
         }
         f << std::endl;
 #ifdef _OPENMP

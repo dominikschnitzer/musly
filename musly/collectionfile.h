@@ -42,7 +42,7 @@ public:
 
     bool
     write_header(
-            const std::string& method);
+            const std::string& meth);
 
     bool
     read_header();

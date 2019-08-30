@@ -164,7 +164,7 @@ gaussian_statistics::jensenshannon(
         for (int j = i+1; j < d; j++) {
             idx_ij++;
 
-            int idx_k = 0;
+            idx_k = 0;
             for (int k = 0; k < i; k++) {
                 tmp.covar[idx_ij] -=
                         tmp.covar[idx_k+i] * tmp.covar[idx_k+j];
