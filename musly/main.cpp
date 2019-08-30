@@ -533,7 +533,7 @@ evaluate_collection(
         std::vector<int>& genres,
         int num_genres,
         std::vector<int>& artists,
-        int num_artists,
+        int /*num_artists*/,
         int k)
 {
     Eigen::MatrixXi genre_confusion =

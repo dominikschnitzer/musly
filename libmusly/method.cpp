@@ -79,19 +79,19 @@ method::track_tostr(
 
 int
 method::set_musicstyle(
-        musly_track** tracks,
-        int length)
+        musly_track** /*tracks*/,
+        int /*length*/)
 {
     return 0;
 }
 
 int
 method::guess_neighbors(
-        musly_trackid seed,
-        musly_trackid* neighbors,
-        int length,
-        musly_trackid* limit_to,
-        int num_limit_to)
+        musly_trackid /*seed*/,
+        musly_trackid* /*neighbors*/,
+        int /*length*/,
+        musly_trackid* /*limit_to*/,
+        int /*num_limit_to*/)
 {
     // all tracks
     return -1;
@@ -115,17 +115,17 @@ method::deserialize_metadata(
 
 int
 method::serialize_trackdata(
-        unsigned char* buffer,
-        int num_tracks,
-        int skip_tracks) {
+        unsigned char* /*buffer*/,
+        int /*num_tracks*/,
+        int /*skip_tracks*/) {
     // default: not implemented
     return -1;
 }
 
 int
 method::deserialize_trackdata(
-        unsigned char* buffer,
-        int num_tracks) {
+        unsigned char* /*buffer*/,
+        int /*num_tracks*/) {
     // default: not implemented
     return -1;
 }
