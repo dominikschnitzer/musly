@@ -4,28 +4,44 @@
 # (c) 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
 #          2014, Jan Schlueter <jan.schlueter@ofai.at>
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.5)
 
 project(musly)
 set(MUSLY_VERSION "0.2")
 add_definitions(-DMUSLY_VERSION="${MUSLY_VERSION}")
 
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    add_definitions(-Wall -g)
-elseif (CMAKE_BUILD_TYPE STREQUAL "Release")
-    add_definitions(-DNDEBUG -O3)
-else ()
-    add_definitions(-DNDEBUG -Wall -g -O3)
-endif ()
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-# On Unix, hide symbols by default (see https://gcc.gnu.org/wiki/Visibility)
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"
-    OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    set(CMAKE_CXX_FLAGS
-        "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
-endif () 
+if (MSVC)
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.14)
+        add_compile_options(/experimental:external /external:W0)
+        set(CMAKE_INCLUDE_SYSTEM_FLAG_CXX "/external:I")
+        set(CMAKE_INCLUDE_SYSTEM_FLAG_C "/external:I")
+    endif()
 
-option(BUILD_STATIC "Make a static build of libmusly" OFF)
+    # warning level 4 and all warnings as errors
+    if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+        string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    endif()
+    if(CMAKE_C_FLAGS MATCHES "/W[0-4]")
+        string(REGEX REPLACE "/W[0-4]" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+    endif()
+    add_compile_options(/WX)
+
+    add_compile_definitions(NOMINMAX _USE_MATH_DEFINES)
+    add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
+
+    set(PREFER_STATIC ON)
+else()
+    # lots of warnings and all warnings as errors
+    add_compile_options(-Wall -Wextra -pedantic)
+    # On Unix, hide symbols by default (see https://gcc.gnu.org/wiki/Visibility)
+    add_compile_options(-fvisibility=hidden -fvisibility-inlines-hidden)
+
+    set(PREFER_STATIC OFF)
+endif()
+
+option(BUILD_STATIC "Make a static build of libmusly" PREFER_STATIC)
 if (BUILD_STATIC)
     set(BUILD_SHARED_LIBS OFF)
 
