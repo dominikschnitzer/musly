@@ -252,7 +252,7 @@ public:
 #ifndef BUILD_STATIC
 #define MUSLY_METHOD_REGCLASS(classname) \
 private: \
-    static const plugin_creator_impl<classname> creator;
+    static const plugin_creator_impl<classname> creator
 #else
 #define MUSLY_METHOD_REGCLASS(classname)
 #endif
@@ -266,7 +266,7 @@ private: \
 #ifndef BUILD_STATIC
 #define MUSLY_METHOD_REGIMPL(classname, priority) \
     const plugin_creator_impl<classname> classname::creator(#classname, \
-            plugins::METHOD_TYPE, priority);
+            plugins::METHOD_TYPE, priority)
 #else
 #define MUSLY_METHOD_REGIMPL(classname, priority)
 #endif
@@ -279,7 +279,7 @@ private: \
 #define MUSLY_METHOD_REGSTATIC(classname, priority) \
     static const musly::plugin_creator_impl<musly::methods::classname> \
             create ## _ ## classname (#classname, \
-            musly::plugins::METHOD_TYPE, priority);
+            musly::plugins::METHOD_TYPE, priority)
 #endif
 
 } /* namespace musly */
