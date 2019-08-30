@@ -32,10 +32,10 @@ std::vector<float> resampler::resample(
         float* pcm_input,
         int pcm_len)
 {
-    std::vector<float> pcm_out(pcm_len*resample_factor);
+    std::vector<float> pcm_out(static_cast<size_t>(pcm_len*resample_factor));
 
     int srclen = 4096;
-    int dstlen = (srclen*resample_factor + 1000);
+    int dstlen = static_cast<int>(srclen*resample_factor + 1000.);
     float* dst = new float[dstlen];
 
     int in_pos = 0;

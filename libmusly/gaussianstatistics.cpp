@@ -131,7 +131,7 @@ gaussian_statistics::jensenshannon(
 
     // merge the mean and covariance matrices to get the merged Gaussian
     for (int i = 0; i < d; i++) {
-        tmp.mu[i] = 0.5*(g0.mu[i] - g1.mu[i]);
+        tmp.mu[i] = static_cast<float>(0.5*(g0.mu[i] - g1.mu[i]));
     }
     int idx_covar = 0;
     for (int i = 0; i < d; i++) {

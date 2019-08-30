@@ -221,7 +221,7 @@ timbre::add_tracks(
     int pos = idpool.get_size() - length;
     for (int i = 0; i < length; i++) {
         similarity_raw(tracks[i], mp.get_normtracks()->data(),
-                mp.get_normtracks()->size(), sim.data());
+                static_cast<int>(mp.get_normtracks()->size()), sim.data());
 
         mp.set_normfacts(pos + i, sim);
     }
@@ -276,15 +276,15 @@ timbre::serialize_metadata(
 
         // mutual proximity tracks
         std::vector<musly_track*> &mptracks = *mp.get_normtracks();
-        *(int*)(buffer) = mptracks.size();
+        *(int*)(buffer) = static_cast<int>(mptracks.size());
         buffer += sizeof(int);
         for (int i = 0; i < (int)mptracks.size(); i++) {
             std::copy(mptracks[i], mptracks[i] + track_getsize(), (musly_track*)buffer);
             buffer += track_getsize() * sizeof(musly_track);
         }
     }
-    return sizeof(int) + sizeof(musly_trackid) + sizeof(int)
-            + mp.get_normtracks()->size() * track_getsize() * sizeof(musly_track);
+    return static_cast<int>(sizeof(int) + sizeof(musly_trackid) + sizeof(int)
+            + mp.get_normtracks()->size() * track_getsize() * sizeof(musly_track));
 }
 
 int

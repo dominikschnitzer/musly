@@ -60,7 +60,7 @@ programoptions::programoptions(int argc, char *argv[],
             if (action.length() != 0) {
                 action = "error";
             } else {
-                action = tolower(c);
+                action = static_cast<char>(tolower(c));
             }
             break;
 

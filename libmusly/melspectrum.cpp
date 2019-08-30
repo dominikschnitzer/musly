@@ -29,8 +29,8 @@ melspectrum::melspectrum(
             0.0f, sample_rate/2.0f);
 
     // determine the best mel bin for each frequency
-    Eigen::VectorXf freq = Eigen::VectorXf::LinSpaced(sample_rate/2-min_freq,
-            min_freq, sample_rate/2);
+    Eigen::VectorXf freq = Eigen::VectorXf::LinSpaced(sample_rate/2-static_cast<int>(min_freq),
+            min_freq, sample_rate/2.f);
     Eigen::VectorXf mel = ((freq/700.0f).array() + 1.0f).log() * 1127.01048f;
     Eigen::VectorXf mel_idx = Eigen::VectorXf::LinSpaced(mel_bins+2,
             1.0f, mel.maxCoeff());

@@ -75,8 +75,8 @@ libav::samples_tofloat(
         const AVSampleFormat in_fmt,
         int len)
 {
-    const int is = in_stride;
-    const int os = out_stride;
+    const size_t is = static_cast<size_t>(in_stride);
+    const size_t os = static_cast<size_t>(out_stride);
     const uint8_t* pi = (uint8_t*)in;
     uint8_t* po = (uint8_t*)out;
     uint8_t* end = po + os*len;
@@ -84,18 +84,18 @@ libav::samples_tofloat(
 #define CONVFLOAT(ifmt, ifmtp, expr)\
 if (in_fmt == ifmt || in_fmt == ifmtp) {\
     do{\
-        *(float*)po = expr; pi += is; po += os;\
+        *(float*)po = static_cast<float>(expr); pi += is; po += os;\
     } while(po < end);\
 }
     // Implementation note: We could use av_get_packed_sample_fmt
     // to avoid checking for two formats each time, but we want to
     // stay compatible to libav versions that do not have it yet.
     CONVFLOAT(AV_SAMPLE_FMT_U8, AV_SAMPLE_FMT_U8P,
-            (*(const uint8_t*)pi - 0x80)*(1.0 / (1<<7)))
+            (*(const uint8_t*)pi - 0x80)*(1.0 / static_cast<double>(1<<7)))
     else CONVFLOAT(AV_SAMPLE_FMT_S16, AV_SAMPLE_FMT_S16P,
-            *(const int16_t*)pi*(1.0 / (1<<15)))
+            *(const int16_t*)pi*(1.0 / static_cast<double>(1<<15)))
     else CONVFLOAT(AV_SAMPLE_FMT_S32, AV_SAMPLE_FMT_S32P,
-            *(const int32_t*)pi*(1.0 / (1U<<31)))
+            *(const int32_t*)pi*(1.0 / static_cast<double>(1U<<31)))
     else CONVFLOAT(AV_SAMPLE_FMT_FLT, AV_SAMPLE_FMT_FLTP,
             *(const float*)pi)
     else CONVFLOAT(AV_SAMPLE_FMT_DBL, AV_SAMPLE_FMT_DBLP,
@@ -105,7 +105,7 @@ if (in_fmt == ifmt || in_fmt == ifmtp) {\
     return 0;
 }
 
-void libav_log_callback(void *ptr, int level, const char *fmt, va_list vargs)
+void libav_log_callback(void*, int level, const char *fmt, va_list vargs)
 {
     if (level <= av_log_get_level()) {
 #if __cplusplus > 199711L
@@ -294,11 +294,11 @@ libav::decodeto_22050hz_mono_float(
         // (Note: without AVSEEK_FLAG_BACKWARD, some MP3s cause libav to skip
         // to a position where it sees mono MP1 frames, causing a segmentation
         // fault when trying to access frame->data[i] for i > 0 further below)
-        if ((excerpt_start > 0) and (av_seek_frame(fmtx, audio_stream_idx,
-                    excerpt_start * st->time_base.den / st->time_base.num,
+        if ((excerpt_start > 0) && (av_seek_frame(fmtx, audio_stream_idx,
+                    static_cast<int64_t>(static_cast<double>(excerpt_start) * st->time_base.den) / st->time_base.num,
                     AVSEEK_FLAG_BACKWARD || AVSEEK_FLAG_ANY) >= 0)) {
             // skipping went fine: decode only what's needed
-            decode_samples = excerpt_length * decx->sample_rate;
+            decode_samples = static_cast<int>(excerpt_length * decx->sample_rate);
             excerpt_start = 0;
             avcodec_flush_buffers(decx);
         }
@@ -307,7 +307,7 @@ libav::decodeto_22050hz_mono_float(
                 MINILOG(logDEBUG) << "Could not seek in audio file.";
             }
             // skipping failed or not needed: decode from beginning
-            decode_samples = (excerpt_start + excerpt_length) * decx->sample_rate;
+            decode_samples = static_cast<int>((excerpt_start + excerpt_length) * decx->sample_rate);
         }
     }
     else {  // if the file length is unknown:
@@ -321,11 +321,11 @@ libav::decodeto_22050hz_mono_float(
         else if (excerpt_start < 0) {
             // center in file, but start at -excerpt_start the latest,
             // so decode at most -excerpt_start+excerpt_length seconds
-            decode_samples = (-excerpt_start + excerpt_length) * decx->sample_rate;
+            decode_samples = static_cast<int>((-excerpt_start + excerpt_length) * decx->sample_rate);
         }
         else {
             // uncentered excerpt: decode from beginning, cut out afterwards
-            decode_samples = (excerpt_start + excerpt_length) * decx->sample_rate;
+            decode_samples = static_cast<int>((excerpt_start + excerpt_length) * decx->sample_rate);
         }
     }
     // After this lengthy adjustment, decode_samples tells us how many samples
@@ -471,14 +471,14 @@ libav::decodeto_22050hz_mono_float(
     int skip_samples = 0;
     if (excerpt_start < 0) {
         // center excerpt, but start at -excerpt_start the latest
-        float file_length = decoded_pcm.size() / decx->sample_rate;
+        float file_length = static_cast<float>(decoded_pcm.size() / decx->sample_rate);
         if (file_length > excerpt_length) {
             // skip beginning as needed
             excerpt_start = std::min(-excerpt_start,
                     (file_length - excerpt_length) / 2);
-            skip_samples = excerpt_start * decx->sample_rate;
+            skip_samples = static_cast<int>(excerpt_start * decx->sample_rate);
             // truncate end if needed
-            int target_samples = skip_samples + excerpt_length * decx->sample_rate;
+            int target_samples = static_cast<int>(skip_samples + excerpt_length * decx->sample_rate);
             if (target_samples < (int)decoded_pcm.size()) {
                 decoded_pcm.resize(target_samples);
             }
@@ -491,8 +491,8 @@ libav::decodeto_22050hz_mono_float(
         }
         // skip beginning if needed
         if (excerpt_start > 0) {
-            skip_samples = excerpt_start * decx->sample_rate;
-            int missed_samples = decode_samples - decoded_pcm.size();
+            skip_samples = static_cast<int>(excerpt_start * decx->sample_rate);
+            int missed_samples = decode_samples - static_cast<int>(decoded_pcm.size());
             skip_samples = std::max(0, skip_samples - missed_samples);
         }
     }
@@ -503,7 +503,7 @@ libav::decodeto_22050hz_mono_float(
         MINILOG(logTRACE) << "Resampling signal. input="
                 << decx->sample_rate << ", target=" << target_rate;
         resampler r(decx->sample_rate, target_rate);
-        pcm = r.resample(decoded_pcm.data() + skip_samples, decoded_pcm.size() - skip_samples);
+        pcm = r.resample(decoded_pcm.data() + skip_samples, static_cast<int>(decoded_pcm.size()) - skip_samples);
         MINILOG(logTRACE) << "Resampling finished.";
     } else {
         pcm.resize(decoded_pcm.size() - skip_samples);

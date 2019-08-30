@@ -43,7 +43,7 @@ fwritestr(
 {
     if (fwrite(str.c_str(), sizeof(char), str.length(), fid) == str.length()) {
         if (fputc(0, fid) == 0) {
-            return str.length();
+            return static_cast<int>(str.length());
         } else {
             return -1;
         }
@@ -111,7 +111,7 @@ field_from_strings(
 {
     int prefix_len = 0;
     if (fidx < 0) {
-        prefix_len = longest_common_prefix(strings).length();
+        prefix_len = static_cast<int>(longest_common_prefix(strings).length());
         fidx = 0;
     }
 

@@ -95,7 +95,7 @@ public:
 
     int
     get_size() {
-        return registered_ids.size();
+        return static_cast<int>(registered_ids.size());
     }
 
     int
@@ -182,8 +182,8 @@ public:
     ordered_idpool() : observer(NULL) {};
 
     void
-    set_observer(ordered_idpool_observer* observer) {
-        this->observer = observer;
+    set_observer(ordered_idpool_observer* obs) {
+        this->observer = obs;
     }
 
     inline const std::vector<T>& idlist() const {
@@ -209,7 +209,7 @@ public:
 
     inline int
     get_size() {
-        return registered_ids.size();
+        return static_cast<int>(registered_ids.size());
     }
 
     /** Move a bunch of ids to the end of idlist(), in their given order.
@@ -217,7 +217,7 @@ public:
      */
     int
     move_to_end(T* ids, int length) {
-        int start = registered_ids.size();
+        int start = static_cast<int>(registered_ids.size());
         for (int i = length - 1; i >= 0; i--) {
             typename std::map<T,int>::iterator it = positions.find(ids[i]);
             if (it != positions.end()) {
@@ -225,7 +225,7 @@ public:
                 swap_positions(it->second, start, it);
             }
         }
-        return registered_ids.size() - start;
+        return static_cast<int>(registered_ids.size()) - start;
     }
 
     /** Register a bunch of ids and return how many of them were new
@@ -236,8 +236,8 @@ public:
         // move all known ids to the end
         int num_known = move_to_end(ids, length);
         // make enough room to add unknown ids
-        int start = registered_ids.size() - num_known;
-        registered_ids.resize(start + length);
+        int start = static_cast<int>(registered_ids.size()) - num_known;
+        registered_ids.resize(static_cast<size_t>(start + length));
         // overwrite the last `length` elements with the given `ids`
         for (int i = 0; i < length; i++) {
             registered_ids[start + i] = ids[i];
@@ -259,12 +259,12 @@ public:
             ids[i] = ++idpool<T>::max_seen;
         }
         // make enough room to add all ids
-        int size = registered_ids.size();
+        size_t size = registered_ids.size();
         registered_ids.reserve(size + length);
         // append ids to the end
         for (int i = 0; i < length; i++) {
             registered_ids.push_back(ids[i]);
-            positions[ids[i]] = size++;
+            positions[ids[i]] = static_cast<int>(size++);
         }
     }
 
@@ -282,7 +282,7 @@ public:
      */
     void
     remove_last(int length) {
-        int start = registered_ids.size() - length;
+        int start = static_cast<int>(registered_ids.size()) - length;
         for (int i = start; i < start + length; i++) {
             positions.erase(registered_ids[i]);
         }

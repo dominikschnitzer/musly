@@ -234,7 +234,7 @@ tracks_initialize(
     if (trackids.size() <= 1000) {
         // use all available tracks
         ret = musly_jukebox_setmusicstyle(mj, tracks.data(),
-                tracks.size());
+                static_cast<int>(tracks.size()));
     }
     else {
         // use a random subset of 1000 tracks
@@ -248,7 +248,7 @@ tracks_initialize(
 
     // add the tracks to the jukebox
     ret = musly_jukebox_addtracks(mj, tracks.data(), trackids.data(),
-            tracks.size(), true);
+            static_cast<int>(tracks.size()), true);
     if (ret != 0) {
         return false;
     }
@@ -319,7 +319,7 @@ write_mirex_full(
     for (int i = 0; i < (int)tracks.size(); i++) {
         int ret = musly_jukebox_similarity(mj, tracks[i], i,
                 tracks.data(), alltrackids.data(),
-                tracks.size(), similarities.data());
+                static_cast<int>(tracks.size()), similarities.data());
         if (ret != 0) {
             fill(similarities.begin(), similarities.end(),
                     std::numeric_limits<float>::max());
@@ -383,7 +383,7 @@ compute_similarity(
         similarities.resize(alltracks.size());
         int ret = musly_jukebox_similarity(mj,
                 alltracks[seed], seed, alltracks.data(),
-                alltrackids.data(), alltrackids.size(), similarities.data());
+                alltrackids.data(), static_cast<int>(alltrackids.size()), similarities.data());
         if (ret != 0) {
             return knn_sim;
         }
@@ -398,7 +398,7 @@ compute_similarity(
         similarities.resize(guess_ids.size());
         int ret = musly_jukebox_similarity(mj,
                 alltracks[seed], seed, guess_tracks.data(),
-                guess_ids.data(), guess_ids.size(), similarities.data());
+                guess_ids.data(), static_cast<int>(guess_ids.size()), similarities.data());
         if (ret != 0) {
             return knn_sim;
         }
@@ -849,7 +849,8 @@ main(int argc, char *argv[])
 
             std::cout << "Evaluating collection..." << std::endl;
             Eigen::MatrixXi genre_confusion = evaluate_collection(tracks,
-                    genres, genre_ids.size(), artists, artist_ids.size(), k);
+                    genres, static_cast<int>(genre_ids.size()), artists,
+                    static_cast<int>(artist_ids.size()), k);
 
             std::cout << "Genre Confusion matrix:" << std::endl;
             std::cout << genre_confusion << std::endl;
@@ -902,7 +903,7 @@ main(int argc, char *argv[])
             for (int i = 0; i < (int)trackids.size(); i++) {
                 trackids[i] = i;
             }
-            musly_trackid seed = std::distance(tracks_files.begin(), it);
+            musly_trackid seed = static_cast<int>(std::distance(tracks_files.begin(), it));
             std::string pl = compute_playlist(tracks, trackids, tracks_files,
                     seed, k);
             if (pl == "") {
