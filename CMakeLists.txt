@@ -79,9 +79,10 @@ include_directories(
     "${PROJECT_BINARY_DIR}"
     "${PROJECT_SOURCE_DIR}/include")
 
-add_subdirectory(libmusly) 
-add_subdirectory(musly) 
-add_subdirectory(include) 
+add_subdirectory(external)
+add_subdirectory(libmusly)
+add_subdirectory(musly)
+add_subdirectory(include)
 if (BUILD_TEST)
     enable_testing()
     add_subdirectory(test)
