@@ -34,9 +34,12 @@ if (MSVC)
     set(PREFER_STATIC ON)
 else()
     # lots of warnings and all warnings as errors
-    add_compile_options(-Wall -Wextra -pedantic)
+    add_compile_options(-Wall
+        $<$<COMPILE_LANGUAGE:CXX>:-Wextra>
+        $<$<COMPILE_LANGUAGE:CXX>:-pedantic>)
     # On Unix, hide symbols by default (see https://gcc.gnu.org/wiki/Visibility)
-    add_compile_options(-fvisibility=hidden -fvisibility-inlines-hidden)
+    add_compile_options(-fvisibility=hidden
+        $<$<COMPILE_LANGUAGE:CXX>:-fvisibility-inlines-hidden>)
 
     set(PREFER_STATIC OFF)
 endif()
@@ -51,6 +54,8 @@ if (BUILD_STATIC)
 else ()
     set(BUILD_SHARED_LIBS ON)
 endif ()
+
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 option(BUILD_TEST "Build selftest executable" OFF)
 

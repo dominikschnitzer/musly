@@ -51,6 +51,9 @@ if (MSVC)
     # kissfft does not compile with warning level>2
     target_compile_options(kissfft PRIVATE
         /W2)
+else()
+    target_compile_options(kissfft PRIVATE
+        -pedantic -Wextra)
 endif()
 
 
@@ -74,6 +77,9 @@ if (MSVC)
     # libresample does not compile with warning level>1
     target_compile_options(libresample PRIVATE
         /W1)
+else()
+    target_compile_options(kissfft PRIVATE
+        -pedantic)
 endif()
 
 
