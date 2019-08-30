@@ -94,7 +94,7 @@ minilog_get_timestr()
 
     time_t t;
     time(&t);
-    tm r = {0};
+    tm r = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     strftime(buffer, sizeof(buffer), "%X", localtime_r(&t, &r));
 
     char result[MAX_LEN*2] = {0};
