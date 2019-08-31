@@ -19,11 +19,11 @@ matrix:
         - name: "MSVC (19.16) on VS 2017/Windows 1809"
           os: windows
           before_install:
-              - curl -O https://ffmpeg.zeranoe.com/builds/win32/dev/ffmpeg-4.2-win32-dev.zip
-              - unzip ffmpeg-4.2-win32-dev.zip
+              - curl -O https://ffmpeg.zeranoe.com/builds/win64/dev/ffmpeg-4.2-win64-dev.zip
+              - unzip ffmpeg-4.2-win64-dev.zip
               - curl -O https://bitbucket.org/eigen/eigen/get/3.3.7.zip
               - unzip 3.3.7.zip
-              - export CARGS="-DEIGEN3_INCLUDE_DIR=$(pwd)/eigen-eigen-323c052e1731 -DLIBAV_ROOT_DIR=$(pwd)/ffmpeg-4.2-win32-dev"
+              - export CARGS="-DCMAKE_GENERATOR_PLATFORM=x64 -DEIGEN3_INCLUDE_DIR=$(pwd)/eigen-eigen-323c052e1731 -DLIBAV_ROOT_DIR=$(pwd)/ffmpeg-4.2-win64-dev"
 
 script:
     - mkdir -p build
