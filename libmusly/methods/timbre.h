@@ -28,7 +28,7 @@ class timbre :
         public musly::method, musly::ordered_idpool_observer
 
 {
-MUSLY_METHOD_REGCLASS(timbre);
+MUSLY_METHOD_REGCLASS(timbre)
 
 private:
 
