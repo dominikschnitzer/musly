@@ -23,7 +23,7 @@ namespace methods {
 
 /** Register timbre with musly with piority (1)
  */
-MUSLY_METHOD_REGIMPL(timbre, 1);
+MUSLY_METHOD_REGIMPL(timbre, 1)
 
 
 

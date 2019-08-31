@@ -54,7 +54,7 @@ extern "C" {
 namespace musly {
 namespace decoders {
 
-MUSLY_DECODER_REGIMPL(libav, 0);
+MUSLY_DECODER_REGIMPL(libav, 0)
 
 libav::libav()
 {

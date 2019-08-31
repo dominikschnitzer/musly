@@ -22,7 +22,7 @@ namespace methods {
 
 /** Register mandelellis with musly with a low priority (0)
  */
-MUSLY_METHOD_REGIMPL(mandelellis, 0);
+MUSLY_METHOD_REGIMPL(mandelellis, 0)
 
 mandelellis::mandelellis() :
 
