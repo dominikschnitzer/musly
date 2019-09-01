@@ -25,6 +25,11 @@ matrix:
               - unzip 3.3.7.zip
               - export CARGS="-DCMAKE_GENERATOR_PLATFORM=x64 -DEIGEN3_INCLUDE_DIR=$(pwd)/eigen-eigen-323c052e1731 -DLIBAV_ROOT_DIR=$(pwd)/ffmpeg-4.2-win64-dev"
 
+        - name: "AppleClang (11.0) on XCode 11/OSX 10.14"
+          os: osx
+          osx_image: xcode11
+
+
 script:
     - mkdir -p build
     - cd build
@@ -33,9 +38,12 @@ script:
 
 addons:
     apt:
-        update: true
         packages:
             - libeigen3-dev
             - libavcodec-dev
             - libavformat-dev
             - libavutil-dev
+    homebrew:
+        packages:
+            - ffmpeg
+            - eigen
