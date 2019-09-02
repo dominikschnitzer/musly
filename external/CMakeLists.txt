@@ -7,3 +7,5 @@ if(WIN32)
     add_subdirectory(dirent)
     add_subdirectory(getopt)
 endif()
+
+add_subdirectory(kissfft)

@@ -14,7 +14,7 @@
 
 #include <Eigen/Core>
 extern "C" {
-    #include "kissfft/kiss_fftr.h"
+    #include <kiss_fftr.h>
 }
 
 

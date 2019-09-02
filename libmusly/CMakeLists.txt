@@ -22,40 +22,10 @@ if(EXISTS "${LIBAV_INCLUDE_DIRS}/libavutil/channel_layout.h")
         PROPERTIES COMPILE_FLAGS "-DHAVE_AVUTIL_CHANNEL_LAYOUT")
 endif()
 
-if(USE_OPENMP AND OPENMP_FOUND)
-    # disable OpenMP for kiss FFT, it slows things down terribly
-    set_source_files_properties(kissfft/kiss_fft.c
-        PROPERTIES COMPILE_FLAGS "-U_OPENMP")
-endif()
-
 include_directories(
     ${LIBMUSLY_INCLUDE}
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
-
-
-# KissFFT
-set(KISSFFT_C
-    kissfft/kiss_fft.c
-    kissfft/kiss_fftr.c
-)
-set(KISSFFT_H
-    kissfft/kiss_fft.h
-    kissfft/kiss_fftr.h
-)
-add_library(kissfft STATIC
-    ${KISSFFT_C}
-    ${KISSFFT_H}
-)
-if (MSVC)
-    # kissfft does not compile with warning level>2
-    target_compile_options(kissfft PRIVATE
-        /W2)
-else()
-    target_compile_options(kissfft PRIVATE
-        -pedantic -Wextra)
-endif()
-
 
 # libresample
 set(LIBRESAMPLE_C
@@ -160,10 +130,6 @@ source_group("libmusly\\methods" FILES
 source_group("libmusly\\decoders" FILES
     ${LIBMUSLY_DECODERS_CPP}
     ${LIBMUSLY_DECODERS_H}
-)
-source_group("kissfft" FILES
-    ${KISSFFT_C}
-    ${KISSFFT_H}
 )
 source_group("libresample" FILES
     ${LIBRESAMPLE_C}
