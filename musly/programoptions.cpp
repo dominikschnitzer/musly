@@ -9,7 +9,11 @@
  * with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <unistd.h>
+#ifdef _WIN32
+    #include <io.h>
+#else
+    #include <unistd.h>
+#endif
 #include <getopt.h>
 #include <iostream>
 #include <sstream>
@@ -43,7 +47,6 @@ programoptions::programoptions(int argc, char *argv[],
         all_methods += "," + methods[i];
     }
 
-    opterr = 0;
     while (1) {
 
         int c = getopt(argc, argv, "v:ihc:Jj:a:x:Ee:f:Nn:k:ldm:s:p:");
@@ -60,7 +63,7 @@ programoptions::programoptions(int argc, char *argv[],
             if (action.length() != 0) {
                 action = "error";
             } else {
-                action = tolower(c);
+                action = static_cast<char>(tolower(c));
             }
             break;
 

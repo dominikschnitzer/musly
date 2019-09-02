@@ -22,7 +22,7 @@ namespace methods {
 
 /** Register mandelellis with musly with a low priority (0)
  */
-MUSLY_METHOD_REGIMPL(mandelellis, 0);
+MUSLY_METHOD_REGIMPL(mandelellis, 0)
 
 mandelellis::mandelellis() :
 
@@ -115,9 +115,9 @@ mandelellis::analyze_track(
 int
 mandelellis::similarity(
         musly_track* track,
-        musly_trackid seed_trackid,
+        musly_trackid /*seed_trackid*/,
         musly_track** tracks,
-        musly_trackid* trackids,
+        musly_trackid* /*trackids*/,
         int length,
         float* similarities)
 {
@@ -156,7 +156,7 @@ mandelellis::similarity(
 
 int
 mandelellis::add_tracks(
-        musly_track** tracks,
+        musly_track** /*tracks*/,
         musly_trackid* trackids,
         int length,
         bool generate_ids) {

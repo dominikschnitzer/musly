@@ -9,15 +9,14 @@
  * with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "resampler.h"
+#include <algorithm>
 
+#include "resampler.h"
 #include "minilog.h"
 
 namespace musly {
 
 resampler::resampler(int input_rate, int output_rate):
-        input_rate(input_rate),
-        output_rate(output_rate),
         resample_factor((double)output_rate/(double)input_rate)
 {
     libresample = resample_open(1, resample_factor, resample_factor);
@@ -32,10 +31,10 @@ std::vector<float> resampler::resample(
         float* pcm_input,
         int pcm_len)
 {
-    std::vector<float> pcm_out(pcm_len*resample_factor);
+    std::vector<float> pcm_out(static_cast<size_t>(pcm_len*resample_factor));
 
     int srclen = 4096;
-    int dstlen = (srclen*resample_factor + 1000);
+    int dstlen = static_cast<int>(srclen*resample_factor + 1000.);
     float* dst = new float[dstlen];
 
     int in_pos = 0;

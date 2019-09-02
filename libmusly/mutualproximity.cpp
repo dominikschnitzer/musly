@@ -78,7 +78,7 @@ mutualproximity::set_normfacts(
     Eigen::VectorXd sim_mu = sim.cast<double>().array() - mu;
     double std = (sim_mu.transpose() * sim_mu);
     std /= (static_cast<double>(sim.size()) - 1.0);
-    set_normfacts(position, mu, sqrt(std));
+    set_normfacts(position, static_cast<float>(mu), static_cast<float>(sqrt(std)));
 }
 
 void
@@ -171,7 +171,7 @@ mutualproximity::normalize(
 
         double p1 = 1 - normcdf((d - seed_mu)/seed_std);
         double p2 = 1 - normcdf((d - norm_facts[pos].mu)/norm_facts[pos].std);
-        sim[i] = 1 - p1*p2;
+        sim[i] = static_cast<float>(1 - p1*p2);
     }
     return 0;
 }

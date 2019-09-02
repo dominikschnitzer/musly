@@ -63,9 +63,9 @@ collection_file::exists()
 
 
 bool
-collection_file::write_header(const std::string& method)
+collection_file::write_header(const std::string& meth)
 {
-    fwritestr(fid, header+dash+version+dash+method);
+    fwritestr(fid, header+dash+version+dash+meth);
 
     return true;
 }

@@ -38,7 +38,9 @@ similarity measures. It is our reference implementation.
 
 /** \hideinitializer Macro marking the exported symbols of the library */
 #if defined(_WIN32) || defined(__CYGWIN__)
-  #ifdef MUSLY_BUILDING_LIBRARY
+  #ifdef MUSLY_BUILDING_STATIC
+    #define MUSLY_EXPORT
+  #elif MUSLY_BUILDING_LIBRARY
     #define MUSLY_EXPORT __declspec(dllexport)
   #else
     #define MUSLY_EXPORT __declspec(dllimport)

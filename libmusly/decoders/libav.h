@@ -25,7 +25,7 @@ namespace decoders {
 class libav :
     public musly::decoder
 {
-    MUSLY_DECODER_REGCLASS(libav);
+    MUSLY_DECODER_REGCLASS(libav)
 
 private:
     int

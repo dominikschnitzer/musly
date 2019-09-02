@@ -27,7 +27,7 @@ class mandelellis :
         public musly::method
 
 {
-MUSLY_METHOD_REGCLASS(mandelellis);
+MUSLY_METHOD_REGCLASS(mandelellis)
 
 private:
 

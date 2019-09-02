@@ -6,7 +6,6 @@
 include_directories(
     ${EIGEN3_INCLUDE_DIR})
 
-
 add_executable(musly
     tools.cpp
     fileiterator.cpp
@@ -16,5 +15,14 @@ add_executable(musly
 
 target_link_libraries(musly
     libmusly)
+
+target_compile_definitions(musly PRIVATE
+    BUILD_STATIC MUSLY_BUILDING_STATIC)
+
+if(WIN32)
+    target_link_libraries(musly
+        getopt_windows
+        dirent_windows)
+endif()
 
 install(TARGETS musly DESTINATION bin)

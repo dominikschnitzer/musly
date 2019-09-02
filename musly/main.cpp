@@ -234,7 +234,7 @@ tracks_initialize(
     if (trackids.size() <= 1000) {
         // use all available tracks
         ret = musly_jukebox_setmusicstyle(mj, tracks.data(),
-                tracks.size());
+                static_cast<int>(tracks.size()));
     }
     else {
         // use a random subset of 1000 tracks
@@ -248,7 +248,7 @@ tracks_initialize(
 
     // add the tracks to the jukebox
     ret = musly_jukebox_addtracks(mj, tracks.data(), trackids.data(),
-            tracks.size(), true);
+            static_cast<int>(tracks.size()), true);
     if (ret != 0) {
         return false;
     }
@@ -319,7 +319,7 @@ write_mirex_full(
     for (int i = 0; i < (int)tracks.size(); i++) {
         int ret = musly_jukebox_similarity(mj, tracks[i], i,
                 tracks.data(), alltrackids.data(),
-                tracks.size(), similarities.data());
+                static_cast<int>(tracks.size()), similarities.data());
         if (ret != 0) {
             fill(similarities.begin(), similarities.end(),
                     std::numeric_limits<float>::max());
@@ -361,7 +361,7 @@ struct similarity_comp {
 
 std::vector<similarity_knn>
 compute_similarity(
-        musly_jukebox* mj,
+        musly_jukebox* local_mj,
         int k,
         std::vector<int>& artists,
         musly_trackid seed,
@@ -370,7 +370,7 @@ compute_similarity(
 {
     int guess_len = std::max(k, (int)(alltracks.size()*0.1));
     std::vector<musly_trackid> guess_ids(guess_len);
-    guess_len = musly_jukebox_guessneighbors(mj, seed,
+    guess_len = musly_jukebox_guessneighbors(local_mj, seed,
             guess_ids.data(), guess_len);
     guess_ids.resize(std::max(guess_len, 0));
 
@@ -381,9 +381,9 @@ compute_similarity(
     // need to compute the full similarity
     if (guess_len <= 0) {
         similarities.resize(alltracks.size());
-        int ret = musly_jukebox_similarity(mj,
+        int ret = musly_jukebox_similarity(local_mj,
                 alltracks[seed], seed, alltracks.data(),
-                alltrackids.data(), alltrackids.size(), similarities.data());
+                alltrackids.data(), static_cast<int>(alltrackids.size()), similarities.data());
         if (ret != 0) {
             return knn_sim;
         }
@@ -396,9 +396,9 @@ compute_similarity(
            guess_tracks[i] = alltracks[guess_ids[i]];
         }
         similarities.resize(guess_ids.size());
-        int ret = musly_jukebox_similarity(mj,
+        int ret = musly_jukebox_similarity(local_mj,
                 alltracks[seed], seed, guess_tracks.data(),
-                guess_ids.data(), guess_ids.size(), similarities.data());
+                guess_ids.data(), static_cast<int>(guess_ids.size()), similarities.data());
         if (ret != 0) {
             return knn_sim;
         }
@@ -481,9 +481,9 @@ write_mirex_sparse(
 #endif
         // write to file
         f << tracks_files[i];
-        for (int i = 0; i < k; i++) {
-            int j = track_idx[i].first;
-            f << "\t" << tracks_files[j] << "," << track_idx[i].second;
+        for (int l = 0; l < k; l++) {
+            int j = track_idx[l].first;
+            f << "\t" << tracks_files[j] << "," << track_idx[l].second;
         }
         f << std::endl;
 #ifdef _OPENMP
@@ -533,7 +533,7 @@ evaluate_collection(
         std::vector<int>& genres,
         int num_genres,
         std::vector<int>& artists,
-        int num_artists,
+        int /*num_artists*/,
         int k)
 {
     Eigen::MatrixXi genre_confusion =
@@ -849,7 +849,8 @@ main(int argc, char *argv[])
 
             std::cout << "Evaluating collection..." << std::endl;
             Eigen::MatrixXi genre_confusion = evaluate_collection(tracks,
-                    genres, genre_ids.size(), artists, artist_ids.size(), k);
+                    genres, static_cast<int>(genre_ids.size()), artists,
+                    static_cast<int>(artist_ids.size()), k);
 
             std::cout << "Genre Confusion matrix:" << std::endl;
             std::cout << genre_confusion << std::endl;
@@ -902,7 +903,7 @@ main(int argc, char *argv[])
             for (int i = 0; i < (int)trackids.size(); i++) {
                 trackids[i] = i;
             }
-            musly_trackid seed = std::distance(tracks_files.begin(), it);
+            musly_trackid seed = static_cast<int>(std::distance(tracks_files.begin(), it));
             std::string pl = compute_playlist(tracks, trackids, tracks_files,
                     seed, k);
             if (pl == "") {

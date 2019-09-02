@@ -75,7 +75,7 @@ gaussian_statistics::estimate_gaussian(
 
     // Add Gaussian noise to the data to avoid singular covariance matrices
     // in case the input data was silence.
-    covar.diagonal().array() += 1e-4;
+    covar.diagonal().array() += 1e-4f;
     if (g.covar) {
         int idx_ij = 0;
         for (int i = 0; i < d; i++) {
@@ -131,7 +131,7 @@ gaussian_statistics::jensenshannon(
 
     // merge the mean and covariance matrices to get the merged Gaussian
     for (int i = 0; i < d; i++) {
-        tmp.mu[i] = 0.5*(g0.mu[i] - g1.mu[i]);
+        tmp.mu[i] = static_cast<float>(0.5*(g0.mu[i] - g1.mu[i]));
     }
     int idx_covar = 0;
     for (int i = 0; i < d; i++) {
@@ -164,7 +164,7 @@ gaussian_statistics::jensenshannon(
         for (int j = i+1; j < d; j++) {
             idx_ij++;
 
-            int idx_k = 0;
+            idx_k = 0;
             for (int k = 0; k < i; k++) {
                 tmp.covar[idx_ij] -=
                         tmp.covar[idx_k+i] * tmp.covar[idx_k+j];

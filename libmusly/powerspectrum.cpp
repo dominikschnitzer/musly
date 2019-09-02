@@ -21,8 +21,8 @@ powerspectrum::powerspectrum(
         float hop)
 {
     this->win_funct = win_funct;
-    this->win_size = win_funct.size();
-    this->hop_size = hop*win_size;
+    this->win_size = static_cast<int>(win_funct.size());
+    this->hop_size = static_cast<int>(hop*win_size);
 
     // initialize kiss fft
     kiss_pcm = (kiss_fft_scalar*)malloc(sizeof(kiss_fft_scalar) * win_size);

@@ -41,7 +41,7 @@ public:
 #ifndef BUILD_STATIC
 #define MUSLY_DECODER_REGCLASS(classname) \
 private: \
-    static const plugin_creator_impl<classname> creator;
+    static const plugin_creator_impl<classname> creator
 #else
 #define MUSLY_DECODER_REGCLASS(classname)
 #endif
@@ -55,7 +55,7 @@ private: \
 #ifndef BUILD_STATIC
 #define MUSLY_DECODER_REGIMPL(classname, priority) \
     const plugin_creator_impl<classname> classname::creator(#classname, \
-            plugins::DECODER_TYPE, priority);
+            plugins::DECODER_TYPE, priority)
 #else
 #define MUSLY_DECODER_REGIMPL(classname, priority)
 #endif
@@ -68,7 +68,7 @@ private: \
 #define MUSLY_DECODER_REGSTATIC(classname, priority) \
     static const musly::plugin_creator_impl<musly::decoders::classname> \
             create ## _ ## classname (#classname, \
-            musly::plugins::DECODER_TYPE, priority);
+            musly::plugins::DECODER_TYPE, priority)
 #endif
 
 } /* namespace musly */

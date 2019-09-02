@@ -12,8 +12,6 @@
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
 #include <winsock2.h>
-typedef u_long uint32_t;
-typedef unsigned char uint8_t;
 #else
 #include <arpa/inet.h>
 #endif
@@ -408,7 +406,7 @@ musly_jukebox_tostream(
     if (fputs(musly_version(), stream) == EOF || fputc('\0', stream) == EOF) {
         return -1;
     }
-    written += strlen(musly_version()) + 1;
+    written += static_cast<int>(strlen(musly_version())) + 1;
 
     // write platform information
     const uint8_t intsize = sizeof(int);
@@ -419,7 +417,7 @@ musly_jukebox_tostream(
     if (fwrite(&byteorder, sizeof(byteorder), 1, stream) != 1) {
         return -1;
     }
-    written += sizeof(intsize) + sizeof(byteorder);
+    written += static_cast<int>(sizeof(intsize) + sizeof(byteorder));
 
     // write general jukebox information
     if (fputs(jukebox->method_name, stream) == EOF ||
@@ -428,8 +426,8 @@ musly_jukebox_tostream(
             fputc('\0', stream) == EOF) {
         return -1;
     }
-    written += strlen(jukebox->method_name) + 1;
-    written += strlen(jukebox->decoder_name) + 1;
+    written += static_cast<int>(strlen(jukebox->method_name)) + 1;
+    written += static_cast<int>(strlen(jukebox->decoder_name)) + 1;
 
     unsigned char* buffer;
     int bcount;
@@ -732,12 +730,11 @@ musly_track_analyze_audiofile(
         }
 
         // pass it on to build the similarity model
-        return musly_track_analyze_pcm(jukebox, pcm.data(), pcm.size(), track);
+        return musly_track_analyze_pcm(jukebox, pcm.data(), static_cast<int>(pcm.size()), track);
 
     } else {
         return -1;
     }
-    return 0;
 }
 
 typedef std::pair<float, musly_trackid> knn;
