@@ -57,6 +57,7 @@ else ()
 endif ()
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_CXX_STANDARD 11)
 
 option(BUILD_TEST "Build selftest executable" OFF)
 
