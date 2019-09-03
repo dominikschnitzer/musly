@@ -1,3 +1,8 @@
+env:
+  global:
+   # Encrypted COVERITY_SCAN_TOKEN
+   - secure: "a0E5j3yZsziPmAiF8BLgvZ55v56hgE/JtEKPBc5LkibbsAqslU0wX6mf5p9yKQ0DoWowbs/4AV361rgjKBa/+8Y1zVhlj4FqpSrUHUd8rq9HYmlowB95Hpxr4NUW+Echt+IiNQ+l+NHMbtOgU5EnZ3hjtOFvnsB4SG7PJ8gKM7RUJcu0V/HNkmZfEJz19PF0k4lJcFX25cp95jKuwoUapRVMT3ijnpoBn/ttYaJhKMqrEGemtvh0sMWUKZHjr9pIf/pDbH7ZsRCUq/Clw88Fqds4NyfbOSw7mlD99ZkVRva9tpXBPqg5JYUxa3dImEeXNovHFLn73U3wi1bshwfwp7KcgZjgBXmMLYXGKDATnm9lZZoNUYTPTp7Ug9dUJpFt2oo9btcVfJC6htj+MktFsLPVfp+h89Zmv6BYQXpeYHgx3SVhCB54uBBkQ/ifFaRnymVyE+lEcEceUCxeVp4gYlSgCUTVvdfT32NUKfiitfmXA/gda+tK6LecKrEWTE05b7Kox/Co242PIobYgDNUgyLSewWCgsNf3LkVX/9Dk1RkCCcmJg3uyyu//0VOLZYGxz9yPtNSCVXKFVyoQ9shYOprMd3eDrkD3OaSpuXEbOBbsUJ7taZcNv2eWVktUyJDr2TC63d6exhSxrJowCXpjFrIEYMsyfHXirZ6Ly4DNkA="
+
 language: cpp
 matrix:
     include:
@@ -5,6 +10,21 @@ matrix:
           os: linux
           dist: bionic
           compiler: gcc
+          addons:
+              coverity_scan:
+                  project:
+                      name: "dominikschnitzer/musly"
+                      description: "Musly"
+                  notification_email: dominik@schnitzer.at
+                  build_command_prepend: "mkdir -p build; cd build; cmake -DBUILD_STATIC=ON -DCMAKE_BUILD_TYPE=Release ${CARGS} .."
+                  build_command: "cmake --build . --config Release"
+                  branch_pattern: coverity-scan
+              apt:
+                  packages:
+                      - libeigen3-dev
+                      - libavcodec-dev
+                      - libavformat-dev
+                      - libavutil-dev
 
         - name: "GCC (5.4) on Ubuntu 16.04"
           os: linux
