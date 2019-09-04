@@ -16,8 +16,6 @@
 namespace musly {
 
 resampler::resampler(int input_rate, int output_rate):
-        input_rate(input_rate),
-        output_rate(output_rate),
         resample_factor((double)output_rate/(double)input_rate)
 {
     libresample = resample_open(1, resample_factor, resample_factor);
