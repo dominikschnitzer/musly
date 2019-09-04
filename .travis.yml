@@ -19,8 +19,9 @@ matrix:
 script:
     - mkdir -p build
     - cd build
-    - cmake ..
+    - cmake -DBUILD_TEST=ON ..
     - make -j
+    - ctest -V
 
 addons:
     apt:
