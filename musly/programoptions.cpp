@@ -22,6 +22,7 @@
 programoptions::programoptions(int argc, char *argv[],
         const std::vector<std::string>& methods) :
         default_collection("collection.musly"),
+        default_outputmode("short"),
         default_k(5),
         default_debuglevel(0),
         action(""),
@@ -36,6 +37,7 @@ programoptions::programoptions(int argc, char *argv[],
     optionstr["k"] = kstr.str();
     optionstr["e"] = "-1";
     optionstr["f"] = "-1";
+    optionstr["o"] = default_outputmode;
 
     // Build a CSV string with all methods available.
     all_methods = methods[0];
@@ -46,7 +48,7 @@ programoptions::programoptions(int argc, char *argv[],
     opterr = 0;
     while (1) {
 
-        int c = getopt(argc, argv, "v:ihc:Jj:a:x:Ee:f:Nn:k:ldm:s:p:");
+        int c = getopt(argc, argv, "v:ihc:Jj:a:x:Ee:f:Nn:k:ldm:s:p:o:");
         if (c == -1) {
             break;
         }
@@ -90,6 +92,7 @@ programoptions::programoptions(int argc, char *argv[],
         case 'c':
         case 'j':
         case 'k':
+        case 'o':
         case 'f':
             if (optarg) {
                 std::string copt;
@@ -177,6 +180,9 @@ cout << "  -k NUM       set number of similar songs per item when computing" << 
      << "               playlists ('-p'), sparse distance matrices ('-s')" << endl
      << "               or when evaluating the collection ('-e')." << endl
      << "               DEFAULT: " << default_k << endl;
+cout << "  -o MODE      Set the output mode when printing a playlist ('-p') of" << endl
+     << "               the most similar tracks. Possible modes: 'short', 'long'." << endl
+     << "               DEFAULT: " << default_outputmode << endl;
 cout << " INITIALIZATION:" << endl;
 cout << "  -n MTH | -N  initialize the collection (set with '-c') using the" << endl
      << "               music similarity method MTH. Available methods:" << endl

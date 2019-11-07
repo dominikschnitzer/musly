@@ -21,6 +21,7 @@ private:
 
     std::string all_methods;
     std::string default_collection;
+    std::string default_outputmode;
     int default_k;
     int default_debuglevel;
     std::string action;
