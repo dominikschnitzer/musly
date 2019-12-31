@@ -503,7 +503,8 @@ compute_playlist(
         std::vector<musly_trackid>& alltrackids,
         std::vector<std::string>& tracks_files,
         musly_trackid seed,
-        int k)
+        int k,
+        std::string outputmode)
 {
     k = std::min(k, (int)alltracks.size());
     std::vector<int> artists_null; // disable artist filtering
@@ -519,7 +520,15 @@ compute_playlist(
     std::ostringstream pl;
     for (int i = 0; i < k; i++) {
         int j = track_idx[i].first;
-        pl << tracks_files[j] << std::endl;
+
+        if (outputmode == "short") {
+            pl << tracks_files[j] << std::endl;
+        } else if (outputmode == "long") {
+            float d = track_idx[i].second;
+
+            pl << "track-id: " << j << ", track-distance: " << d
+                    << ", track-origin: " << tracks_files[j] << std::endl;
+        }
     }
 
     return pl.str();
@@ -903,8 +912,9 @@ main(int argc, char *argv[])
                 trackids[i] = i;
             }
             musly_trackid seed = std::distance(tracks_files.begin(), it);
+            std::string outputmode = po.get_option_str("o");
             std::string pl = compute_playlist(tracks, trackids, tracks_files,
-                    seed, k);
+                    seed, k, outputmode);
             if (pl == "") {
                 std::cerr << "Failed to compute similar tracks for given file."
                         << std::endl;
