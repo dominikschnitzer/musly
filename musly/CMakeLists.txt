@@ -15,6 +15,10 @@ add_executable(musly
     main.cpp)
 
 target_link_libraries(musly
-    libmusly)
+    libmusly
+    avcodec
+    avformat
+    z
+    pthread)
 
 install(TARGETS musly DESTINATION bin)
