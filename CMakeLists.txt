@@ -4,9 +4,11 @@
 # (c) 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
 #          2014, Jan Schlueter <jan.schlueter@ofai.at>
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.17)
 
 project(musly)
+include(GNUInstallDirs)
+include(CTest)
 set(MUSLY_VERSION "0.2")
 add_definitions(-DMUSLY_VERSION="${MUSLY_VERSION}")
 
@@ -36,8 +38,6 @@ else ()
     set(BUILD_SHARED_LIBS ON)
 endif ()
 
-option(BUILD_TEST "Build selftest executable" OFF)
-
 option(USE_OPENMP "Compile with OpenMP support (Parallelization)" OFF)
 if (USE_OPENMP)
     find_package(OpenMP)
@@ -54,26 +54,35 @@ if (USE_OPENMP)
     endif()
 endif ()
 
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-
-find_package(Eigen3 REQUIRED)
-find_package(LibAV 0.8 COMPONENTS avcodec avformat avutil REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(EIGEN3 REQUIRED IMPORTED_TARGET eigen3)
+pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET
+    libavcodec
+    libavformat
+    libavutil)
+pkg_check_modules(LIBRESAMPLE REQUIRED IMPORTED_TARGET libresample)
+pkg_search_module(KISSFFT REQUIRED IMPORTED_TARGET
+    kissfft-simd
+    kissfft-double
+    kissfft-float
+    kissfft-int32_t
+    kissfft-int16_t
+    kissfft-simd-openmp
+    kissfft-double-openmp
+    kissfft-float-openmp
+    kissfft-int32_t-openmp
+    kissfft-int16_t-openmp)
 
 include_directories(
-    "${PROJECT_BINARY_DIR}"
     "${PROJECT_SOURCE_DIR}/include")
 
 add_subdirectory(libmusly) 
 add_subdirectory(musly) 
 add_subdirectory(include) 
-if (BUILD_TEST)
-    enable_testing()
+if (BUILD_TESTING)
     add_subdirectory(test)
 endif ()
 
 # Documentation
 set(musly_DOC_FILES AUTHORS COPYING README.md)
-set(musly_DOC_PATH "share/doc/musly")
-install(FILES ${musly_DOC_FILES}
-        DESTINATION ${musly_DOC_PATH})
-
+install(FILES ${musly_DOC_FILES} DESTINATION ${CMAKE_INSTALL_DOCDIR})

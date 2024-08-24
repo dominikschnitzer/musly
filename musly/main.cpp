@@ -14,6 +14,7 @@
 #include <cstdio>
 #include <iostream>
 #include <fstream>
+#include <random>
 #include <algorithm>
 #include <limits>
 #include <map>
@@ -239,7 +240,9 @@ tracks_initialize(
     else {
         // use a random subset of 1000 tracks
         std::vector<musly_track*> tracks2(tracks);
-        std::random_shuffle(tracks2.begin(), tracks2.end());
+        std::random_device seeder;
+        std::default_random_engine rng(seeder());
+        std::shuffle(tracks2.begin(), tracks2.end(), rng);
         ret = musly_jukebox_setmusicstyle(mj, tracks2.data(), 1000);
     }
     if (ret != 0) {

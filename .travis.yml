@@ -19,7 +19,7 @@ matrix:
 script:
     - mkdir -p build
     - cd build
-    - cmake -DBUILD_TEST=ON ..
+    - cmake ..
     - make -j
     - ctest -V
 
@@ -31,3 +31,5 @@ addons:
             - libavcodec-dev
             - libavformat-dev
             - libavutil-dev
+            - libresample-dev
+            - libkissfft-dev

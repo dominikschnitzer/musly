@@ -4,9 +4,6 @@
 # (c) 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
 #     2014-2016, Jan Schlueter <jan.schlueter@ofai.at>
 
-add_subdirectory(
-    libresample)
-
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/external")
     add_subdirectory(
         external)
@@ -16,26 +13,11 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/external")
         PROPERTIES COMPILE_FLAGS "-DLIBMUSLY_EXTERNAL ${LIBMUSLY_EXTERNAL_FLAGS}")
 endif()
 
-if(EXISTS "${LIBAV_INCLUDE_DIRS}/libavutil/channel_layout.h")
-    set_source_files_properties(decoders/libav.cpp
-        PROPERTIES COMPILE_FLAGS "-DHAVE_AVUTIL_CHANNEL_LAYOUT")
-endif()
-
-if(USE_OPENMP AND OPENMP_FOUND)
-    # disable OpenMP for kiss FFT, it slows things down terribly
-    set_source_files_properties(kissfft/kiss_fft.c
-        PROPERTIES COMPILE_FLAGS "-U_OPENMP")
-endif()
-
 include_directories(
     ${LIBMUSLY_INCLUDE}
-    ${EIGEN3_INCLUDE_DIR}
-    ${LIBAV_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(libmusly
-    kissfft/kiss_fft.c
-    kissfft/kiss_fftr.c
     methods/mandelellis.cpp
     methods/timbre.cpp
     decoders/libav.cpp
@@ -65,7 +47,10 @@ set_target_properties(libmusly
 
 target_link_libraries(libmusly
     ${LIBMUSLY_LIBS}
-    ${LIBAV_LIBRARIES})
+    PkgConfig::EIGEN3
+    PkgConfig::FFMPEG
+    PkgConfig::LIBRESAMPLE
+    PkgConfig::KISSFFT)
 if(WIN32 OR MINGW)
     # link against winsock2 for ntohl() and htonl()
     target_link_libraries(libmusly ws2_32)
@@ -74,5 +59,4 @@ endif()
 set_target_properties(libmusly
     PROPERTIES PREFIX "")
 
-install(TARGETS libmusly
-    DESTINATION lib)
+install(TARGETS libmusly)
