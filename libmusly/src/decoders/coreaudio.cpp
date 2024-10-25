@@ -80,7 +80,7 @@ public:
 
         output_format.mSampleRate = input_format.mSampleRate;
         output_format.mFormatID = kAudioFormatLinearPCM;
-        output_format.mFormatFlags = kAudioFormatFlagsCanonical;
+        output_format.mFormatFlags = kAudioFormatFlagIsFloat | kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked;
         output_format.mChannelsPerFrame = std::min(2U, input_format.mChannelsPerFrame);
         output_format.mBytesPerFrame = sizeof(float) * output_format.mChannelsPerFrame;
         output_format.mFramesPerPacket = 1;
