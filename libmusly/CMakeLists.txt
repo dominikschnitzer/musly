@@ -6,6 +6,12 @@
 #
 
 add_library(libmusly)
+add_library(Musly::libmusly ALIAS libmusly)
+
+configure_file (
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/version.h.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/src/version.h"
+)
 
 target_sources(libmusly
     PRIVATE
@@ -25,29 +31,50 @@ target_sources(libmusly
         src/gaussianstatistics.cpp
         src/mutualproximity.cpp
         src/lib.cpp
-    PUBLIC FILE_SET HEADERS
-    BASE_DIRS include FILES
-        include/musly/musly.h
-        include/musly/musly_types.h
+    PUBLIC 
+        FILE_SET HEADERS
+            BASE_DIRS 
+                include 
+            FILES
+                include/musly/musly.h
+                include/musly/musly_types.h
 )
 
-target_link_libraries(libmusly 
-    musly_resample Eigen3::Eigen
-)
 target_include_directories(libmusly
-    PRIVATE src/ include/ Eigen3::Eigen musly_resample
-    INTERFACE $<INSTALL_INTERFACE:include>
+    PRIVATE 
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_BINARY_DIR}/src
+    INTERFACE 
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}>
 )
 
-# This defines MUSLY_BUILDING_LIBRARY *only when building as shared library*,
-# allowing us to use __declspec(dllexport) instead of dllimport on Windows.
-set_target_properties(libmusly PROPERTIES 
-    PREFIX ""
+target_link_libraries(libmusly
+    PRIVATE
+        resample 
+        Eigen3::Eigen
+)
+
+target_compile_features(libmusly
+    PUBLIC cxx_std_11
+)
+
+set_target_properties(libmusly PROPERTIES
+    POSITION_INDEPENDENT_CODE ON
+    CXX_EXTENSIONS OFF
     DEFINE_SYMBOL MUSLY_BUILDING_LIBRARY
 )
 
+if(musly_IPO_SUPPORTED)
+    set_target_properties(resample PROPERTIES
+        INTERPROCEDURAL_OPTIMIZATION TRUE
+    )
+endif()   
+
 target_compile_definitions(libmusly
-    PRIVATE -DMUSLY_VERSION="${PROJECT_VERSION}"
+    PRIVATE 
+        -DEIGEN_MPL2_ONLY
 )
 
 if(BUILD_STATIC)
@@ -63,10 +90,18 @@ else()
 endif()
 
 if(LIBAV_FOUND)
-    target_sources(libmusly PRIVATE src/decoders/libav.cpp)
-    target_link_libraries(libmusly ${LIBAV_LIBRARIES})
-    target_include_directories(libmusly PRIVATE ${LIBAV_INCLUDE_DIRS})
-    target_compile_definitions(libmusly PRIVATE -DMUSLY_DECODER_LIBAV)
+    target_sources(libmusly
+        PRIVATE src/decoders/libav.cpp
+    )
+    target_link_libraries(libmusly
+        PRIVATE ${LIBAV_LIBRARIES}
+    )
+    target_include_directories(libmusly
+        PRIVATE ${LIBAV_INCLUDE_DIRS}
+    )
+    target_compile_definitions(libmusly 
+        PRIVATE -DMUSLY_DECODER_LIBAV
+    )
 
     if(EXISTS "${LIBAV_INCLUDE_DIRS}/libavutil/channel_layout.h")
         set_source_files_properties(decoders/libav.cpp PROPERTIES
@@ -83,9 +118,10 @@ if(APPLE)
     target_sources(libmusly 
         PRIVATE src/decoders/coreaudio.cpp
     )
-    target_link_libraries(libmusly 
-        ${AUDIOTOOLBOX_LIBRARY}
-        ${COREFOUNDATION_LIBRARY}
+    target_link_libraries(libmusly
+        PRIVATE
+            ${AUDIOTOOLBOX_LIBRARY}
+            ${COREFOUNDATION_LIBRARY}
     )
     target_compile_definitions(libmusly
         PRIVATE -DMUSLY_DECODER_COREAUDIO
@@ -96,19 +132,34 @@ if(WIN32 OR MINGW)
     target_sources(libmusly 
         PRIVATE src/decoders/mediafoundation.cpp
     )
-    target_link_libraries(libmusly 
-        ws2_32
-        Mf
-        Mfplat
-        mfreadwrite
-        mfuuid
-        ole32
+    target_link_libraries(libmusly
+        PRIVATE
+            ws2_32
+            Mf
+            Mfplat
+            mfreadwrite
+            mfuuid
+            ole32
     )
     target_compile_definitions(libmusly
-        PRIVATE -DMUSLY_DECODER_MEDIAFOUNDATION -DNOMINMAX -D_USE_MATH_DEFINES)
+        PRIVATE 
+            -DMUSLY_DECODER_MEDIAFOUNDATION 
+            -DNOMINMAX
+            -D_USE_MATH_DEFINES
+    )
+endif()
+
+if(APPLE)
+  set(CMAKE_INSTALL_RPATH "@executable_path/../lib")
+elseif(UNIX)
+  set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
 endif()
 
 install(TARGETS libmusly 
-    FILE_SET HEADERS
-    LIBRARY
+    EXPORT MuslyTargets
+    LIBRARY DESTINATION  ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION  ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION  ${CMAKE_INSTALL_BINDIR}
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    FILE_SET HEADERS DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )

@@ -28,6 +28,7 @@
 #include "plugins.h"
 #include "decoder.h"
 #include "method.h"
+#include "version.h"
 
 #ifdef MUSLY_STATIC
 // Implementation note: Each plugin is supposed to register itself with

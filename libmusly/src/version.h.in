@@ -1,0 +1,6 @@
+#ifndef MUSLY_VERSION_H_
+#define MUSLY_VERSION_H_
+
+#define MUSLY_VERSION "@PROJECT_VERSION@"
+
+#endif // !MUSLY_VERSION_H_

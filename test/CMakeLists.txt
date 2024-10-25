@@ -5,13 +5,18 @@
 
 include_directories(
     "${PROJECT_SOURCE_DIR}/libmusly/src"
-    "${PROJECT_SOURCE_DIR}/musly")
+    "${PROJECT_SOURCE_DIR}/musly"
+)
 
 add_executable(selftest
     "${PROJECT_SOURCE_DIR}/musly/tools.cpp"
-    main.cpp)
+    main.cpp
+)
 
 target_link_libraries(selftest
-    libmusly)
+    libmusly
+)
 
-add_test(NAME selftest COMMAND selftest)
+add_test(NAME selftest 
+    COMMAND selftest
+)

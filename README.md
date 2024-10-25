@@ -119,19 +119,17 @@ tree, run the following commands to build and install Musly (**Note**: For
 Windows, add `-G"MSYS Makefiles"` to both of the `cmake` lines below):
 
 ```bash
-mkdir -p build && cd build  # create and switch into build directory
-cmake ..                    # configure Musly
-make                        # compile Musly
-sudo make install           # install Musly
+$ cmake -S . -B build
+$ cmake --build build 
+$ sudo cmake --install build
 ```
 
 To perform a self-test of the library, optionally run (still inside `build`):
 
 ```bash
-cmake -DBUILD_TEST=ON ..
-make
-# cp -a libmusly/*.dll libmusly/*/*.dll test/  # required for Windows only
-ctest -V
+cmake -S . -B build -DBUILD_TEST=ON
+cmake --build build
+ctest --test-dir build
 ```
 
 It should end with `100% tests passed, 0 tests failed`.
