@@ -44,19 +44,22 @@ MUSLY_METHOD_REGSTATIC(mandelellis, 0);
 #include "methods/timbre.h"
 MUSLY_METHOD_REGSTATIC(timbre, 1);
 
+#include "decoders/none.h"
+MUSLY_DECODER_REGSTATIC(none, 0);
+
 #if MUSLY_DECODER_LIBAV
 #include "decoders/libav.h"
-MUSLY_DECODER_REGSTATIC(libav, 0);
+MUSLY_DECODER_REGSTATIC(libav, 1);
 #endif // MUSLY_DECODER_LIBAV
 
 #if MUSLY_DECODER_COREAUDIO
 #include "decoders/coreaudio.h"
-MUSLY_DECODER_REGSTATIC(coreaudio, 1);
+MUSLY_DECODER_REGSTATIC(coreaudio, 2);
 #endif // MUSLY_DECODER_COREAUDIO
 
 #if MUSLY_DECODER_MEDIAFOUNDATION
 #include "decoders/mediafoundation.h"
-MUSLY_DECODER_REGSTATIC(mediafoundation, 1);
+MUSLY_DECODER_REGSTATIC(mediafoundation, 2);
 #endif // MUSLY_DECODER_MEDIAFOUNDATION
 
 #ifdef LIBMUSLY_EXTERNAL

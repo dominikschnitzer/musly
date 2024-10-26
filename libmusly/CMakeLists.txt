@@ -74,6 +74,7 @@ target_sources(libmusly
     PRIVATE
         src/kissfft/kiss_fft.c
         src/kissfft/kiss_fftr.c
+        src/decoders/none.cpp
         src/methods/mandelellis.cpp
         src/methods/timbre.cpp
         src/resampler.cpp
