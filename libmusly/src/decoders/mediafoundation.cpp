@@ -379,25 +379,6 @@ mediafoundation::~mediafoundation()
     MINILOG(logTRACE) << "mediafoundation: Deleted MediaFoundation decoder.";
 }
 
-struct wavfile_header
-{
-    char    ChunkID[4];     /*  4   */
-    int32_t ChunkSize;      /*  4   */
-    char    Format[4];      /*  4   */
-    
-    char    Subchunk1ID[4]; /*  4   */
-    int32_t Subchunk1Size;  /*  4   */
-    int16_t AudioFormat;    /*  2   */
-    int16_t NumChannels;    /*  2   */
-    int32_t SampleRate;     /*  4   */
-    int32_t ByteRate;       /*  4   */
-    int16_t BlockAlign;     /*  2   */
-    int16_t BitsPerSample;  /*  2   */
-    
-    char    Subchunk2ID[4];
-    int32_t Subchunk2Size;
-};
-
 std::vector<float>
 mediafoundation::decodeto_22050hz_mono_float(const std::string& file,
                                              float excerpt_length,
@@ -447,42 +428,11 @@ mediafoundation::decodeto_22050hz_mono_float(const std::string& file,
         }
     }
 
-
-
     if (audio_file.sample_rate() != 22050)
     {
         MINILOG(logDEBUG) << "mediafoundation: Will downsample audio from " << audio_file.sample_rate() << "Hz to 22050Hz";
         resampler r(audio_file.sample_rate(), 22050);
-        pcm = r.resample(pcm.data(), pcm.size());
-    }
-
-    FILE* fh = fopen("sample.wav", "wb");
-    if (fh)
-    {
-        MINILOG(logINFO) << "opened file";
-
-        wavfile_header header = {
-            {'R', 'I', 'F', 'F' },
-            (sizeof(wavfile_header) - 8) + (pcm.size() * sizeof(float)),
-            {'W','A','V','E'},
-            {'f', 'm', 't', ' '},
-            16,
-            3,
-            1,
-            22050,
-            22050 * 1 * sizeof(float),
-            1 * sizeof(float),
-            sizeof(float) * 8,
-            {'d','a','t','a'},
-            sizeof(float) * pcm.size()
-        };
-        
-        fwrite(&header, sizeof(wavfile_header), 1, fh);
-        fwrite(pcm.data(), sizeof(float), pcm.size(), fh);
-
-        fclose(fh);
-    } else {
-        MINILOG(logERROR) << "failed to write data";
+        return r.resample(pcm.data(), pcm.size());
     }
 
 
