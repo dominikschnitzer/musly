@@ -1,18 +1,75 @@
-# CMake buildfile generator file.
-# Process with cmake to create your desired buildfiles.
-
-# (c) 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
-#     2014-2016, Jan Schlueter <jan.schlueter@ofai.at>
-#
-
 add_library(libmusly)
 add_library(Musly::libmusly ALIAS libmusly)
 
+# use c++17 standard features
+target_compile_features(libmusly
+    PUBLIC cxx_std_17
+)
+
+# force msvc to conform with c++ standards
+target_compile_options(libmusly
+    PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->"
+)
+
+# fix preprocessor weirdness on windows
+if(WIN32 OR MINGW)
+    target_compile_definitions(libmusly
+        PRIVATE 
+            -DNOMINMAX
+            -D_USE_MATH_DEFINES
+    )
+endif()
+
+set_target_properties(libmusly PROPERTIES
+    # do not add a 'lib' prefix to the target name a.k.a. liblibmusly.so
+    PREFIX ""
+    # always ouput position independent code
+    POSITION_INDEPENDENT_CODE ON
+    # disable comiler specific extensions
+    CXX_EXTENSIONS OFF
+    # name of preprocessor symbol that indicates that we are currently building a shared library
+    # handy to determine if (dllexport or dllimport) should be used in public headers
+    DEFINE_SYMBOL MUSLY_BUILDING_LIBRARY
+)
+
+# enable IPO when compiler supports it
+if(musly_IPO_SUPPORTED)
+    set_target_properties(libmusly PROPERTIES
+        INTERPROCEDURAL_OPTIMIZATION TRUE
+    )
+endif()   
+
+# only use MPL2 code from Eigen library
+target_compile_definitions(libmusly
+    PRIVATE 
+        -DEIGEN_MPL2_ONLY
+)
+
+# provide preprocessor symbol when we build a static library
+if(BUILD_STATIC)
+    target_compile_definitions(libmusly
+        PUBLIC -DMUSLY_STATIC
+    )
+endif()
+
+# create header file containing the current project version
 configure_file (
     "${CMAKE_CURRENT_SOURCE_DIR}/src/version.h.in"
     "${CMAKE_CURRENT_BINARY_DIR}/src/version.h"
 )
 
+# set include directories
+target_include_directories(libmusly
+    PRIVATE 
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_BINARY_DIR}/src
+    INTERFACE 
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}>
+)
+
+# add common source files
 target_sources(libmusly
     PRIVATE
         src/kissfft/kiss_fft.c
@@ -40,55 +97,15 @@ target_sources(libmusly
                 include/musly/musly_types.h
 )
 
-target_include_directories(libmusly
-    PRIVATE 
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
-        ${CMAKE_CURRENT_BINARY_DIR}/src
-    INTERFACE 
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}>
-)
-
+# add common link libraries
 target_link_libraries(libmusly
     PRIVATE
-        resample 
+        libresample 
         Eigen3::Eigen
 )
 
-target_compile_features(libmusly
-    PUBLIC cxx_std_11
-)
-
-set_target_properties(libmusly PROPERTIES
-    POSITION_INDEPENDENT_CODE ON
-    CXX_EXTENSIONS OFF
-    DEFINE_SYMBOL MUSLY_BUILDING_LIBRARY
-)
-
-if(musly_IPO_SUPPORTED)
-    set_target_properties(resample PROPERTIES
-        INTERPROCEDURAL_OPTIMIZATION TRUE
-    )
-endif()   
-
-target_compile_definitions(libmusly
-    PRIVATE 
-        -DEIGEN_MPL2_ONLY
-)
-
-if(BUILD_STATIC)
-    target_compile_definitions(libmusly
-        PUBLIC -DMUSLY_STATIC
-    )
-endif()
-
-if (LINUX)
-    find_package(LibAV 0.8 COMPONENTS avcodec avformat avutil REQUIRED)
-else()
-    find_package(LibAV 0.8 COMPONENTS avcodec avformat avutil)
-endif()
-
+# enable libav decoder support when available
+find_package(LibAV 0.8 COMPONENTS avcodec avformat avutil)
 if(LIBAV_FOUND)
     target_sources(libmusly
         PRIVATE src/decoders/libav.cpp
@@ -108,8 +125,11 @@ if(LIBAV_FOUND)
             COMPILE_FLAGS "-DHAVE_AVUTIL_CHANNEL_LAYOUT"
         )
     endif()
+elseif(LINUX)
+    message(WARNING "No decoder library found! You'll only be able to analyze already decoded audio data")
 endif()
 
+# enable coreaudio decoder support when building for macos
 if(APPLE)
     find_library(AUDIOTOOLBOX_LIBRARY AudioToolbox)
     find_library(COREFOUNDATION_LIBRARY CoreFoundation)
@@ -128,32 +148,25 @@ if(APPLE)
     )
 endif()
 
+# enable mediafoundation decoder support when building for windows
 if(WIN32 OR MINGW)
     target_sources(libmusly 
         PRIVATE src/decoders/mediafoundation.cpp
     )
     target_link_libraries(libmusly
         PRIVATE
-            ws2_32
             Mf
             Mfplat
             mfreadwrite
             mfuuid
             ole32
+            ws2_32
     )
     target_compile_definitions(libmusly
-        PRIVATE 
-            -DMUSLY_DECODER_MEDIAFOUNDATION 
-            -DNOMINMAX
-            -D_USE_MATH_DEFINES
+        PRIVATE -DMUSLY_DECODER_MEDIAFOUNDATION
     )
 endif()
 
-if(APPLE)
-  set(CMAKE_INSTALL_RPATH "@executable_path/../lib")
-elseif(UNIX)
-  set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
-endif()
 
 install(TARGETS libmusly 
     EXPORT MuslyTargets

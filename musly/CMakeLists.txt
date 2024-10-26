@@ -20,4 +20,4 @@ target_link_libraries(musly
     Eigen3::Eigen
 )
 
-install(TARGETS musly DESTINATION bin)
+install(TARGETS musly DESTINATION ${CMAKE_INSTALL_BINDIR})

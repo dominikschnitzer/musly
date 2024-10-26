@@ -7,7 +7,7 @@
 cmake_minimum_required(VERSION 3.24)
 
 project(musly
-    VERSION "0.2"
+    VERSION 0.2
     LANGUAGES C CXX
 )
 
