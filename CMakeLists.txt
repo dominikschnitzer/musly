@@ -73,7 +73,7 @@ if(NOT IS_SUBMODULE)
 endif()
 
 set(musly_CMAKEPKG_INSTALL_DIR 
-    "${CMAKE_INSTALL_LIBDIR}/cmake/Musly"
+    "${CMAKE_INSTALL_DATADIR}/musly/cmake"
     CACHE PATH "The directory relative to CMAKE_INSTALL_PREFIX where the Musly CMake package files are installed.")
 
 check_ipo_supported(RESULT musly_IPO_SUPPORTED)
@@ -128,13 +128,6 @@ endif()
 # Export Configuration
 #
 
-install(EXPORT MuslyTargets
-    CONFIGURATIONS Release
-    FILE MuslyTargets.cmake
-    DESTINATION ${musly_CMAKEPKG_INSTALL_DIR}
-)
-
-
 configure_package_config_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/MuslyConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/MuslyConfig.cmake
@@ -152,8 +145,13 @@ export(EXPORT MuslyTargets
     NAMESPACE Musly::
 )
 
-export(PACKAGE Musly)
+install(EXPORT MuslyTargets
+    FILE MuslyTargets.cmake
+    NAMESPACE Musly::
+    DESTINATION ${musly_CMAKEPKG_INSTALL_DIR}
+)
 
+export(PACKAGE Musly)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/MuslyConfig.cmake
               ${CMAKE_CURRENT_BINARY_DIR}/MuslyConfigVersion.cmake
