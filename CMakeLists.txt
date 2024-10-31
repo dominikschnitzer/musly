@@ -89,7 +89,6 @@ FetchContent_Declare(Eigen3
     URL      https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz
     URL_HASH SHA256=8586084f71f9bde545ee7fa6d00288b264a2b7ac3607b974e54d13e7162c1c72
     DOWNLOAD_EXTRACT_TIMESTAMP TRUE
-    INSTALL_COMMAND ""
     EXCLUDE_FROM_ALL
     FIND_PACKAGE_ARGS NO_MODULE
 )
