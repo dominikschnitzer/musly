@@ -1,6 +1,9 @@
 Musly
 =====
 
+**Note**: This fork of Musly just contains updates to the cmake scripts for better compability with newer versions, some changes to compile it with MSVC, and added makeshift native decoders for Windows and macOS.
+
+
 (c) 2013-2014, Dominik Schnitzer <dominik@schnitzer.at>
 and 2014-2016, Jan Schlüter <jan.schlueter@ofai.at>
 
