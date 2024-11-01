@@ -102,6 +102,7 @@ FetchContent_MakeAvailable(Eigen3)
 #  add_subdirectory(${eigen3_SOURCE_DIR} ${eigen3_BINARY_DIR} EXCLUDE_FROM_ALL)
 #endif()
 
+add_subdirectory(libkissfft)
 add_subdirectory(libresample)
 add_subdirectory(libmusly)
 
