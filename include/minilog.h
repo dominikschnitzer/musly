@@ -198,7 +198,7 @@ Log<T>::from_string(
     else if (level == "NONE")
         return logNONE;
     else {
-        Log<T>().Get(logWARNING) << "Unknown logging level '" << level
+        Log<T>().get(logWARNING) << "Unknown logging level '" << level
                 << "'. Using INFO level as default.";
         return logINFO;
     }
